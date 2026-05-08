@@ -1,0 +1,3481 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Космічна карта проєктів</title>
+  <style>
+    :root {
+      --bg: #000;
+      --panel: rgba(8, 8, 8, 0.78);
+      --panel-strong: rgba(15, 15, 15, 0.94);
+      --text: #f4f4f4;
+      --muted: #9b9b9b;
+      --line: rgba(245, 245, 245, 0.36);
+      --line-active: #ffffff;
+      --border: rgba(255, 255, 255, 0.18);
+      --accent: #ffffff;
+      --accent-2: #d8d8d8;
+      --danger: #ffffff;
+      --success: #ffffff;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.44);
+      --font: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #000;
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(280px, 330px) 1fr;
+      height: 100dvh;
+      min-height: 620px;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.045), transparent 28%),
+        radial-gradient(circle at 86% 20%, rgba(255, 255, 255, 0.035), transparent 24%),
+        #000;
+    }
+
+    .control-panel {
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 22px;
+      border-right: 1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(18, 18, 18, 0.94), rgba(4, 4, 4, 0.78)),
+        rgba(8, 8, 8, 0.84);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+    }
+
+    .brand-mark {
+      width: 50px;
+      height: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #ffffff 0 7%, transparent 8%),
+        radial-gradient(circle at 31% 34%, rgba(255, 255, 255, 0.95) 0 3px, transparent 4px),
+        radial-gradient(circle at 69% 63%, rgba(205, 205, 205, 0.92) 0 4px, transparent 5px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 64%);
+      box-shadow: 0 0 28px rgba(255, 255, 255, 0.18);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.55rem, 4vw, 2rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p,
+    .hint,
+    .meta,
+    .empty-state p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .primary-actions,
+    .inline-actions,
+    .form-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .inline-actions {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 11px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.58);
+      background: rgba(255, 255, 255, 0.11);
+      outline: none;
+    }
+
+    .btn.primary {
+      border-color: rgba(255, 255, 255, 0.52);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(170, 170, 170, 0.12)),
+        rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 26px rgba(255, 255, 255, 0.12);
+    }
+
+    .btn.danger {
+      border-color: rgba(255, 255, 255, 0.34);
+      color: #ffffff;
+    }
+
+    .btn.ghost {
+      min-height: 36px;
+      padding: 8px 12px;
+      background: transparent;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: #d7e5ff;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      border: 1px solid rgba(180, 212, 255, 0.16);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.065);
+      color: var(--text);
+      padding: 12px 13px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .field textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(121, 204, 255, 0.65);
+      box-shadow: 0 0 0 4px rgba(121, 204, 255, 0.11);
+      background: rgba(255, 255, 255, 0.095);
+    }
+
+    .field select option {
+      background: #0b1120;
+      color: var(--text);
+    }
+
+    .status-card,
+    .stats {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.055);
+      padding: 14px;
+    }
+
+    .status-card {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mode-pill {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1px solid rgba(121, 204, 255, 0.25);
+      border-radius: var(--radius-md);
+      background: rgba(121, 204, 255, 0.08);
+      padding: 10px;
+      color: #dff4ff;
+      line-height: 1.35;
+    }
+
+    .mode-pill.active {
+      display: flex;
+    }
+
+    .pulse-dot {
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+      margin-top: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 16px var(--accent);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.25rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .space-map {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 40% 50%, rgba(30, 52, 110, 0.08), transparent 35%),
+        radial-gradient(circle at 77% 70%, rgba(88, 52, 145, 0.05), transparent 28%),
+        #000;
+    }
+
+    .space-map::before,
+    .space-map::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      z-index: -2;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.86) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(142, 205, 255, 0.58) 0 1px, transparent 1.6px);
+      background-position: 0 0, 60px 80px;
+      background-size: 120px 120px, 180px 180px;
+      opacity: 0.34;
+      animation: drift 80s linear infinite;
+    }
+
+    .space-map::after {
+      z-index: -1;
+      background-image:
+        radial-gradient(circle at 25% 20%, rgba(132, 185, 255, 0.17), transparent 18%),
+        radial-gradient(circle at 70% 42%, rgba(169, 127, 255, 0.12), transparent 20%),
+        radial-gradient(circle at 53% 74%, rgba(96, 217, 255, 0.12), transparent 24%);
+      background-size: auto;
+      opacity: 1;
+      animation: none;
+    }
+
+    .connections {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .link-visible {
+      stroke: var(--line);
+      stroke-width: 1.25;
+      filter: drop-shadow(0 0 5px rgba(151, 209, 255, 0.4));
+      pointer-events: none;
+    }
+
+    .link-hit {
+      stroke: transparent;
+      stroke-width: 18;
+      pointer-events: stroke;
+      cursor: pointer;
+    }
+
+    .link-group.selected .link-visible {
+      stroke: var(--line-active);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 10px rgba(121, 204, 255, 0.9));
+    }
+
+    .stars-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    .star-node {
+      --star-color: #dff5ff;
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      display: grid;
+      justify-items: center;
+      width: 118px;
+      min-height: 84px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      transform: translate(-50%, -50%);
+      user-select: none;
+      touch-action: none;
+      pointer-events: auto;
+      cursor: grab;
+      animation: appear 360ms ease both;
+    }
+
+    .star-node:active {
+      cursor: grabbing;
+    }
+
+    .star-core {
+      position: relative;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 44% 38%, #fff 0 8%, var(--star-color) 11% 32%, rgba(121, 204, 255, 0.22) 45%, transparent 72%);
+      box-shadow:
+        0 0 12px color-mix(in srgb, var(--star-color) 72%, transparent),
+        0 0 28px color-mix(in srgb, var(--star-color) 42%, transparent),
+        0 0 64px color-mix(in srgb, var(--star-color) 22%, transparent);
+      transition: transform 170ms ease, box-shadow 170ms ease;
+    }
+
+    .star-core::before,
+    .star-core::after {
+      content: "";
+      position: absolute;
+      inset: 50% auto auto 50%;
+      width: 74px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--star-color) 72%, transparent), transparent);
+      transform: translate(-50%, -50%);
+      opacity: 0.62;
+    }
+
+    .star-core::after {
+      width: 1px;
+      height: 74px;
+    }
+
+    .star-label {
+      max-width: 118px;
+      margin-top: 9px;
+      padding: 5px 9px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      background: rgba(3, 6, 13, 0.46);
+      color: rgba(244, 248, 255, 0.9);
+      font-size: 0.78rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      transition: opacity 170ms ease, border-color 170ms ease;
+    }
+
+    .star-node:hover .star-core,
+    .star-node:focus-visible .star-core,
+    .star-node.selected .star-core {
+      transform: scale(1.16);
+      box-shadow:
+        0 0 16px color-mix(in srgb, var(--star-color) 90%, transparent),
+        0 0 40px color-mix(in srgb, var(--star-color) 58%, transparent),
+        0 0 86px color-mix(in srgb, var(--star-color) 32%, transparent);
+    }
+
+    .star-node:hover,
+    .star-node:focus-visible {
+      outline: none;
+    }
+
+    .star-node.selected .star-label,
+    .star-node.connect-source .star-label {
+      border-color: rgba(121, 204, 255, 0.48);
+      color: #ffffff;
+    }
+
+    .star-node.connect-source .star-core {
+      animation: selectedPulse 1.2s ease-in-out infinite;
+    }
+
+    .star-node.hidden-by-filter {
+      display: none;
+    }
+
+    .empty-state {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      z-index: 3;
+      width: min(440px, calc(100% - 40px));
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      background: rgba(5, 9, 18, 0.62);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(18px);
+    }
+
+    .empty-state.hidden {
+      display: none;
+    }
+
+    .empty-state h2 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .details {
+      position: absolute;
+      left: auto;
+      right: 16px;
+      top: 16px;
+      bottom: auto;
+      z-index: 10;
+      width: min(420px, calc(100% - 32px));
+      max-height: calc(100dvh - 190px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      animation: slideUp 220ms ease both;
+    }
+
+    .details.hidden {
+      display: none;
+    }
+
+    .details-media {
+      height: 92px;
+      border-bottom: 1px solid var(--border);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(121, 204, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 70% 72%, rgba(166, 150, 255, 0.18), transparent 28%),
+        rgba(255, 255, 255, 0.04);
+    }
+
+    .details-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .details-media.gallery {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 8px;
+      height: auto;
+      min-height: 110px;
+      padding: 8px;
+    }
+
+    .details-media.gallery img {
+      min-height: 50px;
+      border-radius: 0;
+    }
+
+    .details-media.gallery img:first-child {
+      grid-row: span 2;
+      min-height: 110px;
+    }
+
+    .details-body {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      min-width: 0;
+    }
+
+    .details h2 {
+      font-size: 1.05rem;
+      line-height: 1.12;
+      letter-spacing: -0.035em;
+    }
+
+    .project-description {
+      color: #d9e5ff;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 9px;
+      border: 1px solid rgba(183, 216, 255, 0.17);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #dce9ff;
+      font-size: 0.78rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.64);
+      backdrop-filter: blur(10px);
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      width: min(760px, 100%);
+      max-height: min(900px, calc(100dvh - 48px));
+      overflow: auto;
+      border: 1px solid rgba(196, 221, 255, 0.19);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(17, 24, 43, 0.96), rgba(6, 10, 20, 0.96)),
+        #090e19;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-head,
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-actions {
+      justify-content: flex-end;
+      border-top: 1px solid var(--border);
+      border-bottom: 0;
+    }
+
+    .project-form {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .image-row {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .image-preview {
+      display: grid;
+      gap: 10px;
+      min-height: 160px;
+      overflow: hidden;
+      place-items: center;
+      border: 1px dashed rgba(180, 212, 255, 0.24);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .image-preview.has-images {
+      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+      place-items: stretch;
+      padding: 10px;
+    }
+
+    .image-thumb {
+      position: relative;
+      min-height: 96px;
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      min-height: 96px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-thumb button {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 50%;
+      background: rgba(3, 6, 13, 0.72);
+      color: #fff;
+    }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      z-index: 30;
+      max-width: min(520px, calc(100% - 44px));
+      padding: 12px 15px;
+      border: 1px solid rgba(121, 204, 255, 0.26);
+      border-radius: 999px;
+      background: rgba(4, 9, 18, 0.82);
+      color: #eaf7ff;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 10px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      backdrop-filter: blur(16px);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @keyframes pulse {
+      50% {
+        transform: scale(1.45);
+        opacity: 0.55;
+      }
+    }
+
+    @keyframes selectedPulse {
+      50% {
+        transform: scale(1.22);
+      }
+    }
+
+    @keyframes drift {
+      to {
+        transform: translate3d(-90px, -60px, 0);
+      }
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.82);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        min-height: 100dvh;
+      }
+
+      .control-panel {
+        position: fixed;
+        inset: 12px 12px auto 12px;
+        max-height: 44dvh;
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+      }
+
+      .space-map {
+        min-height: 100dvh;
+      }
+
+      .details {
+        left: 10px;
+        right: 10px;
+        top: auto;
+        bottom: 10px;
+        width: auto;
+        max-height: 38dvh;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .brand {
+        grid-template-columns: 42px 1fr;
+        align-items: center;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+      }
+
+      .brand p {
+        grid-column: 1 / -1;
+      }
+
+      .stats {
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100dvh;
+      }
+
+      .control-panel {
+        position: relative;
+        inset: auto;
+        max-height: none;
+        border-width: 0 0 1px;
+        border-radius: 0 0 24px 24px;
+      }
+
+      .space-map {
+        min-height: 720px;
+      }
+
+      .inline-actions,
+      .form-grid.two,
+      .form-grid.three,
+      .image-row {
+        grid-template-columns: 1fr;
+      }
+
+      .star-node {
+        width: 54px;
+      }
+
+      .details {
+        position: fixed;
+      }
+
+      .modal {
+        padding: 12px;
+      }
+
+      .modal-head,
+      .modal-actions,
+      .project-form {
+        padding: 16px;
+      }
+    }
+
+    /* Мінімальний режим: вся увага на 3D-карті, зверху тільки плюс і пошук. */
+    .app {
+      display: block;
+      height: 100dvh;
+      min-height: 0;
+    }
+
+    .control-panel {
+      position: fixed;
+      inset: 16px auto auto 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: row;
+      width: min(360px, calc(100% - 32px));
+      max-height: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border: 1px solid rgba(199, 224, 255, 0.2);
+      border-radius: 0;
+      background: rgba(5, 9, 18, 0.58);
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.36);
+      transform: none;
+      backdrop-filter: blur(18px);
+      pointer-events: none;
+    }
+
+    .control-panel .brand,
+    .control-panel .inline-actions,
+    .control-panel > .form-grid,
+    .control-panel .status-card,
+    .control-panel .stats {
+      display: none;
+    }
+
+    .control-panel .primary-actions {
+      display: block;
+      flex: 0 0 auto;
+      pointer-events: auto;
+    }
+
+    #addProjectBtn {
+      width: 42px;
+      min-width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 0;
+      border-radius: 0;
+      font-size: 0;
+    }
+
+    #addProjectBtn::before {
+      content: "+";
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .control-panel .field {
+      flex: 1 1 auto;
+      min-width: 0;
+      gap: 0;
+      pointer-events: auto;
+    }
+
+    .control-panel .field label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    .control-panel .field input {
+      min-height: 42px;
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.075);
+      padding: 10px 16px;
+      pointer-events: auto;
+    }
+
+    .space-map {
+      min-height: 100dvh;
+      cursor: grab;
+      perspective: 1200px;
+      perspective-origin: 50% 44%;
+      touch-action: none;
+    }
+
+    .space-map.is-panning {
+      cursor: grabbing;
+    }
+
+    .map-world {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      overflow: visible;
+      transform-origin: 0 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .map-world::before {
+      content: "";
+      position: absolute;
+      inset: -34%;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(126, 198, 255, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(126, 198, 255, 0.12) 1px, transparent 1px);
+      background-size: 92px 92px;
+      opacity: 0.2;
+      transform: rotateX(62deg) translateY(12%) scale(1.5);
+      transform-origin: center;
+      mask-image: radial-gradient(circle at center, #000 0 42%, transparent 72%);
+    }
+
+    .connections,
+    .stars-layer {
+      z-index: 2;
+      transform: translateZ(18px);
+      transform-style: preserve-3d;
+    }
+
+    .connections {
+      overflow: visible;
+    }
+
+    .star-node {
+      --priority-scale: 1;
+      transform: translate3d(-50%, -50%, var(--depth, 0px)) scale(calc(var(--z-scale, 1) * var(--priority-scale, 1)));
+    }
+
+    /* Simple selectable dot mode: bigger click target, smaller visual star. */
+    .star-node {
+      width: 54px;
+      min-height: 54px;
+      place-items: center;
+    }
+
+    .star-orb {
+      width: 54px;
+      height: 54px;
+    }
+
+    .star-core {
+      width: 16px;
+      height: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      background: var(--star-color);
+      box-shadow:
+        0 0 10px color-mix(in srgb, var(--star-color) 82%, transparent),
+        0 0 24px color-mix(in srgb, var(--star-color) 48%, transparent);
+    }
+
+    .star-core::before,
+    .star-core::after {
+      display: none;
+    }
+
+    .star-label {
+      display: none;
+    }
+
+    .star-progress-ring {
+      inset: 9px;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translate3d(-50%, -50%, var(--depth, 0px)) scale(calc(var(--z-scale, 1) * var(--priority-scale, 1) * 0.82));
+      }
+    }
+
+    .map-tools {
+      position: absolute;
+      top: auto;
+      bottom: 16px;
+      left: 16px;
+      right: auto;
+      z-index: 35;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 8px;
+      width: min(300px, calc(100% - 32px));
+      pointer-events: none;
+    }
+
+    .map-tools .btn {
+      min-height: 34px;
+      padding: 7px 11px;
+      background: rgba(5, 9, 18, 0.62);
+      pointer-events: auto;
+      backdrop-filter: blur(16px);
+      border-radius: 0;
+    }
+
+    .map-tools .btn.active {
+      border-color: rgba(121, 204, 255, 0.66);
+      box-shadow: 0 0 18px rgba(121, 204, 255, 0.22);
+    }
+
+    .minimap {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      z-index: 34;
+      width: 190px;
+      height: 130px;
+      overflow: hidden;
+      border: 1px solid rgba(199, 224, 255, 0.22);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(121, 204, 255, 0.18), transparent 32%),
+        rgba(5, 9, 18, 0.66);
+      box-shadow: 0 16px 46px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(16px);
+      cursor: crosshair;
+    }
+
+    .minimap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .minimap-link {
+      stroke: rgba(186, 218, 255, 0.34);
+      stroke-width: 0.7;
+    }
+
+    .minimap-star {
+      fill: var(--mini-color, #9edcff);
+      opacity: 0.88;
+      filter: drop-shadow(0 0 2px rgba(158, 220, 255, 0.8));
+    }
+
+    .minimap-view {
+      fill: rgba(121, 204, 255, 0.08);
+      stroke: rgba(121, 204, 255, 0.78);
+      stroke-width: 1.3;
+    }
+
+    .star-node.focus-dim,
+    .link-group.focus-dim {
+      opacity: 0.16;
+      filter: grayscale(0.6);
+    }
+
+    .star-node.priority-medium {
+      --priority-scale: 1.08;
+    }
+
+    .star-node.priority-high {
+      --priority-scale: 1.22;
+    }
+
+    .star-node.priority-critical {
+      --priority-scale: 1.42;
+    }
+
+    .star-node.priority-critical .star-core {
+      box-shadow: 0 0 18px #fff, 0 0 58px rgba(255, 109, 134, 0.62), 0 0 110px rgba(255, 109, 134, 0.32);
+    }
+
+    .star-node.level-task .star-label {
+      opacity: 0.76;
+      font-size: 0.72rem;
+    }
+
+    .star-node.level-main .star-label {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .star-node.deadline-soon .star-core,
+    .star-node.overdue .star-core {
+      --star-color: #ff8ba0;
+    }
+
+    .star-node.overdue .star-core {
+      animation: selectedPulse 0.9s ease-in-out infinite;
+    }
+
+    .star-orb {
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .star-progress-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: conic-gradient(var(--progress-color, #8fffd2) var(--progress, 0deg), rgba(255, 255, 255, 0.08) 0);
+      mask: radial-gradient(circle, transparent 56%, #000 58%);
+      opacity: 0.82;
+      pointer-events: none;
+    }
+
+    .link-group.type-depends .link-visible {
+      stroke: rgba(158, 220, 255, 0.58);
+    }
+
+    .link-group.type-part .link-visible {
+      stroke: rgba(143, 255, 210, 0.56);
+    }
+
+    .link-group.type-idea .link-visible {
+      stroke: rgba(166, 150, 255, 0.62);
+      stroke-dasharray: 5 7;
+    }
+
+    .link-group.type-blocker .link-visible {
+      stroke: rgba(255, 109, 134, 0.72);
+      stroke-dasharray: 3 5;
+    }
+
+    .link-group.type-priority .link-visible {
+      stroke: rgba(255, 226, 126, 0.78);
+      stroke-width: 2;
+    }
+
+    .detail-grid,
+    .task-list,
+    .details-field {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .details-field label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .details-field input,
+    .details-field select {
+      width: 100%;
+      min-width: 0;
+      min-height: 34px;
+      border: 1px solid rgba(180, 212, 255, 0.16);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.065);
+      color: var(--text);
+      padding: 7px 9px;
+      outline: none;
+    }
+
+    .details-field select option {
+      background: #0b1120;
+    }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid rgba(180, 212, 255, 0.12);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .task-item.done span {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .task-add {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .task-add input {
+      min-height: 38px;
+      min-width: 0;
+      border: 1px solid rgba(180, 212, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.065);
+      color: var(--text);
+      padding: 8px 12px;
+      outline: none;
+    }
+
+    .details .inline-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      min-width: 0;
+    }
+
+    .details .btn {
+      min-width: 0;
+    }
+
+    @media (max-width: 620px) {
+      body {
+        overflow: hidden;
+      }
+
+      .control-panel {
+        inset: 10px auto auto 10px;
+        width: min(360px, calc(100% - 20px));
+        border-radius: 0;
+      }
+
+      .map-tools {
+        top: auto;
+        bottom: 122px;
+        left: 10px;
+        right: auto;
+        justify-content: flex-start;
+      }
+
+      .minimap {
+        right: 10px;
+        bottom: 10px;
+        width: 148px;
+        height: 104px;
+      }
+
+      .space-map {
+        min-height: 100dvh;
+      }
+
+      .details {
+        left: 10px;
+        right: 10px;
+        top: auto;
+        bottom: 10px;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    /* Monochrome theme override: black, white, grayscale only. */
+    body,
+    .app,
+    .space-map {
+      background: #000;
+    }
+
+    .space-map::after {
+      background-image:
+        radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.045), transparent 18%),
+        radial-gradient(circle at 70% 42%, rgba(255, 255, 255, 0.035), transparent 20%),
+        radial-gradient(circle at 53% 74%, rgba(255, 255, 255, 0.032), transparent 24%);
+    }
+
+    .space-map::before {
+      background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.72) 0 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(180, 180, 180, 0.45) 0 1px, transparent 1.6px);
+    }
+
+    .control-panel,
+    .details,
+    .modal-card,
+    .minimap,
+    .empty-state,
+    .toast,
+    .map-tools .btn {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.82);
+      color: #fff;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.72);
+    }
+
+    .btn,
+    .field input,
+    .field textarea,
+    .field select,
+    .details-field input,
+    .details-field select,
+    .task-add input,
+    .task-item,
+    .chip,
+    .image-preview,
+    .image-thumb {
+      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.045);
+      color: #fff;
+    }
+
+    .btn:hover,
+    .btn:focus-visible,
+    .btn.primary,
+    .map-tools .btn.active {
+      border-color: rgba(255, 255, 255, 0.74);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 22px rgba(255, 255, 255, 0.14);
+    }
+
+    .btn.danger {
+      border-color: rgba(255, 255, 255, 0.34);
+      color: #fff;
+    }
+
+    .field label,
+    .details-field label,
+    .meta,
+    .hint,
+    .brand p,
+    .empty-state p,
+    .task-item.done span {
+      color: #9e9e9e;
+    }
+
+    .project-description,
+    .chip {
+      color: #e8e8e8;
+    }
+
+    .star-node {
+      --star-color: #fff !important;
+    }
+
+    .star-core {
+      border-color: rgba(255, 255, 255, 0.86);
+      background: #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.82), 0 0 26px rgba(255, 255, 255, 0.34);
+    }
+
+    .star-node.deadline-soon .star-core,
+    .star-node.overdue .star-core,
+    .star-node.priority-critical .star-core {
+      background: #fff;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 34px rgba(255, 255, 255, 0.42);
+    }
+
+    .star-progress-ring {
+      background: conic-gradient(#fff var(--progress, 0deg), rgba(255, 255, 255, 0.12) 0);
+    }
+
+    .link-visible,
+    .link-group.type-depends .link-visible,
+    .link-group.type-part .link-visible,
+    .link-group.type-idea .link-visible,
+    .link-group.type-blocker .link-visible,
+    .link-group.type-priority .link-visible {
+      stroke: rgba(255, 255, 255, 0.44);
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.22));
+    }
+
+    .link-group.selected .link-visible {
+      stroke: #fff;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+    }
+
+    .minimap-link {
+      stroke: rgba(255, 255, 255, 0.3);
+    }
+
+    .minimap-star {
+      fill: #fff;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7));
+    }
+
+    .minimap-view {
+      fill: rgba(255, 255, 255, 0.08);
+      stroke: #fff;
+    }
+
+    .details-media {
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.08), transparent 28%),
+        radial-gradient(circle at 70% 72%, rgba(255, 255, 255, 0.055), transparent 28%),
+        rgba(255, 255, 255, 0.025);
+    }
+
+    .map-world::before {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    }
+
+    select option {
+      background: #050505;
+      color: #fff;
+    }
+
+    .star-label {
+      display: block;
+      position: absolute;
+      top: 46px;
+      left: 50%;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-4px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .star-node:hover .star-label,
+    .star-node:focus-visible .star-label {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .star-node.path-node .star-core {
+      box-shadow: 0 0 14px #fff, 0 0 36px rgba(255, 255, 255, 0.7);
+    }
+
+    .star-node.path-node,
+    .link-group.path-link {
+      opacity: 1;
+      filter: none;
+    }
+
+    .link-group.path-link .link-visible {
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-dasharray: none;
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.88));
+    }
+
+    .archive-list {
+      display: grid;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    .archive-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 12px;
+    }
+
+    .archive-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .archive-item p {
+      color: #9e9e9e;
+      font-size: 0.86rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="control-panel" aria-label="Панель керування">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>Карта проєктів</h1>
+          <p>Кожна зірка — окремий проєкт. Перетягуй, з’єднуй і відкривай картки.</p>
+        </div>
+      </div>
+
+      <div class="primary-actions">
+        <button class="btn primary" id="addProjectBtn" type="button" title="Додати проєкт" aria-label="Додати проєкт">Додати проєкт-зірку</button>
+        <div class="inline-actions">
+          <button class="btn ghost" id="resetFiltersBtn" type="button">Скинути фільтри</button>
+          <button class="btn ghost" id="cancelConnectBtn" type="button">Скасувати зв’язок</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="searchInput">Пошук</label>
+        <input id="searchInput" type="search" placeholder="Назва або опис..." autocomplete="off" />
+      </div>
+
+      <div class="form-grid two">
+        <div class="field">
+          <label for="statusFilter">Статус</label>
+          <select id="statusFilter">
+            <option value="">Усі статуси</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="categoryFilter">Категорія</label>
+          <select id="categoryFilter">
+            <option value="">Усі категорії</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="status-card">
+        <div class="mode-pill" id="connectMode">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span id="connectModeText">Оберіть другу зірку для створення зв’язку.</span>
+        </div>
+        <p class="hint" id="selectionHint">Клік по зірці відкриває картку. Перетягування змінює позицію.</p>
+        <button class="btn danger" id="deleteSelectedLinkBtn" type="button" hidden>Видалити вибраний зв’язок</button>
+      </div>
+
+      <div class="stats" aria-label="Статистика">
+        <div class="stat">
+          <strong id="projectCount">0</strong>
+          <span>проєктів</span>
+        </div>
+        <div class="stat">
+          <strong id="visibleCount">0</strong>
+          <span>видимі</span>
+        </div>
+        <div class="stat">
+          <strong id="linkCount">0</strong>
+          <span>зв’язків</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="space-map" id="spaceMap" aria-label="Космічна карта">
+      <div class="map-world" id="mapWorld">
+        <svg class="connections" id="linksSvg" aria-hidden="true"></svg>
+        <div class="stars-layer" id="starsLayer"></div>
+      </div>
+
+      <section class="empty-state" id="emptyState">
+        <h2>Карта ще порожня</h2>
+        <p>Створи першу зірку, додай опис і фото, а потім побудуй структуру зв’язками між проєктами.</p>
+      </section>
+
+      <article class="details hidden" id="detailsPanel" aria-live="polite"></article>
+      <div class="map-tools" aria-label="Режими карти">
+        <button class="btn ghost" id="orbitModeBtn" type="button">Орбіти</button>
+        <button class="btn ghost" id="pathModeBtn" type="button">Шлях</button>
+        <button class="btn ghost" id="presentationBtn" type="button">Презентація</button>
+        <button class="btn ghost" id="soundToggleBtn" type="button">Звук</button>
+        <button class="btn ghost" id="archiveBtn" type="button">Архів</button>
+        <button class="btn ghost" id="clearFocusBtn" type="button">Фокус off</button>
+      </div>
+      <div class="minimap" id="minimap" title="Клік — перейти в точку карти">
+        <svg id="minimapSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
+      </div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="modalTitle">Новий проєкт</h2>
+        <button class="btn ghost" id="closeModalBtn" type="button" aria-label="Закрити">Закрити</button>
+      </div>
+
+      <form id="projectForm">
+        <div class="project-form">
+          <div class="field">
+            <label for="projectTitle">Назва проєкту</label>
+            <input id="projectTitle" name="title" type="text" maxlength="80" required placeholder="Наприклад: Орбітальна CRM" />
+          </div>
+
+          <div class="field">
+            <label for="projectDescription">Опис</label>
+            <textarea id="projectDescription" name="description" maxlength="1200" placeholder="Ціль, ідея, нотатки, наступні кроки..."></textarea>
+          </div>
+
+          <div class="form-grid two">
+            <div class="field">
+              <label for="projectDate">Дата створення</label>
+              <input id="projectDate" name="createdAt" type="date" required />
+            </div>
+
+            <div class="field">
+              <label for="projectStatus">Статус</label>
+              <select id="projectStatus" name="status" required></select>
+            </div>
+          </div>
+
+          <div class="form-grid two">
+            <div class="field">
+              <label for="projectCategory">Категорія</label>
+              <input id="projectCategory" name="category" type="text" maxlength="48" placeholder="Дизайн, код, бізнес..." />
+            </div>
+
+            <div class="field">
+              <label for="projectColor">Колір зірки</label>
+              <input id="projectColor" name="color" type="color" value="#9edcff" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="projectTags">Теги</label>
+            <input id="projectTags" name="tags" type="text" maxlength="160" placeholder="frontend, клієнт, MVP..." />
+          </div>
+
+          <div class="form-grid two">
+            <div class="field">
+              <label for="projectDueDate">Дедлайн</label>
+              <input id="projectDueDate" name="dueDate" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="projectProgress">Прогрес, %</label>
+              <input id="projectProgress" name="progress" type="number" min="0" max="100" step="1" value="0" />
+            </div>
+          </div>
+
+          <div class="form-grid two">
+            <div class="field">
+              <label for="projectPriority">Важливість</label>
+              <select id="projectPriority" name="priority"></select>
+            </div>
+
+            <div class="field">
+              <label for="projectLevel">Рівень</label>
+              <select id="projectLevel" name="level"></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="projectTasks">Нотатки / задачі</label>
+            <textarea id="projectTasks" name="tasks" maxlength="1600" placeholder="Одна задача в рядок. Постав [x] на початку, якщо виконано."></textarea>
+          </div>
+
+          <div class="form-grid three">
+            <div class="field">
+              <label for="projectX">Координата X</label>
+              <input id="projectX" name="x" type="number" min="0" max="10000" step="1" required />
+            </div>
+
+            <div class="field">
+              <label for="projectY">Координата Y</label>
+              <input id="projectY" name="y" type="number" min="0" max="10000" step="1" required />
+            </div>
+
+            <div class="field">
+              <label for="projectZ">Координата Z</label>
+              <input id="projectZ" name="z" type="number" min="-220" max="260" step="1" required />
+            </div>
+          </div>
+
+          <div class="image-row">
+            <div class="image-preview" id="imagePreview">
+              <span>Фото проєкту</span>
+            </div>
+
+            <div class="primary-actions">
+              <div class="field">
+                <label for="projectImage">Зображення</label>
+                <input id="projectImage" name="images" type="file" accept="image/*" multiple />
+              </div>
+              <p class="hint">Можна додати кілька фото. Збереження обмежене localStorage, тому фото стискаються.</p>
+              <button class="btn ghost" id="removeImageBtn" type="button">Прибрати всі фото</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn danger" id="deleteProjectBtn" type="button" hidden>В архів</button>
+          <button class="btn ghost" id="cancelModalBtn" type="button">Скасувати</button>
+          <button class="btn primary" type="submit">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="archiveModal" role="dialog" aria-modal="true" aria-labelledby="archiveTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="archiveTitle">Архів проєктів</h2>
+        <button class="btn ghost" id="closeArchiveBtn" type="button">Закрити</button>
+      </div>
+      <div class="archive-list" id="archiveList"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "space-project-map:v1";
+      const MIN_ZOOM = 0.45;
+      const MAX_ZOOM = 3;
+      const WORLD_MAX = 10000;
+      const STATUS_OPTIONS = [
+        { value: "planned", label: "Планується" },
+        { value: "active", label: "В роботі" },
+        { value: "paused", label: "Пауза" },
+        { value: "done", label: "Завершено" }
+      ];
+      const PRIORITY_OPTIONS = [
+        { value: "low", label: "Low" },
+        { value: "medium", label: "Medium" },
+        { value: "high", label: "High" },
+        { value: "critical", label: "Critical" }
+      ];
+      const LEVEL_OPTIONS = [
+        { value: "main", label: "Головний проєкт" },
+        { value: "sub", label: "Підпроєкт" },
+        { value: "task", label: "Задача" }
+      ];
+      const LINK_TYPES = [
+        { value: "depends", label: "Залежить від" },
+        { value: "part", label: "Частина" },
+        { value: "idea", label: "Ідея" },
+        { value: "blocker", label: "Блокер" },
+        { value: "priority", label: "Пріоритет" }
+      ];
+
+      const DEFAULT_COLORS = ["#f7fbff", "#9edcff", "#a696ff", "#77f0ff", "#d7e6ff", "#b8c4ff"];
+
+      const els = {
+        addProjectBtn: document.querySelector("#addProjectBtn"),
+        cancelConnectBtn: document.querySelector("#cancelConnectBtn"),
+        deleteSelectedLinkBtn: document.querySelector("#deleteSelectedLinkBtn"),
+        resetFiltersBtn: document.querySelector("#resetFiltersBtn"),
+        searchInput: document.querySelector("#searchInput"),
+        statusFilter: document.querySelector("#statusFilter"),
+        categoryFilter: document.querySelector("#categoryFilter"),
+        projectCount: document.querySelector("#projectCount"),
+        visibleCount: document.querySelector("#visibleCount"),
+        linkCount: document.querySelector("#linkCount"),
+        connectMode: document.querySelector("#connectMode"),
+        connectModeText: document.querySelector("#connectModeText"),
+        selectionHint: document.querySelector("#selectionHint"),
+        spaceMap: document.querySelector("#spaceMap"),
+        mapWorld: document.querySelector("#mapWorld"),
+        linksSvg: document.querySelector("#linksSvg"),
+        starsLayer: document.querySelector("#starsLayer"),
+        orbitModeBtn: document.querySelector("#orbitModeBtn"),
+        pathModeBtn: document.querySelector("#pathModeBtn"),
+        presentationBtn: document.querySelector("#presentationBtn"),
+        soundToggleBtn: document.querySelector("#soundToggleBtn"),
+        archiveBtn: document.querySelector("#archiveBtn"),
+        clearFocusBtn: document.querySelector("#clearFocusBtn"),
+        minimap: document.querySelector("#minimap"),
+        minimapSvg: document.querySelector("#minimapSvg"),
+        emptyState: document.querySelector("#emptyState"),
+        detailsPanel: document.querySelector("#detailsPanel"),
+        toast: document.querySelector("#toast"),
+        projectModal: document.querySelector("#projectModal"),
+        archiveModal: document.querySelector("#archiveModal"),
+        archiveList: document.querySelector("#archiveList"),
+        closeArchiveBtn: document.querySelector("#closeArchiveBtn"),
+        modalTitle: document.querySelector("#modalTitle"),
+        closeModalBtn: document.querySelector("#closeModalBtn"),
+        cancelModalBtn: document.querySelector("#cancelModalBtn"),
+        projectForm: document.querySelector("#projectForm"),
+        projectTitle: document.querySelector("#projectTitle"),
+        projectDescription: document.querySelector("#projectDescription"),
+        projectDate: document.querySelector("#projectDate"),
+        projectStatus: document.querySelector("#projectStatus"),
+        projectCategory: document.querySelector("#projectCategory"),
+        projectColor: document.querySelector("#projectColor"),
+        projectTags: document.querySelector("#projectTags"),
+        projectDueDate: document.querySelector("#projectDueDate"),
+        projectProgress: document.querySelector("#projectProgress"),
+        projectPriority: document.querySelector("#projectPriority"),
+        projectLevel: document.querySelector("#projectLevel"),
+        projectTasks: document.querySelector("#projectTasks"),
+        projectX: document.querySelector("#projectX"),
+        projectY: document.querySelector("#projectY"),
+        projectZ: document.querySelector("#projectZ"),
+        projectImage: document.querySelector("#projectImage"),
+        imagePreview: document.querySelector("#imagePreview"),
+        removeImageBtn: document.querySelector("#removeImageBtn"),
+        deleteProjectBtn: document.querySelector("#deleteProjectBtn")
+      };
+
+      const ui = {
+        selectedProjectId: null,
+        selectedLinkId: null,
+        pathMode: false,
+        pathStartId: null,
+        pathProjectIds: new Set(),
+        pathLinkIds: new Set(),
+        connectingFrom: null,
+        editingProjectId: null,
+        newProjectPosition: null,
+        draftImages: [],
+        dragging: null,
+        panning: null,
+        pinch: null,
+        activePointers: new Map(),
+        suppressNextClick: false,
+        toastTimer: null,
+        viewSaveTimer: null,
+        searchTimer: null,
+        presentationTimer: null,
+        presentationIndex: 0,
+        audioContext: null,
+        ambientNodes: null
+      };
+
+      let state = loadState();
+
+      function uid(prefix) {
+        return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      }
+
+      function todayISO() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function escapeHTML(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      function statusLabel(value) {
+        return STATUS_OPTIONS.find((item) => item.value === value)?.label || "Без статусу";
+      }
+
+      function priorityLabel(value) {
+        return PRIORITY_OPTIONS.find((item) => item.value === value)?.label || "Medium";
+      }
+
+      function levelLabel(value) {
+        return LEVEL_OPTIONS.find((item) => item.value === value)?.label || "Головний проєкт";
+      }
+
+      function linkTypeLabel(value) {
+        return LINK_TYPES.find((item) => item.value === value)?.label || "Залежить від";
+      }
+
+      function formatDate(value) {
+        if (!value) return "Без дати";
+        const date = new Date(`${value}T00:00:00`);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString("uk-UA", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+      }
+
+      function clamp(value, min, max) {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return min;
+        return Math.min(max, Math.max(min, number));
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim();
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { projects: [], links: [], view: normalizeView(), settings: normalizeSettings() };
+          const parsed = JSON.parse(raw);
+          return {
+            projects: Array.isArray(parsed.projects) ? parsed.projects.map(normalizeProject) : [],
+            links: Array.isArray(parsed.links) ? parsed.links.map(normalizeLink).filter(Boolean) : [],
+            view: normalizeView(parsed.view),
+            settings: normalizeSettings(parsed.settings)
+          };
+        } catch (error) {
+          console.warn("Не вдалося прочитати localStorage:", error);
+          return { projects: [], links: [], view: normalizeView(), settings: normalizeSettings() };
+        }
+      }
+
+      function normalizeProject(project) {
+        const images = getProjectImages(project).slice(0, 8);
+        const rawX = Number.isFinite(Number(project.x)) ? Number(project.x) : randomBetween(2000, 8000);
+        const rawY = Number.isFinite(Number(project.y)) ? Number(project.y) : randomBetween(2200, 7800);
+        const usesNewCoords = project.coordVersion === 2;
+        const x = !usesNewCoords && rawX <= 100 ? rawX * 100 : rawX;
+        const y = !usesNewCoords && rawY <= 100 ? rawY * 100 : rawY;
+        const z = Number.isFinite(Number(project.z)) ? Number(project.z) : randomBetween(-60, 140);
+        const priority = PRIORITY_OPTIONS.some((item) => item.value === project.priority) ? project.priority : "medium";
+        const level = LEVEL_OPTIONS.some((item) => item.value === project.level) ? project.level : "main";
+        const progress = clamp(Number(project.progress) || 0, 0, 100);
+
+        return {
+          id: project.id || uid("project"),
+          coordVersion: 2,
+          title: normalizeText(project.title) || "Без назви",
+          description: String(project.description || ""),
+          images,
+          image: images[0] || "",
+          createdAt: project.createdAt || todayISO(),
+          status: STATUS_OPTIONS.some((item) => item.value === project.status) ? project.status : "planned",
+          category: normalizeText(project.category) || "Без категорії",
+          color: /^#[0-9a-f]{6}$/i.test(project.color) ? project.color : randomColor(),
+          x: clamp(x, 0, WORLD_MAX),
+          y: clamp(y, 0, WORLD_MAX),
+          z: clamp(z, -220, 260),
+          tags: parseTags(project.tags),
+          priority,
+          level,
+          dueDate: project.dueDate || "",
+          progress,
+          tasks: normalizeTasks(project.tasks),
+          archived: Boolean(project.archived)
+        };
+      }
+
+      function getProjectImages(project) {
+        if (!project) return [];
+        if (Array.isArray(project.images)) return project.images.filter(Boolean).map(String);
+        return project.image ? [String(project.image)] : [];
+      }
+
+      function parseTags(value) {
+        const raw = Array.isArray(value) ? value.join(",") : String(value || "");
+        return [...new Set(raw
+          .split(/[,\n#]+/)
+          .map((tag) => tag.trim())
+          .filter(Boolean))]
+          .slice(0, 14);
+      }
+
+      function normalizeTasks(tasks) {
+        if (Array.isArray(tasks)) {
+          return tasks
+            .map((task) => ({
+              id: task.id || uid("task"),
+              text: normalizeText(task.text),
+              done: Boolean(task.done)
+            }))
+            .filter((task) => task.text)
+            .slice(0, 40);
+        }
+
+        return String(tasks || "")
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => {
+            const done = /^\[[xх]\]\s*/i.test(line);
+            return {
+              id: uid("task"),
+              text: line.replace(/^\[[ xх]\]\s*/i, ""),
+              done
+            };
+          })
+          .slice(0, 40);
+      }
+
+      function tasksToText(tasks) {
+        return normalizeTasks(tasks)
+          .map((task) => `${task.done ? "[x] " : ""}${task.text}`)
+          .join("\n");
+      }
+
+      function normalizeLink(link) {
+        if (!link || !link.from || !link.to || link.from === link.to) return null;
+        return {
+          id: link.id || uid("link"),
+          from: link.from,
+          to: link.to,
+          type: LINK_TYPES.some((item) => item.value === link.type) ? link.type : "depends",
+          note: String(link.note || "")
+        };
+      }
+
+      function normalizeView(view = {}) {
+        return {
+          panX: Number.isFinite(Number(view.panX)) ? Number(view.panX) : 0,
+          panY: Number.isFinite(Number(view.panY)) ? Number(view.panY) : 0,
+          zoom: clamp(Number(view.zoom) || 1, MIN_ZOOM, MAX_ZOOM)
+        };
+      }
+
+      function normalizeSettings(settings = {}) {
+        return {
+          orbitMode: Boolean(settings.orbitMode),
+          soundEnabled: Boolean(settings.soundEnabled)
+        };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          return true;
+        } catch (error) {
+          console.error("Не вдалося зберегти дані:", error);
+          showToast("Не вдалося зберегти: localStorage переповнений. Спробуйте менше зображення.");
+          return false;
+        }
+      }
+
+      function scheduleViewportSave() {
+        window.clearTimeout(ui.viewSaveTimer);
+        ui.viewSaveTimer = window.setTimeout(saveState, 220);
+      }
+
+      function applyViewport() {
+        state.view = normalizeView(state.view);
+        els.mapWorld.style.transform = `translate3d(${state.view.panX}px, ${state.view.panY}px, 0) scale(${state.view.zoom})`;
+        els.spaceMap.style.setProperty("--zoom", state.view.zoom.toFixed(2));
+      }
+
+      function randomBetween(min, max) {
+        return Math.round((min + Math.random() * (max - min)) * 10) / 10;
+      }
+
+      function randomColor() {
+        return DEFAULT_COLORS[Math.floor(Math.random() * DEFAULT_COLORS.length)];
+      }
+
+      function persistAndRender(message) {
+        if (saveState() && message) showToast(message);
+        render();
+      }
+
+      function fillStatusSelects() {
+        const modalOptions = STATUS_OPTIONS
+          .map((item) => `<option value="${item.value}">${item.label}</option>`)
+          .join("");
+        const filterOptions = `<option value="">Усі статуси</option>${modalOptions}`;
+        els.projectStatus.innerHTML = modalOptions;
+        els.statusFilter.innerHTML = filterOptions;
+        els.projectPriority.innerHTML = PRIORITY_OPTIONS
+          .map((item) => `<option value="${item.value}">${item.label}</option>`)
+          .join("");
+        els.projectLevel.innerHTML = LEVEL_OPTIONS
+          .map((item) => `<option value="${item.value}">${item.label}</option>`)
+          .join("");
+      }
+
+      function getFilteredProjects() {
+        const query = els.searchInput.value.trim().toLowerCase();
+        const status = els.statusFilter.value;
+        const category = els.categoryFilter.value;
+
+        return state.projects.filter((project) => {
+          if (project.archived) return false;
+          const text = `${project.title} ${project.description} ${project.tags.join(" ")}`.toLowerCase();
+          const matchesQuery = !query || text.includes(query);
+          const matchesStatus = !status || project.status === status;
+          const matchesCategory = !category || project.category === category;
+          return matchesQuery && matchesStatus && matchesCategory;
+        });
+      }
+
+      function render() {
+        const visibleProjects = getFilteredProjects();
+        const visibleIds = new Set(visibleProjects.map((project) => project.id));
+        applyViewport();
+        renderCategoryFilter();
+        renderStats(visibleProjects.length);
+        renderStars(visibleIds);
+        renderLinks(visibleIds);
+        renderMode();
+        renderDetails();
+        renderMinimap(visibleIds);
+        renderToolButtons();
+        els.emptyState.classList.toggle("hidden", state.projects.some((project) => !project.archived));
+      }
+
+      function renderCategoryFilter() {
+        const current = els.categoryFilter.value;
+        const categories = [...new Set(state.projects.filter((project) => !project.archived).map((project) => project.category).filter(Boolean))]
+          .sort((a, b) => a.localeCompare(b, "uk"));
+
+        els.categoryFilter.innerHTML = `<option value="">Усі категорії</option>${categories
+          .map((category) => `<option value="${escapeHTML(category)}">${escapeHTML(category)}</option>`)
+          .join("")}`;
+
+        if (categories.includes(current)) {
+          els.categoryFilter.value = current;
+        }
+      }
+
+      function renderStats(visibleCount) {
+        els.projectCount.textContent = state.projects.filter((project) => !project.archived).length;
+        els.visibleCount.textContent = visibleCount;
+        els.linkCount.textContent = state.links.filter((link) => {
+          const from = state.projects.find((project) => project.id === link.from && !project.archived);
+          const to = state.projects.find((project) => project.id === link.to && !project.archived);
+          return from && to;
+        }).length;
+      }
+
+      function getNeighborIds(projectId) {
+        const ids = new Set([projectId]);
+        state.links.forEach((link) => {
+          if (link.from === projectId) ids.add(link.to);
+          if (link.to === projectId) ids.add(link.from);
+        });
+        return ids;
+      }
+
+      function isFocusDimmed(projectId) {
+        if (!ui.selectedProjectId || projectId === ui.selectedProjectId) return false;
+        return !getNeighborIds(ui.selectedProjectId).has(projectId);
+      }
+
+      function getDeadlineState(project) {
+        if (!project.dueDate || project.status === "done") return "";
+        const due = new Date(`${project.dueDate}T23:59:59`);
+        if (Number.isNaN(due.getTime())) return "";
+        const daysLeft = Math.ceil((due.getTime() - Date.now()) / 86400000);
+        if (daysLeft < 0) return "overdue";
+        if (daysLeft <= 3) return "deadline-soon";
+        return "";
+      }
+
+      function renderStars(visibleIds) {
+        const fragment = document.createDocumentFragment();
+
+        state.projects.forEach((project) => {
+          if (project.archived) return;
+          const star = document.createElement("button");
+          star.type = "button";
+          star.className = "star-node";
+          star.classList.add(`priority-${project.priority}`);
+          star.classList.add(`level-${project.level}`);
+          star.dataset.projectId = project.id;
+          star.style.setProperty("--x", `${coordToPercent(project.x)}%`);
+          star.style.setProperty("--y", `${coordToPercent(project.y)}%`);
+          star.style.setProperty("--star-color", project.color);
+          star.style.setProperty("--depth", `${project.z}px`);
+          star.style.setProperty("--z-scale", `${1 + project.z / 700}`);
+          star.style.setProperty("--progress", `${project.progress * 3.6}deg`);
+          star.setAttribute("aria-label", `Відкрити проєкт ${project.title}`);
+
+          if (!visibleIds.has(project.id)) star.classList.add("hidden-by-filter");
+          const deadlineState = getDeadlineState(project);
+          if (deadlineState) star.classList.add(deadlineState);
+          if (isFocusDimmed(project.id)) star.classList.add("focus-dim");
+          if (ui.pathProjectIds.has(project.id)) star.classList.add("path-node");
+          if (ui.selectedProjectId === project.id) star.classList.add("selected");
+          if (ui.connectingFrom === project.id) star.classList.add("connect-source");
+
+          const orb = document.createElement("span");
+          orb.className = "star-orb";
+          const ring = document.createElement("span");
+          ring.className = "star-progress-ring";
+          const core = document.createElement("span");
+          core.className = "star-core";
+          core.setAttribute("aria-hidden", "true");
+          orb.append(ring, core);
+
+          const label = document.createElement("span");
+          label.className = "star-label";
+          label.textContent = project.title;
+
+          star.addEventListener("pointerdown", handleStarPointerDown);
+          star.addEventListener("click", handleStarClick);
+
+          star.append(orb, label);
+          fragment.append(star);
+        });
+
+        els.starsLayer.replaceChildren(fragment);
+      }
+
+      function renderLinks(visibleIds) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const fragment = document.createDocumentFragment();
+
+        state.links.forEach((link) => {
+          const from = state.projects.find((project) => project.id === link.from);
+          const to = state.projects.find((project) => project.id === link.to);
+          if (!from || !to || from.archived || to.archived || !visibleIds.has(from.id) || !visibleIds.has(to.id)) return;
+
+          const group = document.createElementNS(svgNS, "g");
+          group.classList.add("link-group");
+          group.classList.add(`type-${link.type}`);
+          if (ui.selectedProjectId && !getNeighborIds(ui.selectedProjectId).has(from.id) && !getNeighborIds(ui.selectedProjectId).has(to.id)) {
+            group.classList.add("focus-dim");
+          }
+          if (ui.pathLinkIds.has(link.id)) group.classList.add("path-link");
+          if (ui.selectedLinkId === link.id) group.classList.add("selected");
+          group.dataset.linkId = link.id;
+
+          const hit = document.createElementNS(svgNS, "line");
+          hit.classList.add("link-hit");
+          applyLinePoints(hit, from, to);
+
+          const visible = document.createElementNS(svgNS, "line");
+          visible.classList.add("link-visible");
+          applyLinePoints(visible, from, to);
+
+          group.append(hit, visible);
+          fragment.append(group);
+        });
+
+        els.linksSvg.replaceChildren(fragment);
+      }
+
+      function renderMinimap(visibleIds) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const fragment = document.createDocumentFragment();
+
+        state.links.forEach((link) => {
+          const from = state.projects.find((project) => project.id === link.from && !project.archived);
+          const to = state.projects.find((project) => project.id === link.to && !project.archived);
+          if (!from || !to || !visibleIds.has(from.id) || !visibleIds.has(to.id)) return;
+
+          const line = document.createElementNS(svgNS, "line");
+          line.classList.add("minimap-link");
+          line.setAttribute("x1", coordToPercent(from.x));
+          line.setAttribute("y1", coordToPercent(from.y));
+          line.setAttribute("x2", coordToPercent(to.x));
+          line.setAttribute("y2", coordToPercent(to.y));
+          fragment.append(line);
+        });
+
+        state.projects.forEach((project) => {
+          if (project.archived || !visibleIds.has(project.id)) return;
+          const dot = document.createElementNS(svgNS, "circle");
+          dot.classList.add("minimap-star");
+          dot.style.setProperty("--mini-color", project.color);
+          dot.setAttribute("cx", coordToPercent(project.x));
+          dot.setAttribute("cy", coordToPercent(project.y));
+          dot.setAttribute("r", project.id === ui.selectedProjectId ? "2.4" : "1.55");
+          fragment.append(dot);
+        });
+
+        const rect = els.spaceMap.getBoundingClientRect();
+        const view = normalizeView(state.view);
+        if (rect.width && rect.height) {
+          const viewport = document.createElementNS(svgNS, "rect");
+          viewport.classList.add("minimap-view");
+          viewport.setAttribute("x", clamp((-view.panX / view.zoom / rect.width) * 100, 0, 100));
+          viewport.setAttribute("y", clamp((-view.panY / view.zoom / rect.height) * 100, 0, 100));
+          viewport.setAttribute("width", clamp((1 / view.zoom) * 100, 4, 100));
+          viewport.setAttribute("height", clamp((1 / view.zoom) * 100, 4, 100));
+          fragment.append(viewport);
+        }
+
+        els.minimapSvg.replaceChildren(fragment);
+      }
+
+      function renderToolButtons() {
+        els.orbitModeBtn.classList.toggle("active", state.settings.orbitMode);
+        els.orbitModeBtn.textContent = state.settings.orbitMode ? "Орбіти on" : "Орбіти";
+        els.pathModeBtn.classList.toggle("active", ui.pathMode);
+        els.pathModeBtn.textContent = ui.pathMode ? (ui.pathStartId ? "Оберіть фініш" : "Оберіть старт") : "Шлях";
+        els.presentationBtn.classList.toggle("active", Boolean(ui.presentationTimer));
+        els.soundToggleBtn.classList.toggle("active", state.settings.soundEnabled);
+        els.soundToggleBtn.textContent = state.settings.soundEnabled ? "Звук on" : "Звук";
+        const archivedCount = state.projects.filter((project) => project.archived).length;
+        els.archiveBtn.textContent = archivedCount ? `Архів ${archivedCount}` : "Архів";
+        els.clearFocusBtn.hidden = !ui.selectedProjectId;
+      }
+
+      function applyLinePoints(line, from, to) {
+        line.setAttribute("x1", `${coordToPercent(from.x)}%`);
+        line.setAttribute("y1", `${coordToPercent(from.y)}%`);
+        line.setAttribute("x2", `${coordToPercent(to.x)}%`);
+        line.setAttribute("y2", `${coordToPercent(to.y)}%`);
+      }
+
+      function coordToPercent(value) {
+        return (clamp(value, 0, WORLD_MAX) / WORLD_MAX) * 100;
+      }
+
+      function percentToCoord(value) {
+        return clamp((value / 100) * WORLD_MAX, 0, WORLD_MAX);
+      }
+
+      function renderMode() {
+        const source = state.projects.find((project) => project.id === ui.connectingFrom);
+        els.connectMode.classList.toggle("active", Boolean(source));
+        els.cancelConnectBtn.disabled = !source;
+
+        if (source) {
+          els.connectModeText.textContent = `Режим зв’язку: натисніть іншу зірку, щоб з’єднати її з "${source.title}".`;
+        }
+
+        els.deleteSelectedLinkBtn.hidden = !ui.selectedLinkId;
+      }
+
+      function renderDetails() {
+        const selectedLink = state.links.find((link) => link.id === ui.selectedLinkId);
+        const selectedProject = state.projects.find((project) => project.id === ui.selectedProjectId);
+
+        if (selectedLink) {
+          const from = state.projects.find((project) => project.id === selectedLink.from);
+          const to = state.projects.find((project) => project.id === selectedLink.to);
+          els.detailsPanel.classList.remove("hidden");
+          els.detailsPanel.innerHTML = `
+            <div class="details-body">
+              <div>
+                <p class="meta">Вибраний зв’язок</p>
+                <h2>${escapeHTML(from?.title || "Проєкт")} → ${escapeHTML(to?.title || "Проєкт")}</h2>
+              </div>
+              <div class="details-field">
+                <label for="linkTypeSelect">Тип зв’язку</label>
+                <select id="linkTypeSelect" data-action="change-link-type">
+                  ${LINK_TYPES.map((type) => `<option value="${type.value}" ${selectedLink.type === type.value ? "selected" : ""}>${type.label}</option>`).join("")}
+                </select>
+              </div>
+              <div class="details-field">
+                <label for="linkNoteInput">Коментар</label>
+                <input id="linkNoteInput" data-action="change-link-note" type="text" maxlength="180" value="${escapeHTML(selectedLink.note)}" placeholder="Чому ці зірки з’єднані?">
+              </div>
+              <p class="project-description">Ця лінія показує залежність або логічний зв’язок між двома проєктами.</p>
+              <div class="inline-actions">
+                <button class="btn danger" type="button" data-action="delete-link">Видалити зв’язок</button>
+                <button class="btn ghost" type="button" data-action="clear-selection">Закрити</button>
+              </div>
+            </div>
+          `;
+          els.selectionHint.textContent = "Вибрано зв’язок. Його можна видалити кнопкою нижче.";
+          return;
+        }
+
+        if (!selectedProject) {
+          els.detailsPanel.classList.add("hidden");
+          els.detailsPanel.innerHTML = "";
+          els.selectionHint.textContent = "Клік по зірці відкриває картку. Перетягування змінює позицію.";
+          return;
+        }
+
+        const connectionCount = state.links.filter((link) => link.from === selectedProject.id || link.to === selectedProject.id).length;
+        const images = getProjectImages(selectedProject);
+        const imageHTML = images
+          .slice(0, 6)
+          .map((src, index) => `<img src="${src}" alt="Фото ${index + 1} проєкту ${escapeHTML(selectedProject.title)}">`)
+          .join("");
+        const tagsHTML = selectedProject.tags
+          .map((tag) => `<span class="chip">#${escapeHTML(tag)}</span>`)
+          .join("");
+        const tasksHTML = selectedProject.tasks.length
+          ? selectedProject.tasks.map((task) => `
+              <label class="task-item ${task.done ? "done" : ""}">
+                <input type="checkbox" data-action="toggle-task" data-task-id="${task.id}" ${task.done ? "checked" : ""}>
+                <span>${escapeHTML(task.text)}</span>
+                <button class="btn ghost" type="button" data-action="delete-task" data-task-id="${task.id}">×</button>
+              </label>
+            `).join("")
+          : `<p class="meta">Задач ще немає.</p>`;
+
+        els.detailsPanel.classList.remove("hidden");
+        els.detailsPanel.innerHTML = `
+          <div class="details-media ${images.length > 1 ? "gallery" : ""}">${imageHTML}</div>
+          <div class="details-body">
+            <div>
+              <p class="meta">${escapeHTML(formatDate(selectedProject.createdAt))}</p>
+              <h2>${escapeHTML(selectedProject.title)}</h2>
+            </div>
+
+            <div class="chips">
+              <span class="chip">${escapeHTML(statusLabel(selectedProject.status))}</span>
+              <span class="chip">${escapeHTML(selectedProject.category)}</span>
+              <span class="chip">${connectionCount} зв’язків</span>
+              <span class="chip">${escapeHTML(priorityLabel(selectedProject.priority))}</span>
+              <span class="chip">${escapeHTML(levelLabel(selectedProject.level))}</span>
+              <span class="chip">${selectedProject.progress}%</span>
+              ${selectedProject.dueDate ? `<span class="chip">Дедлайн: ${escapeHTML(formatDate(selectedProject.dueDate))}</span>` : ""}
+              <span class="chip">X ${Math.round(selectedProject.x)} / Y ${Math.round(selectedProject.y)} / Z ${Math.round(selectedProject.z)}</span>
+              ${tagsHTML}
+            </div>
+
+            <p class="project-description">${escapeHTML(selectedProject.description || "Опис ще не додано.")}</p>
+
+            <div class="detail-grid">
+              <div class="details-field">
+                <label for="detailX">X</label>
+                <input id="detailX" data-coordinate="x" type="number" min="0" max="10000" step="1" value="${Math.round(selectedProject.x)}">
+              </div>
+              <div class="details-field">
+                <label for="detailY">Y</label>
+                <input id="detailY" data-coordinate="y" type="number" min="0" max="10000" step="1" value="${Math.round(selectedProject.y)}">
+              </div>
+              <div class="details-field">
+                <label for="detailZ">Z</label>
+                <input id="detailZ" data-coordinate="z" type="number" min="-220" max="260" step="1" value="${Math.round(selectedProject.z)}">
+              </div>
+            </div>
+
+            <div class="task-list">
+              <h3>Задачі</h3>
+              ${tasksHTML}
+              <div class="task-add">
+                <input id="quickTaskInput" type="text" placeholder="Нова задача...">
+                <button class="btn ghost" type="button" data-action="add-task">Додати</button>
+              </div>
+            </div>
+
+            <div class="inline-actions">
+              <button class="btn primary" type="button" data-action="connect-project">З’єднати</button>
+              <button class="btn ghost" type="button" data-action="edit-project">Редагувати</button>
+            </div>
+            <button class="btn ghost" type="button" data-action="clear-selection">Закрити картку</button>
+            <button class="btn danger" type="button" data-action="delete-project">В архів</button>
+          </div>
+        `;
+        els.selectionHint.textContent = `Вибрано "${selectedProject.title}". Можна редагувати або почати зв’язок.`;
+      }
+
+      function showToast(message) {
+        window.clearTimeout(ui.toastTimer);
+        els.toast.textContent = message;
+        els.toast.classList.add("show");
+        ui.toastTimer = window.setTimeout(() => els.toast.classList.remove("show"), 2600);
+      }
+
+      function openProjectModal(projectId = null) {
+        const project = state.projects.find((item) => item.id === projectId);
+        ui.editingProjectId = project?.id || null;
+        ui.draftImages = getProjectImages(project);
+
+        els.modalTitle.textContent = project ? "Редагувати проєкт" : "Новий проєкт";
+        els.projectTitle.value = project?.title || "";
+        els.projectDescription.value = project?.description || "";
+        els.projectDate.value = project?.createdAt || todayISO();
+        els.projectStatus.value = project?.status || "planned";
+        els.projectCategory.value = project?.category === "Без категорії" ? "" : (project?.category || "");
+        els.projectColor.value = project?.color || randomColor();
+        els.projectTags.value = project?.tags?.join(", ") || "";
+        els.projectDueDate.value = project?.dueDate || "";
+        els.projectProgress.value = project?.progress ?? 0;
+        els.projectPriority.value = project?.priority || "medium";
+        els.projectLevel.value = project?.level || "main";
+        els.projectTasks.value = tasksToText(project?.tasks || []);
+        els.projectX.value = project ? Math.round(project.x) : (ui.newProjectPosition?.x ?? Math.round(WORLD_MAX / 2));
+        els.projectY.value = project ? Math.round(project.y) : (ui.newProjectPosition?.y ?? Math.round(WORLD_MAX / 2));
+        els.projectZ.value = project ? Math.round(project.z) : (ui.newProjectPosition?.z ?? 0);
+        els.projectImage.value = "";
+        els.deleteProjectBtn.hidden = !project;
+        updateImagePreview();
+
+        els.projectModal.classList.remove("hidden");
+        window.setTimeout(() => els.projectTitle.focus(), 0);
+      }
+
+      function closeProjectModal() {
+        els.projectModal.classList.add("hidden");
+        ui.editingProjectId = null;
+        ui.newProjectPosition = null;
+        ui.draftImages = [];
+        els.projectForm.reset();
+      }
+
+      function updateImagePreview() {
+        if (!ui.draftImages.length) {
+          els.imagePreview.classList.remove("has-images");
+          els.imagePreview.innerHTML = "<span>Фото проєкту</span>";
+          return;
+        }
+
+        els.imagePreview.classList.add("has-images");
+        const fragment = document.createDocumentFragment();
+
+        ui.draftImages.forEach((src, index) => {
+          const thumb = document.createElement("div");
+          thumb.className = "image-thumb";
+
+          const image = document.createElement("img");
+          image.src = src;
+          image.alt = `Фото ${index + 1}`;
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.dataset.removeImage = String(index);
+          removeButton.setAttribute("aria-label", "Прибрати це фото");
+          removeButton.textContent = "×";
+
+          thumb.append(image, removeButton);
+          fragment.append(thumb);
+        });
+
+        els.imagePreview.replaceChildren(fragment);
+      }
+
+      async function readImageAsDataURL(file) {
+        const rawData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+
+        return compressImage(rawData);
+      }
+
+      // Стискаємо фото, щоб дані стабільніше поміщались у localStorage.
+      function compressImage(dataURL) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxSize = 760;
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL("image/jpeg", 0.78));
+          };
+          img.onerror = () => resolve(dataURL);
+          img.src = dataURL;
+        });
+      }
+
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const title = normalizeText(els.projectTitle.value);
+        if (!title) {
+          showToast("Вкажіть назву проєкту.");
+          els.projectTitle.focus();
+          return;
+        }
+
+        const existing = state.projects.find((project) => project.id === ui.editingProjectId);
+        const x = clamp(Number(els.projectX.value), 0, WORLD_MAX);
+        const y = clamp(Number(els.projectY.value), 0, WORLD_MAX);
+        const z = clamp(Number(els.projectZ.value), -220, 260);
+        const payload = {
+          title,
+          description: els.projectDescription.value.trim(),
+          images: ui.draftImages.slice(0, 8),
+          image: ui.draftImages[0] || "",
+          createdAt: els.projectDate.value || todayISO(),
+          status: els.projectStatus.value,
+          category: normalizeText(els.projectCategory.value) || "Без категорії",
+          color: els.projectColor.value || randomColor(),
+          tags: parseTags(els.projectTags.value),
+          dueDate: els.projectDueDate.value || "",
+          progress: clamp(Number(els.projectProgress.value) || 0, 0, 100),
+          priority: els.projectPriority.value || "medium",
+          level: els.projectLevel.value || "main",
+          tasks: normalizeTasks(els.projectTasks.value),
+          coordVersion: 2,
+          x,
+          y,
+          z
+        };
+
+        if (existing) {
+          Object.assign(existing, payload);
+          ui.selectedProjectId = existing.id;
+          ui.selectedLinkId = null;
+          closeProjectModal();
+          persistAndRender("Проєкт оновлено.");
+          return;
+        }
+
+        const project = normalizeProject({
+          id: uid("project"),
+          ...payload
+        });
+
+        state.projects.push(project);
+        ui.selectedProjectId = project.id;
+        ui.selectedLinkId = null;
+        closeProjectModal();
+        persistAndRender("Нову зірку створено.");
+      }
+
+      function deleteProject(projectId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        if (!project) return;
+        const confirmed = window.confirm(`Перемістити проєкт "${project.title}" в архів? Зв’язки залишаться, але проєкт зникне з карти.`);
+        if (!confirmed) return;
+
+        project.archived = true;
+
+        if (ui.selectedProjectId === projectId) ui.selectedProjectId = null;
+        if (ui.connectingFrom === projectId) ui.connectingFrom = null;
+        closeProjectModal();
+        persistAndRender("Проєкт переміщено в архів.");
+      }
+
+      function startConnection(projectId) {
+        ui.connectingFrom = projectId;
+        ui.selectedProjectId = projectId;
+        ui.selectedLinkId = null;
+        render();
+        showToast("Оберіть другу зірку для створення зв’язку.");
+      }
+
+      function completeConnection(targetId) {
+        const from = ui.connectingFrom;
+        if (!from || !targetId) return;
+
+        if (from === targetId) {
+          ui.connectingFrom = null;
+          render();
+          showToast("Зірку не можна з’єднати саму з собою.");
+          return;
+        }
+
+        const duplicate = state.links.some((link) => {
+          return (link.from === from && link.to === targetId) || (link.from === targetId && link.to === from);
+        });
+
+        if (duplicate) {
+          ui.connectingFrom = null;
+          render();
+          showToast("Такий зв’язок уже існує.");
+          return;
+        }
+
+        const link = { id: uid("link"), from, to: targetId, type: "depends" };
+        state.links.push(link);
+        ui.connectingFrom = null;
+        ui.selectedProjectId = null;
+        ui.selectedLinkId = link.id;
+        persistAndRender("Зв’язок створено.");
+      }
+
+      function deleteLink(linkId) {
+        const linkExists = state.links.some((link) => link.id === linkId);
+        if (!linkExists) return;
+        state.links = state.links.filter((link) => link.id !== linkId);
+        if (ui.selectedLinkId === linkId) ui.selectedLinkId = null;
+        persistAndRender("Зв’язок видалено.");
+      }
+
+      function clearSelection() {
+        ui.selectedProjectId = null;
+        ui.selectedLinkId = null;
+        render();
+      }
+
+      function selectProject(projectId, shouldFly = true) {
+        if (ui.pathMode) {
+          handlePathPick(projectId);
+          return;
+        }
+        ui.selectedProjectId = projectId;
+        ui.selectedLinkId = null;
+        if (shouldFly) flyToProject(projectId);
+        playTone(560, 0.04);
+        render();
+      }
+
+      function selectLink(linkId) {
+        ui.selectedLinkId = linkId;
+        ui.selectedProjectId = null;
+        ui.connectingFrom = null;
+        render();
+      }
+
+      function togglePathMode() {
+        ui.pathMode = !ui.pathMode;
+        ui.pathStartId = null;
+        ui.pathProjectIds = new Set();
+        ui.pathLinkIds = new Set();
+        render();
+        showToast(ui.pathMode ? "Режим шляху: виберіть першу зірку." : "Режим шляху вимкнено.");
+      }
+
+      function handlePathPick(projectId) {
+        if (!ui.pathStartId) {
+          ui.pathStartId = projectId;
+          ui.pathProjectIds = new Set([projectId]);
+          ui.pathLinkIds = new Set();
+          render();
+          showToast("Тепер виберіть другу зірку для пошуку шляху.");
+          return;
+        }
+
+        if (ui.pathStartId === projectId) {
+          showToast("Оберіть іншу зірку як фініш.");
+          return;
+        }
+
+        const path = findProjectPath(ui.pathStartId, projectId);
+        if (!path) {
+          ui.pathProjectIds = new Set([ui.pathStartId, projectId]);
+          ui.pathLinkIds = new Set();
+          render();
+          showToast("Шлях між цими зірками не знайдено.");
+          return;
+        }
+
+        ui.pathProjectIds = new Set(path.projectIds);
+        ui.pathLinkIds = new Set(path.linkIds);
+        ui.selectedProjectId = projectId;
+        flyToProject(projectId, 1.45);
+        render();
+        showToast(`Шлях знайдено: ${path.projectIds.length} зірок.`);
+      }
+
+      function findProjectPath(startId, endId) {
+        const queue = [{ id: startId, projectIds: [startId], linkIds: [] }];
+        const visited = new Set([startId]);
+
+        while (queue.length) {
+          const current = queue.shift();
+          if (current.id === endId) return current;
+
+          state.links.forEach((link) => {
+            const next = link.from === current.id ? link.to : link.to === current.id ? link.from : null;
+            const nextProject = state.projects.find((project) => project.id === next && !project.archived);
+            if (!next || !nextProject || visited.has(next)) return;
+            visited.add(next);
+            queue.push({
+              id: next,
+              projectIds: [...current.projectIds, next],
+              linkIds: [...current.linkIds, link.id]
+            });
+          });
+        }
+
+        return null;
+      }
+
+      function handleStarPointerDown(event) {
+        const star = event.currentTarget?.classList?.contains("star-node")
+          ? event.currentTarget
+          : event.target.closest(".star-node");
+        if (!star || event.button !== 0 || ui.connectingFrom) return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        const project = state.projects.find((item) => item.id === star.dataset.projectId);
+        if (!project) return;
+
+        ui.dragging = {
+          id: project.id,
+          pointerId: event.pointerId,
+          startClientX: event.clientX,
+          startClientY: event.clientY,
+          moved: false
+        };
+
+        ui.selectedProjectId = project.id;
+        ui.selectedLinkId = null;
+        star.setPointerCapture?.(event.pointerId);
+      }
+
+      function handleMapPointerDown(event) {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        if (event.target.closest(".star-node, .details, .minimap, .map-tools, button, input, textarea, select, [data-link-id]")) return;
+
+        ui.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+        els.spaceMap.setPointerCapture?.(event.pointerId);
+
+        if (ui.activePointers.size >= 2) {
+          beginPinch();
+        } else {
+          ui.panning = {
+            pointerId: event.pointerId,
+            startClientX: event.clientX,
+            startClientY: event.clientY,
+            startPanX: state.view.panX,
+            startPanY: state.view.panY,
+            moved: false
+          };
+          els.spaceMap.classList.add("is-panning");
+        }
+
+        event.preventDefault();
+      }
+
+      function getActivePointerList() {
+        return Array.from(ui.activePointers.values());
+      }
+
+      function getPointerDistance(points) {
+        return Math.hypot(points[0].clientX - points[1].clientX, points[0].clientY - points[1].clientY);
+      }
+
+      function getPointerCenter(points) {
+        return {
+          x: (points[0].clientX + points[1].clientX) / 2,
+          y: (points[0].clientY + points[1].clientY) / 2
+        };
+      }
+
+      function beginPinch() {
+        const points = getActivePointerList();
+        if (points.length < 2) return;
+
+        const center = getPointerCenter(points);
+        const world = screenToWorldPoint(center.x, center.y);
+        ui.pinch = {
+          startDistance: Math.max(1, getPointerDistance(points)),
+          startZoom: state.view.zoom,
+          worldX: world.x,
+          worldY: world.y
+        };
+        ui.panning = null;
+        els.spaceMap.classList.add("is-panning");
+      }
+
+      function handleMapWheel(event) {
+        event.preventDefault();
+        const zoomFactor = Math.exp(-event.deltaY * 0.0011);
+        zoomAt(event.clientX, event.clientY, state.view.zoom * zoomFactor);
+      }
+
+      function handleMapDoubleClick(event) {
+        if (event.target.closest(".star-node, .details, .minimap, .map-tools, button, input, textarea, select, [data-link-id]")) return;
+        const point = screenToWorldPercent(event.clientX, event.clientY);
+        ui.newProjectPosition = { x: Math.round(point.x), y: Math.round(point.y), z: 0 };
+        openProjectModal();
+      }
+
+      function handlePointerMove(event) {
+        if (ui.activePointers.has(event.pointerId)) {
+          ui.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+
+          if (ui.pinch && ui.activePointers.size >= 2) {
+            const points = getActivePointerList();
+            const center = getPointerCenter(points);
+            const rect = els.spaceMap.getBoundingClientRect();
+            const zoom = clamp(ui.pinch.startZoom * (getPointerDistance(points) / ui.pinch.startDistance), MIN_ZOOM, MAX_ZOOM);
+
+            state.view.zoom = zoom;
+            state.view.panX = center.x - rect.left - ui.pinch.worldX * zoom;
+            state.view.panY = center.y - rect.top - ui.pinch.worldY * zoom;
+            ui.suppressNextClick = true;
+            applyViewport();
+            scheduleViewportSave();
+            return;
+          }
+
+          if (ui.panning && ui.panning.pointerId === event.pointerId) {
+            const dx = event.clientX - ui.panning.startClientX;
+            const dy = event.clientY - ui.panning.startClientY;
+            if (Math.hypot(dx, dy) > 3) {
+              ui.panning.moved = true;
+              ui.suppressNextClick = true;
+            }
+
+            state.view.panX = ui.panning.startPanX + dx;
+            state.view.panY = ui.panning.startPanY + dy;
+            applyViewport();
+            scheduleViewportSave();
+            return;
+          }
+        }
+
+        if (!ui.dragging) return;
+
+        const project = state.projects.find((item) => item.id === ui.dragging.id);
+        if (!project) return;
+
+        const distance = Math.hypot(event.clientX - ui.dragging.startClientX, event.clientY - ui.dragging.startClientY);
+        if (distance > 3) {
+          ui.dragging.moved = true;
+          ui.suppressNextClick = true;
+        }
+
+        const point = screenToWorldPercent(event.clientX, event.clientY);
+        project.x = point.x;
+        project.y = point.y;
+        event.preventDefault();
+
+        const star = Array.from(els.starsLayer.querySelectorAll(".star-node"))
+          .find((node) => node.dataset.projectId === project.id);
+        if (star) {
+          star.style.setProperty("--x", `${coordToPercent(project.x)}%`);
+          star.style.setProperty("--y", `${coordToPercent(project.y)}%`);
+        }
+        renderLinks(new Set(getFilteredProjects().map((item) => item.id)));
+      }
+
+      function handlePointerUp(event) {
+        if (ui.dragging) {
+          const moved = ui.dragging.moved;
+          ui.dragging = null;
+
+          if (moved) {
+            saveState();
+            render();
+            showToast("Позицію зірки збережено.");
+            window.setTimeout(() => {
+              ui.suppressNextClick = false;
+            }, 0);
+          }
+          return;
+        }
+
+        if (!ui.activePointers.has(event.pointerId)) return;
+
+        const wasPanning = ui.panning?.moved;
+        ui.activePointers.delete(event.pointerId);
+
+        if (ui.pinch && ui.activePointers.size < 2) {
+          ui.pinch = null;
+          const remaining = getActivePointerList()[0];
+          if (remaining) {
+            ui.panning = {
+              pointerId: ui.activePointers.keys().next().value,
+              startClientX: remaining.clientX,
+              startClientY: remaining.clientY,
+              startPanX: state.view.panX,
+              startPanY: state.view.panY,
+              moved: true
+            };
+          }
+        }
+
+        if (ui.panning?.pointerId === event.pointerId) {
+          ui.panning = null;
+        }
+
+        if (ui.activePointers.size === 0) {
+          ui.panning = null;
+          ui.pinch = null;
+          els.spaceMap.classList.remove("is-panning");
+        }
+
+        if (wasPanning) {
+          saveState();
+          window.setTimeout(() => {
+            ui.suppressNextClick = false;
+          }, 0);
+        }
+      }
+
+      function handleStarClick(event) {
+        const star = event.currentTarget?.classList?.contains("star-node")
+          ? event.currentTarget
+          : event.target.closest(".star-node");
+        if (!star) return;
+        event.stopPropagation();
+
+        if (ui.suppressNextClick) {
+          ui.suppressNextClick = false;
+          return;
+        }
+
+        const projectId = star.dataset.projectId;
+        if (ui.connectingFrom) {
+          completeConnection(projectId);
+          return;
+        }
+
+        selectProject(projectId);
+      }
+
+      function findNearestProjectAt(clientX, clientY, maxDistance = 42) {
+        const rect = els.spaceMap.getBoundingClientRect();
+        const view = normalizeView(state.view);
+        const visibleIds = new Set(getFilteredProjects().map((project) => project.id));
+        let nearest = null;
+        let bestDistance = maxDistance;
+
+        state.projects.forEach((project) => {
+          if (project.archived || !visibleIds.has(project.id)) return;
+          const screenX = rect.left + view.panX + (project.x / WORLD_MAX) * rect.width * view.zoom;
+          const screenY = rect.top + view.panY + (project.y / WORLD_MAX) * rect.height * view.zoom;
+          const distance = Math.hypot(clientX - screenX, clientY - screenY);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            nearest = project;
+          }
+        });
+
+        return nearest;
+      }
+
+      function resetFilters() {
+        els.searchInput.value = "";
+        els.statusFilter.value = "";
+        els.categoryFilter.value = "";
+        render();
+      }
+
+      function handleSearchInput() {
+        render();
+        window.clearTimeout(ui.searchTimer);
+        const query = els.searchInput.value.trim();
+        if (!query) return;
+
+        ui.searchTimer = window.setTimeout(() => {
+          const firstMatch = getFilteredProjects()[0];
+          if (!firstMatch) return;
+          ui.selectedProjectId = firstMatch.id;
+          ui.selectedLinkId = null;
+          flyToProject(firstMatch.id, 1.55);
+          render();
+        }, 240);
+      }
+
+      function screenToWorldPoint(clientX, clientY) {
+        const rect = els.spaceMap.getBoundingClientRect();
+        const view = normalizeView(state.view);
+        return {
+          x: (clientX - rect.left - view.panX) / view.zoom,
+          y: (clientY - rect.top - view.panY) / view.zoom,
+          width: rect.width,
+          height: rect.height
+        };
+      }
+
+      function screenToWorldPercent(clientX, clientY) {
+        const point = screenToWorldPoint(clientX, clientY);
+        return {
+          x: clamp((point.x / point.width) * WORLD_MAX, 0, WORLD_MAX),
+          y: clamp((point.y / point.height) * WORLD_MAX, 0, WORLD_MAX)
+        };
+      }
+
+      // Zoom тримає точку під курсором на місці, тому карта не "стрибає".
+      function zoomAt(clientX, clientY, nextZoom) {
+        const rect = els.spaceMap.getBoundingClientRect();
+        const view = normalizeView(state.view);
+        const zoom = clamp(nextZoom, MIN_ZOOM, MAX_ZOOM);
+        const worldX = (clientX - rect.left - view.panX) / view.zoom;
+        const worldY = (clientY - rect.top - view.panY) / view.zoom;
+
+        state.view.zoom = zoom;
+        state.view.panX = clientX - rect.left - worldX * zoom;
+        state.view.panY = clientY - rect.top - worldY * zoom;
+        applyViewport();
+        scheduleViewportSave();
+      }
+
+      function flyToProject(projectId, zoom = 1.5) {
+        const project = state.projects.find((item) => item.id === projectId && !item.archived);
+        const rect = els.spaceMap.getBoundingClientRect();
+        if (!project || !rect.width || !rect.height) return;
+
+        const start = normalizeView(state.view);
+        const targetZoom = clamp(zoom, MIN_ZOOM, MAX_ZOOM);
+        const target = {
+          panX: rect.width / 2 - (project.x / WORLD_MAX) * rect.width * targetZoom,
+          panY: rect.height / 2 - (project.y / WORLD_MAX) * rect.height * targetZoom,
+          zoom: targetZoom
+        };
+        const startTime = performance.now();
+        const duration = 650;
+
+        function step(now) {
+          const t = clamp((now - startTime) / duration, 0, 1);
+          const ease = 1 - Math.pow(1 - t, 3);
+          state.view.panX = start.panX + (target.panX - start.panX) * ease;
+          state.view.panY = start.panY + (target.panY - start.panY) * ease;
+          state.view.zoom = start.zoom + (target.zoom - start.zoom) * ease;
+          applyViewport();
+          renderMinimap(new Set(getFilteredProjects().map((item) => item.id)));
+          if (t < 1) requestAnimationFrame(step);
+          else saveState();
+        }
+
+        requestAnimationFrame(step);
+      }
+
+      function playTone(frequency = 440, duration = 0.05) {
+        if (!state.settings.soundEnabled) return;
+        try {
+          ensureAudioContext();
+          if (!ui.ambientNodes) startAmbientSound();
+          const oscillator = ui.audioContext.createOscillator();
+          const gain = ui.audioContext.createGain();
+          oscillator.frequency.value = frequency;
+          oscillator.type = "sine";
+          gain.gain.setValueAtTime(0.0001, ui.audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.05, ui.audioContext.currentTime + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ui.audioContext.currentTime + duration);
+          oscillator.connect(gain).connect(ui.audioContext.destination);
+          oscillator.start();
+          oscillator.stop(ui.audioContext.currentTime + duration + 0.02);
+        } catch (error) {
+          state.settings.soundEnabled = false;
+        }
+      }
+
+      function ensureAudioContext() {
+        ui.audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+        if (ui.audioContext.state === "suspended") ui.audioContext.resume();
+        return ui.audioContext;
+      }
+
+      function startAmbientSound() {
+        if (!state.settings.soundEnabled || ui.ambientNodes) return;
+        try {
+          const ctx = ensureAudioContext();
+          const gain = ctx.createGain();
+          const oscA = ctx.createOscillator();
+          const oscB = ctx.createOscillator();
+          oscA.frequency.value = 72;
+          oscB.frequency.value = 108;
+          oscA.type = "sine";
+          oscB.type = "triangle";
+          gain.gain.value = 0.012;
+          oscA.connect(gain);
+          oscB.connect(gain);
+          gain.connect(ctx.destination);
+          oscA.start();
+          oscB.start();
+          ui.ambientNodes = { gain, oscA, oscB };
+        } catch (error) {
+          state.settings.soundEnabled = false;
+        }
+      }
+
+      function stopAmbientSound() {
+        if (!ui.ambientNodes) return;
+        const nodes = ui.ambientNodes;
+        ui.ambientNodes = null;
+        nodes.gain.gain.setTargetAtTime(0.0001, ui.audioContext.currentTime, 0.08);
+        window.setTimeout(() => {
+          try {
+            nodes.oscA.stop();
+            nodes.oscB.stop();
+          } catch (error) {
+            // oscillator might already be stopped
+          }
+        }, 160);
+      }
+
+      function applyOrbitLayout() {
+        const projects = state.projects.filter((project) => !project.archived);
+        const categories = [...new Set(projects.map((project) => project.category || "Без категорії"))];
+        const centerX = WORLD_MAX / 2;
+        const centerY = WORLD_MAX / 2;
+
+        categories.forEach((category, categoryIndex) => {
+          const group = projects.filter((project) => (project.category || "Без категорії") === category);
+          const radius = 1200 + categoryIndex * 950;
+          const zBase = -50 + categoryIndex * 45;
+
+          group.forEach((project, index) => {
+            const angle = (Math.PI * 2 * index) / Math.max(group.length, 1) + categoryIndex * 0.48;
+            project.x = clamp(centerX + Math.cos(angle) * radius, 300, WORLD_MAX - 300);
+            project.y = clamp(centerY + Math.sin(angle) * radius * 0.72, 300, WORLD_MAX - 300);
+            project.z = clamp(zBase + index * 12, -220, 260);
+          });
+        });
+
+        persistAndRender("Проєкти згруповано по орбітах категорій.");
+      }
+
+      function jumpToMapPercent(x, y) {
+        const rect = els.spaceMap.getBoundingClientRect();
+        const view = normalizeView(state.view);
+        state.view.panX = rect.width / 2 - (x / 100) * rect.width * view.zoom;
+        state.view.panY = rect.height / 2 - (y / 100) * rect.height * view.zoom;
+        applyViewport();
+        saveState();
+        renderMinimap(new Set(getFilteredProjects().map((item) => item.id)));
+      }
+
+      function startPresentation() {
+        const projects = getFilteredProjects();
+        if (!projects.length) {
+          showToast("Немає проєктів для презентації.");
+          return;
+        }
+
+        stopPresentation(false);
+        ui.presentationIndex = 0;
+        const showNext = () => {
+          const project = projects[ui.presentationIndex % projects.length];
+          ui.selectedProjectId = project.id;
+          ui.selectedLinkId = null;
+          flyToProject(project.id, 1.65);
+          render();
+          playTone(420 + (ui.presentationIndex % 5) * 70, 0.06);
+          ui.presentationIndex += 1;
+        };
+
+        showNext();
+        ui.presentationTimer = window.setInterval(showNext, 2300);
+
+        renderToolButtons();
+        showToast("Режим презентації запущено.");
+      }
+
+      function stopPresentation(showMessage = true) {
+        if (ui.presentationTimer) {
+          window.clearInterval(ui.presentationTimer);
+          ui.presentationTimer = null;
+          renderToolButtons();
+          if (showMessage) showToast("Презентацію зупинено.");
+        }
+      }
+
+      function openArchiveRestore() {
+        const archived = state.projects.filter((project) => project.archived);
+        if (!archived.length) {
+          showToast("Архів порожній.");
+          return;
+        }
+
+        els.archiveList.innerHTML = archived.map((project) => `
+          <div class="archive-item">
+            <div>
+              <strong>${escapeHTML(project.title)}</strong>
+              <p>${escapeHTML(project.category)} · X ${Math.round(project.x)} / Y ${Math.round(project.y)}</p>
+            </div>
+            <button class="btn ghost" type="button" data-restore-project="${project.id}">Повернути</button>
+          </div>
+        `).join("");
+        els.archiveModal.classList.remove("hidden");
+      }
+
+      function closeArchive() {
+        els.archiveModal.classList.add("hidden");
+        els.archiveList.innerHTML = "";
+      }
+
+      function restoreArchivedProject(projectId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        if (!project) return;
+        project.archived = false;
+        ui.selectedProjectId = project.id;
+        closeArchive();
+        flyToProject(project.id, 1.45);
+        persistAndRender("Проєкт повернуто з архіву.");
+      }
+
+      function handleDetailsAction(event) {
+        const action = event.target.closest("[data-action]")?.dataset.action;
+        if (!action) return;
+
+        const projectId = ui.selectedProjectId;
+        const linkId = ui.selectedLinkId;
+
+        if (action === "edit-project" && projectId) openProjectModal(projectId);
+        if (action === "delete-project" && projectId) deleteProject(projectId);
+        if (action === "connect-project" && projectId) startConnection(projectId);
+        if (action === "delete-link" && linkId) deleteLink(linkId);
+        if (action === "clear-selection") clearSelection();
+        if (action === "add-task" && projectId) addTaskFromDetails(projectId);
+        if (action === "toggle-task" && projectId) toggleTask(projectId, event.target.dataset.taskId, event.target.checked);
+        if (action === "delete-task" && projectId) deleteTask(projectId, event.target.closest("[data-task-id]")?.dataset.taskId);
+      }
+
+      function handleDetailsChange(event) {
+        const selectedProject = state.projects.find((project) => project.id === ui.selectedProjectId);
+        const selectedLink = state.links.find((link) => link.id === ui.selectedLinkId);
+
+        if (selectedProject && event.target.dataset.coordinate) {
+          const key = event.target.dataset.coordinate;
+          const limit = key === "z" ? [-220, 260] : [0, WORLD_MAX];
+          selectedProject[key] = clamp(Number(event.target.value), limit[0], limit[1]);
+          persistAndRender("Координати оновлено.");
+        }
+
+        if (selectedLink && event.target.dataset.action === "change-link-type") {
+          selectedLink.type = event.target.value;
+          persistAndRender(`Тип зв’язку: ${linkTypeLabel(selectedLink.type)}.`);
+        }
+
+        if (selectedLink && event.target.dataset.action === "change-link-note") {
+          selectedLink.note = normalizeText(event.target.value);
+          persistAndRender("Коментар зв’язку оновлено.");
+        }
+      }
+
+      function addTaskFromDetails(projectId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        const input = document.querySelector("#quickTaskInput");
+        const text = normalizeText(input?.value);
+        if (!project || !text) return;
+
+        project.tasks.push({ id: uid("task"), text, done: false });
+        persistAndRender("Задачу додано.");
+      }
+
+      function toggleTask(projectId, taskId, done) {
+        const project = state.projects.find((item) => item.id === projectId);
+        const task = project?.tasks.find((item) => item.id === taskId);
+        if (!task) return;
+        task.done = done;
+        project.progress = project.tasks.length
+          ? Math.round((project.tasks.filter((item) => item.done).length / project.tasks.length) * 100)
+          : project.progress;
+        persistAndRender("Задачу оновлено.");
+      }
+
+      function deleteTask(projectId, taskId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        if (!project) return;
+        project.tasks = project.tasks.filter((task) => task.id !== taskId);
+        persistAndRender("Задачу видалено.");
+      }
+
+      function handleKeyboard(event) {
+        const activeTag = document.activeElement?.tagName?.toLowerCase();
+        const isTyping = ["input", "textarea", "select"].includes(activeTag);
+
+        if (event.key === "Escape") {
+          stopPresentation(false);
+          if (!els.projectModal.classList.contains("hidden")) closeProjectModal();
+          if (!els.archiveModal.classList.contains("hidden")) closeArchive();
+          ui.connectingFrom = null;
+          clearSelection();
+        }
+
+        if (!isTyping && event.key.toLowerCase() === "n") {
+          event.preventDefault();
+          openProjectModal();
+        }
+
+        if (!isTyping && event.key === "/") {
+          event.preventDefault();
+          els.searchInput.focus();
+        }
+
+        if ((event.key === "Delete" || event.key === "Backspace") && !isTyping && ui.selectedLinkId) {
+          event.preventDefault();
+          deleteLink(ui.selectedLinkId);
+        }
+      }
+
+      function bindEvents() {
+        els.addProjectBtn.addEventListener("click", () => openProjectModal());
+        els.closeModalBtn.addEventListener("click", closeProjectModal);
+        els.cancelModalBtn.addEventListener("click", closeProjectModal);
+        els.projectForm.addEventListener("submit", handleFormSubmit);
+        els.deleteProjectBtn.addEventListener("click", () => {
+          if (ui.editingProjectId) deleteProject(ui.editingProjectId);
+        });
+
+        els.projectImage.addEventListener("change", async () => {
+          const files = Array.from(els.projectImage.files || []);
+          if (!files.length) return;
+
+          if (files.some((file) => !file.type.startsWith("image/"))) {
+            showToast("Оберіть тільки файли зображень.");
+            els.projectImage.value = "";
+            return;
+          }
+
+          const freeSlots = Math.max(0, 8 - ui.draftImages.length);
+          const selectedFiles = files.slice(0, freeSlots);
+
+          if (!selectedFiles.length) {
+            showToast("У проєкті вже є максимум 8 фото.");
+            els.projectImage.value = "";
+            return;
+          }
+
+          const newImages = await Promise.all(selectedFiles.map(readImageAsDataURL));
+          ui.draftImages = [...ui.draftImages, ...newImages].slice(0, 8);
+          els.projectImage.value = "";
+          updateImagePreview();
+          showToast(`Додано фото: ${newImages.length}.`);
+        });
+
+        els.removeImageBtn.addEventListener("click", () => {
+          ui.draftImages = [];
+          els.projectImage.value = "";
+          updateImagePreview();
+        });
+
+        els.imagePreview.addEventListener("click", (event) => {
+          const index = event.target.closest("[data-remove-image]")?.dataset.removeImage;
+          if (index === undefined) return;
+          ui.draftImages.splice(Number(index), 1);
+          updateImagePreview();
+        });
+
+        els.searchInput.addEventListener("input", handleSearchInput);
+        els.statusFilter.addEventListener("change", render);
+        els.categoryFilter.addEventListener("change", render);
+        els.resetFiltersBtn.addEventListener("click", resetFilters);
+
+        els.orbitModeBtn.addEventListener("click", () => {
+          state.settings.orbitMode = !state.settings.orbitMode;
+          if (state.settings.orbitMode) applyOrbitLayout();
+          else persistAndRender("Режим орбіт вимкнено.");
+        });
+
+        els.pathModeBtn.addEventListener("click", togglePathMode);
+
+        els.presentationBtn.addEventListener("click", () => {
+          if (ui.presentationTimer) stopPresentation();
+          else startPresentation();
+        });
+
+        els.soundToggleBtn.addEventListener("click", () => {
+          state.settings.soundEnabled = !state.settings.soundEnabled;
+          if (state.settings.soundEnabled) startAmbientSound();
+          else stopAmbientSound();
+          saveState();
+          renderToolButtons();
+          playTone(660, 0.06);
+        });
+
+        els.archiveBtn.addEventListener("click", openArchiveRestore);
+        els.closeArchiveBtn.addEventListener("click", closeArchive);
+        els.archiveList.addEventListener("click", (event) => {
+          const projectId = event.target.closest("[data-restore-project]")?.dataset.restoreProject;
+          if (projectId) restoreArchivedProject(projectId);
+        });
+        els.clearFocusBtn.addEventListener("click", clearSelection);
+
+        els.minimap.addEventListener("click", (event) => {
+          const rect = els.minimap.getBoundingClientRect();
+          jumpToMapPercent(((event.clientX - rect.left) / rect.width) * 100, ((event.clientY - rect.top) / rect.height) * 100);
+        });
+
+        els.cancelConnectBtn.addEventListener("click", () => {
+          ui.connectingFrom = null;
+          render();
+          showToast("Створення зв’язку скасовано.");
+        });
+
+        els.deleteSelectedLinkBtn.addEventListener("click", () => {
+          if (ui.selectedLinkId) deleteLink(ui.selectedLinkId);
+        });
+
+        els.spaceMap.addEventListener("pointerdown", handleMapPointerDown);
+        els.spaceMap.addEventListener("wheel", handleMapWheel, { passive: false });
+        els.spaceMap.addEventListener("dblclick", handleMapDoubleClick);
+        window.addEventListener("pointermove", handlePointerMove);
+        window.addEventListener("pointerup", handlePointerUp);
+        window.addEventListener("pointercancel", handlePointerUp);
+
+        els.linksSvg.addEventListener("click", (event) => {
+          const group = event.target.closest("[data-link-id]");
+          if (!group) return;
+          event.stopPropagation();
+          selectLink(group.dataset.linkId);
+        });
+
+        els.spaceMap.addEventListener("click", (event) => {
+          if (ui.suppressNextClick) {
+            ui.suppressNextClick = false;
+            return;
+          }
+
+          const star = event.target.closest(".star-node");
+          if (star) {
+            event.stopPropagation();
+            const projectId = star.dataset.projectId;
+            if (ui.connectingFrom) completeConnection(projectId);
+            else selectProject(projectId);
+            return;
+          }
+
+          const nearestProject = findNearestProjectAt(event.clientX, event.clientY);
+          if (nearestProject) {
+            if (ui.connectingFrom) completeConnection(nearestProject.id);
+            else selectProject(nearestProject.id);
+            return;
+          }
+
+          const clickedBlank = event.target === els.spaceMap || event.target === els.mapWorld || event.target === els.starsLayer || event.target === els.linksSvg;
+          if (clickedBlank && !ui.connectingFrom) clearSelection();
+        });
+
+        els.detailsPanel.addEventListener("click", handleDetailsAction);
+        els.detailsPanel.addEventListener("change", handleDetailsChange);
+        document.addEventListener("keydown", handleKeyboard);
+      }
+
+      fillStatusSelects();
+      bindEvents();
+      render();
+    })();
+  </script>
+</body>
+</html>
