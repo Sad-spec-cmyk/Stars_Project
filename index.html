@@ -139,6 +139,7 @@
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.07);
       color: var(--text);
+      text-decoration: none;
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
@@ -508,6 +509,14 @@
       display: block;
     }
 
+    .image-loading {
+      display: grid;
+      min-height: 90px;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
     .details-media.gallery {
       display: grid;
       grid-template-columns: 1.35fr 1fr;
@@ -577,6 +586,10 @@
 
     .modal.hidden {
       display: none;
+    }
+
+    .type-hidden {
+      display: none !important;
     }
 
     .modal-card {
@@ -1100,6 +1113,18 @@
       box-shadow: 0 0 18px #fff, 0 0 58px rgba(255, 109, 134, 0.62), 0 0 110px rgba(255, 109, 134, 0.32);
     }
 
+    .star-node.type-button .star-core {
+      border-radius: 8px;
+    }
+
+    .star-node.type-storage .star-progress-ring {
+      inset: 4px;
+    }
+
+    .star-node.type-blank .star-progress-ring {
+      display: none;
+    }
+
     .star-node.level-task .star-label {
       opacity: 0.76;
       font-size: 0.72rem;
@@ -1279,7 +1304,7 @@
       }
     }
 
-    /* Monochrome theme override: black, white, grayscale only. */
+    /* Monochrome shell with colored stars. */
     body,
     .app,
     .space-map {
@@ -1357,21 +1382,21 @@
       color: #e8e8e8;
     }
 
-    .star-node {
-      --star-color: #fff !important;
-    }
-
     .star-core {
       border-color: rgba(255, 255, 255, 0.86);
-      background: #fff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.82), 0 0 26px rgba(255, 255, 255, 0.34);
+      background: var(--star-color);
+      box-shadow:
+        0 0 10px color-mix(in srgb, var(--star-color) 82%, transparent),
+        0 0 26px color-mix(in srgb, var(--star-color) 34%, transparent);
     }
 
     .star-node.deadline-soon .star-core,
     .star-node.overdue .star-core,
     .star-node.priority-critical .star-core {
-      background: #fff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.95), 0 0 34px rgba(255, 255, 255, 0.42);
+      background: var(--star-color);
+      box-shadow:
+        0 0 12px color-mix(in srgb, var(--star-color) 95%, transparent),
+        0 0 34px color-mix(in srgb, var(--star-color) 42%, transparent);
     }
 
     .star-progress-ring {
@@ -1476,6 +1501,13 @@
       padding: 12px;
     }
 
+    .archive-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
     .archive-item strong {
       display: block;
       margin-bottom: 4px;
@@ -1570,8 +1602,11 @@
         <button class="btn ghost" id="presentationBtn" type="button">Презентація</button>
         <button class="btn ghost" id="soundToggleBtn" type="button">Звук</button>
         <button class="btn ghost" id="archiveBtn" type="button">Архів</button>
+        <button class="btn ghost" id="exportJsonBtn" type="button">Експорт JSON</button>
+        <button class="btn ghost" id="importJsonBtn" type="button">Імпорт JSON</button>
         <button class="btn ghost" id="clearFocusBtn" type="button">Фокус off</button>
       </div>
+      <input id="importJsonInput" type="file" accept="application/json,.json" hidden />
       <div class="minimap" id="minimap" title="Клік — перейти в точку карти">
         <svg id="minimapSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
       </div>
@@ -1593,12 +1628,12 @@
             <input id="projectTitle" name="title" type="text" maxlength="80" required placeholder="Наприклад: Орбітальна CRM" />
           </div>
 
-          <div class="field">
+          <div class="field" data-star-field="full">
             <label for="projectDescription">Опис</label>
             <textarea id="projectDescription" name="description" maxlength="1200" placeholder="Ціль, ідея, нотатки, наступні кроки..."></textarea>
           </div>
 
-          <div class="form-grid two">
+          <div class="form-grid two" data-star-field="full">
             <div class="field">
               <label for="projectDate">Дата створення</label>
               <input id="projectDate" name="createdAt" type="date" required />
@@ -1610,7 +1645,17 @@
             </div>
           </div>
 
-          <div class="form-grid two">
+          <div class="field">
+            <label for="projectType">Тип зірки</label>
+            <select id="projectType" name="starType" required></select>
+          </div>
+
+          <div class="field type-hidden" data-star-field="button">
+            <label for="projectUrl">Посилання</label>
+            <input id="projectUrl" name="url" type="text" inputmode="url" maxlength="500" placeholder="https://example.com" />
+          </div>
+
+          <div class="form-grid two" data-star-field="full">
             <div class="field">
               <label for="projectCategory">Категорія</label>
               <input id="projectCategory" name="category" type="text" maxlength="48" placeholder="Дизайн, код, бізнес..." />
@@ -1622,12 +1667,12 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" data-star-field="full">
             <label for="projectTags">Теги</label>
             <input id="projectTags" name="tags" type="text" maxlength="160" placeholder="frontend, клієнт, MVP..." />
           </div>
 
-          <div class="form-grid two">
+          <div class="form-grid two" data-star-field="full">
             <div class="field">
               <label for="projectDueDate">Дедлайн</label>
               <input id="projectDueDate" name="dueDate" type="date" />
@@ -1639,7 +1684,7 @@
             </div>
           </div>
 
-          <div class="form-grid two">
+          <div class="form-grid two" data-star-field="full">
             <div class="field">
               <label for="projectPriority">Важливість</label>
               <select id="projectPriority" name="priority"></select>
@@ -1651,12 +1696,12 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" data-star-field="full">
             <label for="projectTasks">Нотатки / задачі</label>
             <textarea id="projectTasks" name="tasks" maxlength="1600" placeholder="Одна задача в рядок. Постав [x] на початку, якщо виконано."></textarea>
           </div>
 
-          <div class="form-grid three">
+          <div class="form-grid three" data-star-field="full">
             <div class="field">
               <label for="projectX">Координата X</label>
               <input id="projectX" name="x" type="number" min="0" max="10000" step="1" required />
@@ -1683,7 +1728,7 @@
                 <label for="projectImage">Зображення</label>
                 <input id="projectImage" name="images" type="file" accept="image/*" multiple />
               </div>
-              <p class="hint">Можна додати кілька фото. Збереження обмежене localStorage, тому фото стискаються.</p>
+              <p class="hint" id="imageHint">Можна додати кілька фото. Збереження обмежене localStorage, тому фото стискаються.</p>
               <button class="btn ghost" id="removeImageBtn" type="button">Прибрати всі фото</button>
             </div>
           </div>
@@ -1740,8 +1785,16 @@
         { value: "blocker", label: "Блокер" },
         { value: "priority", label: "Пріоритет" }
       ];
+      const STAR_TYPES = [
+        { value: "standard", label: "Стандарт", hint: "Звичайна зірка з описом, задачами, координатами і фото." },
+        { value: "storage", label: "Склад", hint: "До 100 фото без стиснення. Оригінали зберігаються в IndexedDB." },
+        { value: "button", label: "Кнопка", hint: "Зірка відкриває посилання при натисканні." },
+        { value: "blank", label: "Пустишка", hint: "Тільки назва і фото. Інші поля приховані." }
+      ];
 
       const DEFAULT_COLORS = ["#f7fbff", "#9edcff", "#a696ff", "#77f0ff", "#d7e6ff", "#b8c4ff"];
+      const IMAGE_DB_NAME = "space-project-map-images";
+      const IMAGE_DB_STORE = "images";
 
       const els = {
         addProjectBtn: document.querySelector("#addProjectBtn"),
@@ -1766,6 +1819,9 @@
         presentationBtn: document.querySelector("#presentationBtn"),
         soundToggleBtn: document.querySelector("#soundToggleBtn"),
         archiveBtn: document.querySelector("#archiveBtn"),
+        exportJsonBtn: document.querySelector("#exportJsonBtn"),
+        importJsonBtn: document.querySelector("#importJsonBtn"),
+        importJsonInput: document.querySelector("#importJsonInput"),
         clearFocusBtn: document.querySelector("#clearFocusBtn"),
         minimap: document.querySelector("#minimap"),
         minimapSvg: document.querySelector("#minimapSvg"),
@@ -1784,6 +1840,7 @@
         projectDescription: document.querySelector("#projectDescription"),
         projectDate: document.querySelector("#projectDate"),
         projectStatus: document.querySelector("#projectStatus"),
+        projectType: document.querySelector("#projectType"),
         projectCategory: document.querySelector("#projectCategory"),
         projectColor: document.querySelector("#projectColor"),
         projectTags: document.querySelector("#projectTags"),
@@ -1795,7 +1852,9 @@
         projectX: document.querySelector("#projectX"),
         projectY: document.querySelector("#projectY"),
         projectZ: document.querySelector("#projectZ"),
+        projectUrl: document.querySelector("#projectUrl"),
         projectImage: document.querySelector("#projectImage"),
+        imageHint: document.querySelector("#imageHint"),
         imagePreview: document.querySelector("#imagePreview"),
         removeImageBtn: document.querySelector("#removeImageBtn"),
         deleteProjectBtn: document.querySelector("#deleteProjectBtn")
@@ -1827,6 +1886,10 @@
       };
 
       let state = loadState();
+      let imageDBPromise = null;
+      const imageUrlCache = new Map();
+      const imageLoadPromises = new Map();
+      const missingImageIds = new Set();
 
       function uid(prefix) {
         return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -1843,6 +1906,33 @@
           .replaceAll(">", "&gt;")
           .replaceAll('"', "&quot;")
           .replaceAll("'", "&#039;");
+      }
+
+      function normalizeStarType(value) {
+        return STAR_TYPES.some((item) => item.value === value) ? value : "standard";
+      }
+
+      function starTypeLabel(value) {
+        return STAR_TYPES.find((item) => item.value === value)?.label || "Стандарт";
+      }
+
+      function imageLimitForType(value) {
+        const starType = normalizeStarType(value);
+        if (starType === "storage") return 100;
+        if (starType === "blank") return 1;
+        return 8;
+      }
+
+      function normalizeURL(value) {
+        const raw = normalizeText(value);
+        if (!raw) return "";
+        const withProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
+        try {
+          const url = new URL(withProtocol);
+          return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+        } catch (error) {
+          return "";
+        }
       }
 
       function statusLabel(value) {
@@ -1899,7 +1989,8 @@
       }
 
       function normalizeProject(project) {
-        const images = getProjectImages(project).slice(0, 8);
+        const starType = normalizeStarType(project.starType || project.type);
+        const images = getProjectImages(project).slice(0, imageLimitForType(starType));
         const rawX = Number.isFinite(Number(project.x)) ? Number(project.x) : randomBetween(2000, 8000);
         const rawY = Number.isFinite(Number(project.y)) ? Number(project.y) : randomBetween(2200, 7800);
         const usesNewCoords = project.coordVersion === 2;
@@ -1913,31 +2004,49 @@
         return {
           id: project.id || uid("project"),
           coordVersion: 2,
+          starType,
           title: normalizeText(project.title) || "Без назви",
-          description: String(project.description || ""),
+          description: starType === "blank" ? "" : String(project.description || ""),
           images,
           image: images[0] || "",
           createdAt: project.createdAt || todayISO(),
-          status: STATUS_OPTIONS.some((item) => item.value === project.status) ? project.status : "planned",
-          category: normalizeText(project.category) || "Без категорії",
+          status: starType === "blank" ? "planned" : (STATUS_OPTIONS.some((item) => item.value === project.status) ? project.status : "planned"),
+          category: starType === "blank" ? "Пустишка" : (normalizeText(project.category) || "Без категорії"),
           color: /^#[0-9a-f]{6}$/i.test(project.color) ? project.color : randomColor(),
           x: clamp(x, 0, WORLD_MAX),
           y: clamp(y, 0, WORLD_MAX),
           z: clamp(z, -220, 260),
-          tags: parseTags(project.tags),
+          tags: starType === "blank" ? [] : parseTags(project.tags),
           priority,
           level,
-          dueDate: project.dueDate || "",
-          progress,
-          tasks: normalizeTasks(project.tasks),
+          dueDate: starType === "blank" ? "" : (project.dueDate || ""),
+          progress: starType === "blank" ? 0 : progress,
+          tasks: starType === "blank" ? [] : normalizeTasks(project.tasks),
+          url: starType === "button" ? normalizeURL(project.url) : "",
           archived: Boolean(project.archived)
         };
       }
 
+      function normalizeImageEntry(image) {
+        if (!image) return null;
+        if (typeof image === "string") return image;
+        if (image.kind === "file" && typeof File !== "undefined" && image.file instanceof File) return image;
+        if (image.kind === "db" && image.id) {
+          return {
+            kind: "db",
+            id: String(image.id),
+            name: String(image.name || "photo"),
+            type: String(image.type || "image/*"),
+            size: Number(image.size) || 0
+          };
+        }
+        return null;
+      }
+
       function getProjectImages(project) {
         if (!project) return [];
-        if (Array.isArray(project.images)) return project.images.filter(Boolean).map(String);
-        return project.image ? [String(project.image)] : [];
+        const source = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
+        return source.map(normalizeImageEntry).filter(Boolean);
       }
 
       function parseTags(value) {
@@ -2039,8 +2148,10 @@
       }
 
       function persistAndRender(message) {
-        if (saveState() && message) showToast(message);
+        const saved = saveState();
+        if (saved && message) showToast(message);
         render();
+        return saved;
       }
 
       function fillStatusSelects() {
@@ -2056,6 +2167,39 @@
         els.projectLevel.innerHTML = LEVEL_OPTIONS
           .map((item) => `<option value="${item.value}">${item.label}</option>`)
           .join("");
+        els.projectType.innerHTML = STAR_TYPES
+          .map((item) => `<option value="${item.value}">${item.label}</option>`)
+          .join("");
+      }
+
+      function currentStarType() {
+        return normalizeStarType(els.projectType.value);
+      }
+
+      function updateStarTypeUI({ silent = false } = {}) {
+        const starType = currentStarType();
+        const isBlank = starType === "blank";
+        const isButton = starType === "button";
+        const limit = imageLimitForType(starType);
+        const typeInfo = STAR_TYPES.find((item) => item.value === starType);
+
+        document.querySelectorAll("[data-star-field]").forEach((field) => {
+          const mode = field.dataset.starField;
+          field.classList.toggle("type-hidden", (mode === "full" && isBlank) || (mode === "button" && !isButton));
+        });
+
+        els.projectUrl.required = isButton;
+        els.projectUrl.disabled = !isButton;
+        if (!isButton) els.projectUrl.value = "";
+        els.projectImage.multiple = limit > 1;
+        els.imageHint.textContent = `${typeInfo?.hint || ""} Ліміт фото: ${limit}.`;
+
+        if (ui.draftImages.length > limit) {
+          const removed = ui.draftImages.splice(limit);
+          cleanupDraftFileUrls(removed);
+          updateImagePreview();
+          if (!silent) showToast(`Для цього типу залишено ${limit} фото.`);
+        }
       }
 
       function getFilteredProjects() {
@@ -2146,6 +2290,7 @@
           star.className = "star-node";
           star.classList.add(`priority-${project.priority}`);
           star.classList.add(`level-${project.level}`);
+          star.classList.add(`type-${project.starType}`);
           star.dataset.projectId = project.id;
           star.style.setProperty("--x", `${coordToPercent(project.x)}%`);
           star.style.setProperty("--y", `${coordToPercent(project.y)}%`);
@@ -2153,7 +2298,9 @@
           star.style.setProperty("--depth", `${project.z}px`);
           star.style.setProperty("--z-scale", `${1 + project.z / 700}`);
           star.style.setProperty("--progress", `${project.progress * 3.6}deg`);
-          star.setAttribute("aria-label", `Відкрити проєкт ${project.title}`);
+          star.setAttribute("aria-label", project.starType === "button" && project.url
+            ? `Відкрити посилання ${project.title}`
+            : `Відкрити проєкт ${project.title}`);
 
           if (!visibleIds.has(project.id)) star.classList.add("hidden-by-filter");
           const deadlineState = getDeadlineState(project);
@@ -2348,9 +2495,15 @@
 
         const connectionCount = state.links.filter((link) => link.from === selectedProject.id || link.to === selectedProject.id).length;
         const images = getProjectImages(selectedProject);
+        const isBlank = selectedProject.starType === "blank";
         const imageHTML = images
           .slice(0, 6)
-          .map((src, index) => `<img src="${src}" alt="Фото ${index + 1} проєкту ${escapeHTML(selectedProject.title)}">`)
+          .map((image, index) => {
+            const src = getImageSrc(image, renderDetails);
+            return src
+              ? `<img src="${escapeHTML(src)}" alt="Фото ${index + 1} проєкту ${escapeHTML(selectedProject.title)}">`
+              : `<div class="image-loading">Фото ${index + 1}</div>`;
+          })
           .join("");
         const tagsHTML = selectedProject.tags
           .map((tag) => `<span class="chip">#${escapeHTML(tag)}</span>`)
@@ -2364,28 +2517,7 @@
               </label>
             `).join("")
           : `<p class="meta">Задач ще немає.</p>`;
-
-        els.detailsPanel.classList.remove("hidden");
-        els.detailsPanel.innerHTML = `
-          <div class="details-media ${images.length > 1 ? "gallery" : ""}">${imageHTML}</div>
-          <div class="details-body">
-            <div>
-              <p class="meta">${escapeHTML(formatDate(selectedProject.createdAt))}</p>
-              <h2>${escapeHTML(selectedProject.title)}</h2>
-            </div>
-
-            <div class="chips">
-              <span class="chip">${escapeHTML(statusLabel(selectedProject.status))}</span>
-              <span class="chip">${escapeHTML(selectedProject.category)}</span>
-              <span class="chip">${connectionCount} зв’язків</span>
-              <span class="chip">${escapeHTML(priorityLabel(selectedProject.priority))}</span>
-              <span class="chip">${escapeHTML(levelLabel(selectedProject.level))}</span>
-              <span class="chip">${selectedProject.progress}%</span>
-              ${selectedProject.dueDate ? `<span class="chip">Дедлайн: ${escapeHTML(formatDate(selectedProject.dueDate))}</span>` : ""}
-              <span class="chip">X ${Math.round(selectedProject.x)} / Y ${Math.round(selectedProject.y)} / Z ${Math.round(selectedProject.z)}</span>
-              ${tagsHTML}
-            </div>
-
+        const detailsFieldsHTML = isBlank ? "" : `
             <p class="project-description">${escapeHTML(selectedProject.description || "Опис ще не додано.")}</p>
 
             <div class="detail-grid">
@@ -2410,7 +2542,37 @@
                 <input id="quickTaskInput" type="text" placeholder="Нова задача...">
                 <button class="btn ghost" type="button" data-action="add-task">Додати</button>
               </div>
+            </div>`;
+        const buttonLinkHTML = selectedProject.starType === "button" && selectedProject.url
+          ? `<a class="btn primary" href="${escapeHTML(selectedProject.url)}" target="_blank" rel="noopener">Відкрити посилання</a>`
+          : "";
+
+        els.detailsPanel.classList.remove("hidden");
+        els.detailsPanel.innerHTML = `
+          <div class="details-media ${images.length > 1 ? "gallery" : ""}">${imageHTML}</div>
+          <div class="details-body">
+            <div>
+              <p class="meta">${escapeHTML(formatDate(selectedProject.createdAt))}</p>
+              <h2>${escapeHTML(selectedProject.title)}</h2>
             </div>
+
+            <div class="chips">
+              <span class="chip">${escapeHTML(starTypeLabel(selectedProject.starType))}</span>
+              ${isBlank ? "" : `
+              <span class="chip">${escapeHTML(statusLabel(selectedProject.status))}</span>
+              <span class="chip">${escapeHTML(selectedProject.category)}</span>
+              <span class="chip">${connectionCount} зв’язків</span>
+              <span class="chip">${escapeHTML(priorityLabel(selectedProject.priority))}</span>
+              <span class="chip">${escapeHTML(levelLabel(selectedProject.level))}</span>
+              <span class="chip">${selectedProject.progress}%</span>
+              ${selectedProject.dueDate ? `<span class="chip">Дедлайн: ${escapeHTML(formatDate(selectedProject.dueDate))}</span>` : ""}
+              <span class="chip">X ${Math.round(selectedProject.x)} / Y ${Math.round(selectedProject.y)} / Z ${Math.round(selectedProject.z)}</span>
+              ${tagsHTML}
+              `}
+            </div>
+
+            ${detailsFieldsHTML}
+            ${buttonLinkHTML}
 
             <div class="inline-actions">
               <button class="btn primary" type="button" data-action="connect-project">З’єднати</button>
@@ -2440,6 +2602,8 @@
         els.projectDescription.value = project?.description || "";
         els.projectDate.value = project?.createdAt || todayISO();
         els.projectStatus.value = project?.status || "planned";
+        els.projectType.value = project?.starType || "standard";
+        els.projectUrl.value = project?.url || "";
         els.projectCategory.value = project?.category === "Без категорії" ? "" : (project?.category || "");
         els.projectColor.value = project?.color || randomColor();
         els.projectTags.value = project?.tags?.join(", ") || "";
@@ -2453,6 +2617,7 @@
         els.projectZ.value = project ? Math.round(project.z) : (ui.newProjectPosition?.z ?? 0);
         els.projectImage.value = "";
         els.deleteProjectBtn.hidden = !project;
+        updateStarTypeUI({ silent: true });
         updateImagePreview();
 
         els.projectModal.classList.remove("hidden");
@@ -2461,6 +2626,7 @@
 
       function closeProjectModal() {
         els.projectModal.classList.add("hidden");
+        cleanupDraftFileUrls();
         ui.editingProjectId = null;
         ui.newProjectPosition = null;
         ui.draftImages = [];
@@ -2477,13 +2643,22 @@
         els.imagePreview.classList.add("has-images");
         const fragment = document.createDocumentFragment();
 
-        ui.draftImages.forEach((src, index) => {
+        ui.draftImages.forEach((entry, index) => {
           const thumb = document.createElement("div");
           thumb.className = "image-thumb";
 
-          const image = document.createElement("img");
-          image.src = src;
-          image.alt = `Фото ${index + 1}`;
+          const src = getImageSrc(entry, updateImagePreview);
+          if (src) {
+            const image = document.createElement("img");
+            image.src = src;
+            image.alt = `Фото ${index + 1}`;
+            thumb.append(image);
+          } else {
+            const loading = document.createElement("span");
+            loading.className = "image-loading";
+            loading.textContent = `Фото ${index + 1}`;
+            thumb.append(loading);
+          }
 
           const removeButton = document.createElement("button");
           removeButton.type = "button";
@@ -2491,7 +2666,7 @@
           removeButton.setAttribute("aria-label", "Прибрати це фото");
           removeButton.textContent = "×";
 
-          thumb.append(image, removeButton);
+          thumb.append(removeButton);
           fragment.append(thumb);
         });
 
@@ -2528,7 +2703,355 @@
         });
       }
 
-      function handleFormSubmit(event) {
+      function createDraftFileImage(file) {
+        return {
+          kind: "file",
+          id: uid("draft-image"),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          file,
+          url: URL.createObjectURL(file)
+        };
+      }
+
+      function cleanupDraftFileUrls(images = ui.draftImages) {
+        images.forEach((image) => {
+          if (image?.kind === "file" && image.url) URL.revokeObjectURL(image.url);
+        });
+      }
+
+      function openImageDB() {
+        if (!("indexedDB" in window)) return Promise.reject(new Error("IndexedDB unavailable"));
+        if (imageDBPromise) return imageDBPromise;
+
+        imageDBPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(IMAGE_DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(IMAGE_DB_STORE)) {
+              db.createObjectStore(IMAGE_DB_STORE, { keyPath: "id" });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+
+        return imageDBPromise;
+      }
+
+      async function withImageStore(mode, callback) {
+        const db = await openImageDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(IMAGE_DB_STORE, mode);
+          const store = tx.objectStore(IMAGE_DB_STORE);
+          let request;
+          try {
+            request = callback(store);
+          } catch (error) {
+            reject(error);
+            return;
+          }
+          tx.oncomplete = () => resolve(request?.result);
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      }
+
+      async function saveImageFileToDB(file) {
+        const id = uid("image");
+        const record = {
+          id,
+          blob: file,
+          name: file.name || "photo",
+          type: file.type || "image/*",
+          size: file.size || 0,
+          createdAt: Date.now()
+        };
+
+        await withImageStore("readwrite", (store) => store.put(record));
+        const url = URL.createObjectURL(file);
+        imageUrlCache.set(id, url);
+        return {
+          kind: "db",
+          id,
+          name: record.name,
+          type: record.type,
+          size: record.size
+        };
+      }
+
+      async function saveImageBlobToDB(blob, name = "photo") {
+        const id = uid("image");
+        const record = {
+          id,
+          blob,
+          name,
+          type: blob.type || "image/*",
+          size: blob.size || 0,
+          createdAt: Date.now()
+        };
+
+        await withImageStore("readwrite", (store) => store.put(record));
+        const url = URL.createObjectURL(blob);
+        imageUrlCache.set(id, url);
+        return {
+          kind: "db",
+          id,
+          name: record.name,
+          type: record.type,
+          size: record.size
+        };
+      }
+
+      async function getImageBlob(id) {
+        const record = await withImageStore("readonly", (store) => store.get(id));
+        return record?.blob || null;
+      }
+
+      async function deleteImageBlob(id) {
+        await withImageStore("readwrite", (store) => store.delete(id));
+        const cachedUrl = imageUrlCache.get(id);
+        if (cachedUrl) URL.revokeObjectURL(cachedUrl);
+        imageUrlCache.delete(id);
+        missingImageIds.delete(id);
+      }
+
+      function queueImageLoad(id, onReady) {
+        if (!id || missingImageIds.has(id)) return;
+        let promise = imageLoadPromises.get(id);
+        if (!promise) {
+          promise = getImageBlob(id)
+            .then((blob) => {
+              if (!blob) {
+                missingImageIds.add(id);
+                return "";
+              }
+              const url = URL.createObjectURL(blob);
+              imageUrlCache.set(id, url);
+              return url;
+            })
+            .catch(() => {
+              missingImageIds.add(id);
+              return "";
+            })
+            .finally(() => imageLoadPromises.delete(id));
+          imageLoadPromises.set(id, promise);
+        }
+
+        if (onReady) promise.then((url) => {
+          if (url) onReady();
+        });
+      }
+
+      function getImageSrc(image, onReady) {
+        const entry = normalizeImageEntry(image);
+        if (!entry) return "";
+        if (typeof entry === "string") return entry;
+        if (entry.kind === "file") return entry.url || "";
+        if (entry.kind === "db") {
+          if (imageUrlCache.has(entry.id)) return imageUrlCache.get(entry.id);
+          queueImageLoad(entry.id, onReady);
+        }
+        return "";
+      }
+
+      async function prepareDraftImagesForSave(starType) {
+        const limit = imageLimitForType(starType);
+        const prepared = [];
+
+        for (const image of ui.draftImages.slice(0, limit)) {
+          const entry = normalizeImageEntry(image);
+          if (!entry) continue;
+          if (entry.kind === "file") {
+            prepared.push(starType === "storage"
+              ? await saveImageFileToDB(entry.file)
+              : await readImageAsDataURL(entry.file));
+          } else {
+            prepared.push(entry);
+          }
+        }
+
+        return prepared.slice(0, limit);
+      }
+
+      function getDBImageIds(images) {
+        return images
+          .map(normalizeImageEntry)
+          .filter((image) => image?.kind === "db")
+          .map((image) => image.id);
+      }
+
+      function deleteDBImagesByIds(ids) {
+        ids.forEach((id) => deleteImageBlob(id).catch(() => {}));
+      }
+
+      function blobToDataURL(blob) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      async function dataURLToBlob(dataURL) {
+        const response = await fetch(dataURL);
+        return response.blob();
+      }
+
+      async function exportImageEntry(image) {
+        const entry = normalizeImageEntry(image);
+        if (!entry) return null;
+        if (typeof entry === "string") return entry;
+        if (entry.kind === "db") {
+          const blob = await getImageBlob(entry.id);
+          if (!blob) return entry;
+          return {
+            kind: "data",
+            name: entry.name || "photo",
+            type: blob.type || entry.type || "image/*",
+            size: blob.size || entry.size || 0,
+            dataURL: await blobToDataURL(blob)
+          };
+        }
+        return null;
+      }
+
+      async function buildExportPayload() {
+        const projects = await Promise.all(state.projects.map(async (project) => {
+          const images = (await Promise.all(getProjectImages(project).map(exportImageEntry))).filter(Boolean);
+          return {
+            ...project,
+            images,
+            image: images[0] || ""
+          };
+        }));
+
+        return {
+          app: "space-project-map",
+          version: 2,
+          exportedAt: new Date().toISOString(),
+          projects,
+          links: state.links,
+          view: state.view,
+          settings: state.settings
+        };
+      }
+
+      function downloadJSON(payload) {
+        const date = new Date().toISOString().slice(0, 10);
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `space-project-map-${date}.json`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      async function exportJSON() {
+        try {
+          const payload = await buildExportPayload();
+          downloadJSON(payload);
+          showToast("JSON експортовано.");
+        } catch (error) {
+          console.error("Не вдалося експортувати JSON:", error);
+          showToast("Не вдалося експортувати JSON.");
+        }
+      }
+
+      async function importImageEntry(image, starType, importedDBIds) {
+        if (!image) return null;
+        if (typeof image === "string") return image;
+        if (image.kind === "data" && image.dataURL) {
+          if (starType === "storage") {
+            const blob = await dataURLToBlob(image.dataURL);
+            const saved = await saveImageBlobToDB(blob, image.name || "photo");
+            importedDBIds.push(saved.id);
+            return saved;
+          }
+          return image.dataURL;
+        }
+        if (image.dataURL) return image.dataURL;
+        return normalizeImageEntry(image);
+      }
+
+      async function normalizeImportedProject(project, importedDBIds) {
+        const starType = normalizeStarType(project.starType || project.type);
+        const rawImages = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
+        const images = (await Promise.all(rawImages.map((image) => importImageEntry(image, starType, importedDBIds))))
+          .filter(Boolean)
+          .slice(0, imageLimitForType(starType));
+
+        return normalizeProject({
+          ...project,
+          starType,
+          images,
+          image: images[0] || ""
+        });
+      }
+
+      function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+      }
+
+      async function importJSONFile(file) {
+        if (!file) return;
+        const confirmed = window.confirm("Імпорт замінить поточну карту даними з JSON. Продовжити?");
+        if (!confirmed) return;
+
+        const oldDBIds = getDBImageIds(state.projects.flatMap((project) => getProjectImages(project)));
+        const importedDBIds = [];
+
+        try {
+          const text = await readFileAsText(file);
+          const payload = JSON.parse(text);
+          const rawProjects = Array.isArray(payload) ? payload : (Array.isArray(payload.projects) ? payload.projects : []);
+          const projects = await Promise.all(rawProjects.map((project) => normalizeImportedProject(project, importedDBIds)));
+          const projectIds = new Set(projects.map((project) => project.id));
+          const links = (Array.isArray(payload.links) ? payload.links : [])
+            .map(normalizeLink)
+            .filter((link) => link && projectIds.has(link.from) && projectIds.has(link.to));
+          const nextState = {
+            projects,
+            links,
+            view: normalizeView(payload.view),
+            settings: normalizeSettings(payload.settings)
+          };
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+          state = nextState;
+          ui.selectedProjectId = null;
+          ui.selectedLinkId = null;
+          ui.connectingFrom = null;
+          ui.pathMode = false;
+          ui.pathStartId = null;
+          ui.pathProjectIds = new Set();
+          ui.pathLinkIds = new Set();
+          stopPresentation(false);
+          closeProjectModal();
+          closeArchive();
+          render();
+
+          const nextDBIds = new Set(getDBImageIds(state.projects.flatMap((project) => getProjectImages(project))));
+          deleteDBImagesByIds(oldDBIds.filter((id) => !nextDBIds.has(id)));
+          showToast(`Імпортовано зірок: ${projects.length}.`);
+        } catch (error) {
+          deleteDBImagesByIds(importedDBIds);
+          console.error("Не вдалося імпортувати JSON:", error);
+          showToast("Не вдалося імпортувати JSON. Перевірте файл.");
+        }
+      }
+
+      async function handleFormSubmit(event) {
         event.preventDefault();
 
         const title = normalizeText(els.projectTitle.value);
@@ -2539,46 +3062,64 @@
         }
 
         const existing = state.projects.find((project) => project.id === ui.editingProjectId);
+        const starType = currentStarType();
+        const url = starType === "button" ? normalizeURL(els.projectUrl.value) : "";
+        if (starType === "button" && !url) {
+          showToast("Вкажіть правильне посилання для зірки-кнопки.");
+          els.projectUrl.focus();
+          return;
+        }
+
+        let images = [];
+        try {
+          images = await prepareDraftImagesForSave(starType);
+        } catch (error) {
+          showToast("Не вдалося зберегти фото без втрати якості. Перевірте доступ до IndexedDB.");
+          return;
+        }
+
         const x = clamp(Number(els.projectX.value), 0, WORLD_MAX);
         const y = clamp(Number(els.projectY.value), 0, WORLD_MAX);
         const z = clamp(Number(els.projectZ.value), -220, 260);
-        const payload = {
+        const payload = normalizeProject({
+          id: existing?.id || uid("project"),
+          archived: existing?.archived,
+          starType,
           title,
-          description: els.projectDescription.value.trim(),
-          images: ui.draftImages.slice(0, 8),
-          image: ui.draftImages[0] || "",
+          description: starType === "blank" ? "" : els.projectDescription.value.trim(),
+          images,
+          image: images[0] || "",
           createdAt: els.projectDate.value || todayISO(),
-          status: els.projectStatus.value,
-          category: normalizeText(els.projectCategory.value) || "Без категорії",
+          status: starType === "blank" ? "planned" : els.projectStatus.value,
+          category: starType === "blank" ? "Пустишка" : (normalizeText(els.projectCategory.value) || "Без категорії"),
           color: els.projectColor.value || randomColor(),
-          tags: parseTags(els.projectTags.value),
-          dueDate: els.projectDueDate.value || "",
-          progress: clamp(Number(els.projectProgress.value) || 0, 0, 100),
-          priority: els.projectPriority.value || "medium",
-          level: els.projectLevel.value || "main",
-          tasks: normalizeTasks(els.projectTasks.value),
+          tags: starType === "blank" ? [] : parseTags(els.projectTags.value),
+          dueDate: starType === "blank" ? "" : (els.projectDueDate.value || ""),
+          progress: starType === "blank" ? 0 : clamp(Number(els.projectProgress.value) || 0, 0, 100),
+          priority: starType === "blank" ? "low" : (els.projectPriority.value || "medium"),
+          level: starType === "blank" ? "task" : (els.projectLevel.value || "main"),
+          tasks: starType === "blank" ? [] : normalizeTasks(els.projectTasks.value),
+          url,
           coordVersion: 2,
           x,
           y,
           z
-        };
+        });
 
         if (existing) {
+          const oldDBIds = getDBImageIds(getProjectImages(existing));
+          const nextDBIds = new Set(getDBImageIds(payload.images));
+          const removedDBIds = oldDBIds.filter((id) => !nextDBIds.has(id));
           Object.assign(existing, payload);
           ui.selectedProjectId = existing.id;
           ui.selectedLinkId = null;
           closeProjectModal();
-          persistAndRender("Проєкт оновлено.");
+          if (persistAndRender("Проєкт оновлено.")) deleteDBImagesByIds(removedDBIds);
           return;
         }
 
-        const project = normalizeProject({
-          id: uid("project"),
-          ...payload
-        });
-
-        state.projects.push(project);
-        ui.selectedProjectId = project.id;
+        state.projects.push(payload);
+        ui.selectedProjectId = payload.id;
         ui.selectedLinkId = null;
         closeProjectModal();
         persistAndRender("Нову зірку створено.");
@@ -2648,6 +3189,27 @@
         ui.selectedProjectId = null;
         ui.selectedLinkId = null;
         render();
+      }
+
+      function openProjectUrl(project) {
+        if (!project) return;
+        const url = normalizeURL(project?.url);
+        if (!url) {
+          showToast("У цієї зірки-кнопки ще немає посилання.");
+          selectProject(project.id);
+          return;
+        }
+        window.open(url, "_blank", "noopener");
+        playTone(720, 0.05);
+      }
+
+      function activateProject(projectId, shouldFly = true) {
+        const project = state.projects.find((item) => item.id === projectId && !item.archived);
+        if (!ui.pathMode && project?.starType === "button") {
+          openProjectUrl(project);
+          return;
+        }
+        selectProject(projectId, shouldFly);
       }
 
       function selectProject(projectId, shouldFly = true) {
@@ -2958,7 +3520,7 @@
           return;
         }
 
-        selectProject(projectId);
+        activateProject(projectId);
       }
 
       function findNearestProjectAt(clientX, clientY, maxDistance = 42) {
@@ -3213,7 +3775,10 @@
               <strong>${escapeHTML(project.title)}</strong>
               <p>${escapeHTML(project.category)} · X ${Math.round(project.x)} / Y ${Math.round(project.y)}</p>
             </div>
-            <button class="btn ghost" type="button" data-restore-project="${project.id}">Повернути</button>
+            <div class="archive-actions">
+              <button class="btn ghost" type="button" data-restore-project="${escapeHTML(project.id)}">Повернути</button>
+              <button class="btn danger" type="button" data-delete-archived-project="${escapeHTML(project.id)}">Видалити</button>
+            </div>
           </div>
         `).join("");
         els.archiveModal.classList.remove("hidden");
@@ -3232,6 +3797,33 @@
         closeArchive();
         flyToProject(project.id, 1.45);
         persistAndRender("Проєкт повернуто з архіву.");
+      }
+
+      function deleteArchivedProject(projectId) {
+        const project = state.projects.find((item) => item.id === projectId && item.archived);
+        if (!project) return;
+        const confirmed = window.confirm(`Назавжди видалити проєкт "${project.title}"? Цю дію не можна скасувати.`);
+        if (!confirmed) return;
+
+        const removedDBIds = getDBImageIds(getProjectImages(project));
+        state.projects = state.projects.filter((item) => item.id !== projectId);
+        state.links = state.links.filter((link) => link.from !== projectId && link.to !== projectId);
+
+        if (ui.selectedProjectId === projectId) ui.selectedProjectId = null;
+        if (ui.connectingFrom === projectId) ui.connectingFrom = null;
+        if (ui.pathStartId === projectId) ui.pathStartId = null;
+        ui.pathProjectIds.delete(projectId);
+        ui.pathLinkIds = new Set(state.links.filter((link) => ui.pathLinkIds.has(link.id)).map((link) => link.id));
+
+        if (saveState()) {
+          deleteDBImagesByIds(removedDBIds);
+          render();
+          if (state.projects.some((item) => item.archived)) openArchiveRestore();
+          else closeArchive();
+          showToast("Проєкт видалено назавжди.");
+        } else {
+          render();
+        }
       }
 
       function handleDetailsAction(event) {
@@ -3337,6 +3929,7 @@
         els.deleteProjectBtn.addEventListener("click", () => {
           if (ui.editingProjectId) deleteProject(ui.editingProjectId);
         });
+        els.projectType.addEventListener("change", () => updateStarTypeUI());
 
         els.projectImage.addEventListener("change", async () => {
           const files = Array.from(els.projectImage.files || []);
@@ -3348,23 +3941,28 @@
             return;
           }
 
-          const freeSlots = Math.max(0, 8 - ui.draftImages.length);
+          const starType = currentStarType();
+          const imageLimit = imageLimitForType(starType);
+          const freeSlots = Math.max(0, imageLimit - ui.draftImages.length);
           const selectedFiles = files.slice(0, freeSlots);
 
           if (!selectedFiles.length) {
-            showToast("У проєкті вже є максимум 8 фото.");
+            showToast(`У цьому типі зірки максимум ${imageLimit} фото.`);
             els.projectImage.value = "";
             return;
           }
 
-          const newImages = await Promise.all(selectedFiles.map(readImageAsDataURL));
-          ui.draftImages = [...ui.draftImages, ...newImages].slice(0, 8);
+          const newImages = starType === "storage"
+            ? selectedFiles.map(createDraftFileImage)
+            : await Promise.all(selectedFiles.map(readImageAsDataURL));
+          ui.draftImages = [...ui.draftImages, ...newImages].slice(0, imageLimit);
           els.projectImage.value = "";
           updateImagePreview();
           showToast(`Додано фото: ${newImages.length}.`);
         });
 
         els.removeImageBtn.addEventListener("click", () => {
+          cleanupDraftFileUrls();
           ui.draftImages = [];
           els.projectImage.value = "";
           updateImagePreview();
@@ -3373,7 +3971,8 @@
         els.imagePreview.addEventListener("click", (event) => {
           const index = event.target.closest("[data-remove-image]")?.dataset.removeImage;
           if (index === undefined) return;
-          ui.draftImages.splice(Number(index), 1);
+          const [removed] = ui.draftImages.splice(Number(index), 1);
+          cleanupDraftFileUrls([removed]);
           updateImagePreview();
         });
 
@@ -3407,8 +4006,21 @@
         els.archiveBtn.addEventListener("click", openArchiveRestore);
         els.closeArchiveBtn.addEventListener("click", closeArchive);
         els.archiveList.addEventListener("click", (event) => {
-          const projectId = event.target.closest("[data-restore-project]")?.dataset.restoreProject;
-          if (projectId) restoreArchivedProject(projectId);
+          const restoreId = event.target.closest("[data-restore-project]")?.dataset.restoreProject;
+          if (restoreId) {
+            restoreArchivedProject(restoreId);
+            return;
+          }
+
+          const deleteId = event.target.closest("[data-delete-archived-project]")?.dataset.deleteArchivedProject;
+          if (deleteId) deleteArchivedProject(deleteId);
+        });
+        els.exportJsonBtn.addEventListener("click", exportJSON);
+        els.importJsonBtn.addEventListener("click", () => els.importJsonInput.click());
+        els.importJsonInput.addEventListener("change", async () => {
+          const file = els.importJsonInput.files?.[0];
+          els.importJsonInput.value = "";
+          await importJSONFile(file);
         });
         els.clearFocusBtn.addEventListener("click", clearSelection);
 
@@ -3452,14 +4064,14 @@
             event.stopPropagation();
             const projectId = star.dataset.projectId;
             if (ui.connectingFrom) completeConnection(projectId);
-            else selectProject(projectId);
+            else activateProject(projectId);
             return;
           }
 
           const nearestProject = findNearestProjectAt(event.clientX, event.clientY);
           if (nearestProject) {
             if (ui.connectingFrom) completeConnection(nearestProject.id);
-            else selectProject(nearestProject.id);
+            else activateProject(nearestProject.id);
             return;
           }
 
