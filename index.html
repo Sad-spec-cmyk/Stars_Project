@@ -200,6 +200,14 @@
       resize: vertical;
     }
 
+    .check-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dce9ff;
+      font-size: 0.92rem;
+    }
+
     .field input:focus,
     .field textarea:focus,
     .field select:focus {
@@ -641,6 +649,13 @@
       align-items: start;
     }
 
+    .file-row {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
     .image-preview {
       display: grid;
       gap: 10px;
@@ -652,6 +667,19 @@
       background: rgba(255, 255, 255, 0.045);
       color: var(--muted);
       text-align: center;
+    }
+
+    .file-preview {
+      display: grid;
+      gap: 8px;
+      min-height: 160px;
+      align-content: start;
+      overflow: auto;
+      border: 1px dashed rgba(180, 212, 255, 0.24);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--muted);
+      padding: 10px;
     }
 
     .image-preview.has-images {
@@ -688,6 +716,37 @@
       color: #fff;
     }
 
+    .image-note-input {
+      width: calc(100% - 12px);
+      min-height: 30px;
+      margin: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.58);
+      color: #fff;
+      padding: 6px 8px;
+      font-size: 0.74rem;
+    }
+
+    .file-item,
+    .detail-file-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 8px;
+      color: #fff;
+    }
+
+    .file-item small,
+    .detail-file-item small {
+      display: block;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
     .toast {
       position: absolute;
       left: 50%;
@@ -710,6 +769,98 @@
     .toast.show {
       opacity: 1;
       transform: translate(-50%, 0);
+    }
+
+    .viewer-modal {
+      background: rgba(0, 0, 0, 0.84);
+    }
+
+    .viewer-card {
+      display: grid;
+      width: min(1040px, 100%);
+      max-height: calc(100dvh - 36px);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(0, 0, 0, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .viewer-stage {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 54dvh;
+      padding: 14px;
+    }
+
+    .viewer-stage img {
+      width: 100%;
+      max-height: 66dvh;
+      object-fit: contain;
+      background: #050505;
+    }
+
+    .viewer-nav {
+      width: 46px;
+      min-width: 46px;
+      height: 64px;
+      border-radius: 0;
+      font-size: 2rem;
+    }
+
+    .viewer-info {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .viewer-info span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .viewer-info textarea {
+      width: 100%;
+      min-height: 82px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.065);
+      color: #fff;
+      padding: 10px;
+      resize: vertical;
+    }
+
+    .wall-card {
+      width: min(980px, 100%);
+    }
+
+    .photo-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+      gap: 10px;
+      max-height: calc(100dvh - 150px);
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .photo-wall button,
+    .details-media button {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+    }
+
+    .photo-wall img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     @keyframes pulse {
@@ -821,7 +972,8 @@
       .inline-actions,
       .form-grid.two,
       .form-grid.three,
-      .image-row {
+      .image-row,
+      .file-row {
         grid-template-columns: 1fr;
       }
 
@@ -1113,8 +1265,32 @@
       box-shadow: 0 0 18px #fff, 0 0 58px rgba(255, 109, 134, 0.62), 0 0 110px rgba(255, 109, 134, 0.32);
     }
 
+    .star-node.favorite .star-core {
+      box-shadow:
+        0 0 20px #fff,
+        0 0 48px color-mix(in srgb, var(--star-color) 78%, transparent),
+        0 0 96px color-mix(in srgb, var(--star-color) 38%, transparent);
+    }
+
+    .star-node.favorite .star-orb::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.82);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
     .star-node.type-button .star-core {
       border-radius: 8px;
+    }
+
+    .star-node.type-list .star-core {
+      border-radius: 4px;
+    }
+
+    .star-node.type-file .star-core {
+      border-radius: 50% 50% 8px 8px;
     }
 
     .star-node.type-storage .star-progress-ring {
@@ -1132,6 +1308,56 @@
 
     .star-node.level-main .star-label {
       border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .star-markers {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      display: flex;
+      gap: 4px;
+      max-width: 180px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .star-marker {
+      max-width: 54px;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--tag-color) 78%, transparent);
+      background: color-mix(in srgb, var(--tag-color) 22%, rgba(0, 0, 0, 0.74));
+      color: #fff;
+      padding: 2px 5px;
+      font-size: 0.62rem;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .star-node::after {
+      content: attr(data-profile);
+      position: absolute;
+      left: 50%;
+      top: -84px;
+      z-index: 20;
+      width: 210px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(0, 0, 0, 0.86);
+      color: #fff;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+      white-space: pre-line;
+      transform: translateX(-50%) translateY(6px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .star-node:hover::after,
+    .star-node:focus-visible::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .star-node.deadline-soon .star-core,
@@ -1650,6 +1876,11 @@
             <select id="projectType" name="starType" required></select>
           </div>
 
+          <label class="check-field">
+            <input id="projectFavorite" name="favorite" type="checkbox" />
+            <span>Обране / закріпити зірку</span>
+          </label>
+
           <div class="field type-hidden" data-star-field="button">
             <label for="projectUrl">Посилання</label>
             <input id="projectUrl" name="url" type="text" inputmode="url" maxlength="500" placeholder="https://example.com" />
@@ -1718,7 +1949,7 @@
             </div>
           </div>
 
-          <div class="image-row">
+          <div class="image-row" data-star-field="media">
             <div class="image-preview" id="imagePreview">
               <span>Фото проєкту</span>
             </div>
@@ -1730,6 +1961,20 @@
               </div>
               <p class="hint" id="imageHint">Можна додати кілька фото. Збереження обмежене localStorage, тому фото стискаються.</p>
               <button class="btn ghost" id="removeImageBtn" type="button">Прибрати всі фото</button>
+            </div>
+          </div>
+
+          <div class="file-row type-hidden" data-star-field="files">
+            <div class="file-preview" id="filePreview">
+              <span>Файлів ще немає</span>
+            </div>
+            <div class="primary-actions">
+              <div class="field">
+                <label for="projectFiles">Файли</label>
+                <input id="projectFiles" name="files" type="file" multiple />
+              </div>
+              <p class="hint" id="fileHint">Можна прикріпити PDF, ZIP, TXT, DOCX та інші файли.</p>
+              <button class="btn ghost" id="removeFilesBtn" type="button">Прибрати всі файли</button>
             </div>
           </div>
         </div>
@@ -1750,6 +1995,34 @@
         <button class="btn ghost" id="closeArchiveBtn" type="button">Закрити</button>
       </div>
       <div class="archive-list" id="archiveList"></div>
+    </div>
+  </div>
+
+  <div class="modal hidden viewer-modal" id="photoViewerModal" role="dialog" aria-modal="true" aria-labelledby="photoViewerTitle">
+    <div class="viewer-card">
+      <div class="modal-head">
+        <h2 id="photoViewerTitle">Фото</h2>
+        <button class="btn ghost" id="closePhotoViewerBtn" type="button">Закрити</button>
+      </div>
+      <div class="viewer-stage">
+        <button class="btn ghost viewer-nav" id="prevPhotoBtn" type="button" aria-label="Попереднє фото">‹</button>
+        <img id="photoViewerImage" alt="Фото проєкту" />
+        <button class="btn ghost viewer-nav" id="nextPhotoBtn" type="button" aria-label="Наступне фото">›</button>
+      </div>
+      <div class="viewer-info">
+        <span id="photoCounter">0 / 0</span>
+        <textarea id="photoNoteInput" maxlength="600" placeholder="Нотатка до цього фото..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="photoWallModal" role="dialog" aria-modal="true" aria-labelledby="photoWallTitle">
+    <div class="modal-card wall-card">
+      <div class="modal-head">
+        <h2 id="photoWallTitle">Стіна фото</h2>
+        <button class="btn ghost" id="closePhotoWallBtn" type="button">Закрити</button>
+      </div>
+      <div class="photo-wall" id="photoWallGrid"></div>
     </div>
   </div>
 
@@ -1789,7 +2062,9 @@
         { value: "standard", label: "Стандарт", hint: "Звичайна зірка з описом, задачами, координатами і фото." },
         { value: "storage", label: "Склад", hint: "До 100 фото без стиснення. Оригінали зберігаються в IndexedDB." },
         { value: "button", label: "Кнопка", hint: "Зірка відкриває посилання при натисканні." },
-        { value: "blank", label: "Пустишка", hint: "Тільки назва і фото. Інші поля приховані." }
+        { value: "blank", label: "Пустишка", hint: "Тільки назва і фото. Інші поля приховані." },
+        { value: "list", label: "Список", hint: "Чекліст без фото, зручний для задач." },
+        { value: "file", label: "Файл", hint: "Прикріплення PDF, ZIP, TXT, DOCX та інших файлів." }
       ];
 
       const DEFAULT_COLORS = ["#f7fbff", "#9edcff", "#a696ff", "#77f0ff", "#d7e6ff", "#b8c4ff"];
@@ -1841,6 +2116,7 @@
         projectDate: document.querySelector("#projectDate"),
         projectStatus: document.querySelector("#projectStatus"),
         projectType: document.querySelector("#projectType"),
+        projectFavorite: document.querySelector("#projectFavorite"),
         projectCategory: document.querySelector("#projectCategory"),
         projectColor: document.querySelector("#projectColor"),
         projectTags: document.querySelector("#projectTags"),
@@ -1854,10 +2130,26 @@
         projectZ: document.querySelector("#projectZ"),
         projectUrl: document.querySelector("#projectUrl"),
         projectImage: document.querySelector("#projectImage"),
+        projectFiles: document.querySelector("#projectFiles"),
         imageHint: document.querySelector("#imageHint"),
         imagePreview: document.querySelector("#imagePreview"),
+        fileHint: document.querySelector("#fileHint"),
+        filePreview: document.querySelector("#filePreview"),
         removeImageBtn: document.querySelector("#removeImageBtn"),
-        deleteProjectBtn: document.querySelector("#deleteProjectBtn")
+        removeFilesBtn: document.querySelector("#removeFilesBtn"),
+        deleteProjectBtn: document.querySelector("#deleteProjectBtn"),
+        photoViewerModal: document.querySelector("#photoViewerModal"),
+        photoViewerTitle: document.querySelector("#photoViewerTitle"),
+        closePhotoViewerBtn: document.querySelector("#closePhotoViewerBtn"),
+        prevPhotoBtn: document.querySelector("#prevPhotoBtn"),
+        nextPhotoBtn: document.querySelector("#nextPhotoBtn"),
+        photoViewerImage: document.querySelector("#photoViewerImage"),
+        photoCounter: document.querySelector("#photoCounter"),
+        photoNoteInput: document.querySelector("#photoNoteInput"),
+        photoWallModal: document.querySelector("#photoWallModal"),
+        photoWallTitle: document.querySelector("#photoWallTitle"),
+        closePhotoWallBtn: document.querySelector("#closePhotoWallBtn"),
+        photoWallGrid: document.querySelector("#photoWallGrid")
       };
 
       const ui = {
@@ -1871,6 +2163,11 @@
         editingProjectId: null,
         newProjectPosition: null,
         draftImages: [],
+        draftImageNotes: [],
+        draftFiles: [],
+        viewerProjectId: null,
+        viewerIndex: 0,
+        wallProjectId: null,
         dragging: null,
         panning: null,
         pinch: null,
@@ -1920,7 +2217,12 @@
         const starType = normalizeStarType(value);
         if (starType === "storage") return 100;
         if (starType === "blank") return 1;
+        if (starType === "list" || starType === "file") return 0;
         return 8;
+      }
+
+      function fileLimitForType(value) {
+        return normalizeStarType(value) === "file" ? 60 : 0;
       }
 
       function normalizeURL(value) {
@@ -1991,6 +2293,8 @@
       function normalizeProject(project) {
         const starType = normalizeStarType(project.starType || project.type);
         const images = getProjectImages(project).slice(0, imageLimitForType(starType));
+        const files = normalizeFiles(project.files).slice(0, fileLimitForType(starType));
+        const imageNotes = normalizeImageNotes(project.imageNotes).slice(0, images.length);
         const rawX = Number.isFinite(Number(project.x)) ? Number(project.x) : randomBetween(2000, 8000);
         const rawY = Number.isFinite(Number(project.y)) ? Number(project.y) : randomBetween(2200, 7800);
         const usesNewCoords = project.coordVersion === 2;
@@ -2009,6 +2313,8 @@
           description: starType === "blank" ? "" : String(project.description || ""),
           images,
           image: images[0] || "",
+          imageNotes,
+          files,
           createdAt: project.createdAt || todayISO(),
           status: starType === "blank" ? "planned" : (STATUS_OPTIONS.some((item) => item.value === project.status) ? project.status : "planned"),
           category: starType === "blank" ? "Пустишка" : (normalizeText(project.category) || "Без категорії"),
@@ -2023,6 +2329,7 @@
           progress: starType === "blank" ? 0 : progress,
           tasks: starType === "blank" ? [] : normalizeTasks(project.tasks),
           url: starType === "button" ? normalizeURL(project.url) : "",
+          favorite: Boolean(project.favorite),
           archived: Boolean(project.archived)
         };
       }
@@ -2041,6 +2348,29 @@
           };
         }
         return null;
+      }
+
+      function normalizeFileEntry(file) {
+        if (!file) return null;
+        if (file.kind === "file" && typeof File !== "undefined" && file.file instanceof File) return file;
+        if ((file.kind === "file-db" || file.kind === "db") && file.id) {
+          return {
+            kind: "file-db",
+            id: String(file.id),
+            name: String(file.name || "file"),
+            type: String(file.type || "application/octet-stream"),
+            size: Number(file.size) || 0
+          };
+        }
+        return null;
+      }
+
+      function normalizeFiles(files) {
+        return Array.isArray(files) ? files.map(normalizeFileEntry).filter(Boolean) : [];
+      }
+
+      function normalizeImageNotes(notes) {
+        return Array.isArray(notes) ? notes.map((note) => String(note || "").slice(0, 600)) : [];
       }
 
       function getProjectImages(project) {
@@ -2180,25 +2510,43 @@
         const starType = currentStarType();
         const isBlank = starType === "blank";
         const isButton = starType === "button";
+        const isList = starType === "list";
+        const isFile = starType === "file";
         const limit = imageLimitForType(starType);
+        const fileLimit = fileLimitForType(starType);
         const typeInfo = STAR_TYPES.find((item) => item.value === starType);
 
         document.querySelectorAll("[data-star-field]").forEach((field) => {
           const mode = field.dataset.starField;
-          field.classList.toggle("type-hidden", (mode === "full" && isBlank) || (mode === "button" && !isButton));
+          field.classList.toggle("type-hidden",
+            (mode === "full" && isBlank) ||
+            (mode === "button" && !isButton) ||
+            (mode === "media" && (isList || isFile)) ||
+            (mode === "files" && !isFile)
+          );
         });
 
         els.projectUrl.required = isButton;
         els.projectUrl.disabled = !isButton;
         if (!isButton) els.projectUrl.value = "";
         els.projectImage.multiple = limit > 1;
+        els.projectImage.disabled = limit === 0;
+        els.projectFiles.disabled = fileLimit === 0;
         els.imageHint.textContent = `${typeInfo?.hint || ""} Ліміт фото: ${limit}.`;
+        els.fileHint.textContent = `${typeInfo?.hint || ""} Ліміт файлів: ${fileLimit}.`;
 
         if (ui.draftImages.length > limit) {
           const removed = ui.draftImages.splice(limit);
+          ui.draftImageNotes.splice(limit);
           cleanupDraftFileUrls(removed);
           updateImagePreview();
           if (!silent) showToast(`Для цього типу залишено ${limit} фото.`);
+        }
+        if (ui.draftFiles.length > fileLimit) {
+          const removed = ui.draftFiles.splice(fileLimit);
+          cleanupDraftFileUrls(removed);
+          updateFilePreview();
+          if (!silent) showToast(`Для цього типу залишено ${fileLimit} файлів.`);
         }
       }
 
@@ -2280,6 +2628,19 @@
         return "";
       }
 
+      function tagColor(tag) {
+        const palette = ["#7dd3fc", "#a7f3d0", "#fde68a", "#fca5a5", "#c4b5fd", "#f9a8d4", "#93c5fd"];
+        let hash = 0;
+        String(tag || "").split("").forEach((char) => {
+          hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+        });
+        return palette[hash % palette.length];
+      }
+
+      function mapTagsForProject(project) {
+        return (project.tags || []).slice(0, 3);
+      }
+
       function renderStars(visibleIds) {
         const fragment = document.createDocumentFragment();
 
@@ -2291,13 +2652,16 @@
           star.classList.add(`priority-${project.priority}`);
           star.classList.add(`level-${project.level}`);
           star.classList.add(`type-${project.starType}`);
+          if (project.favorite) star.classList.add("favorite");
           star.dataset.projectId = project.id;
+          star.dataset.profile = `${project.title}\n${starTypeLabel(project.starType)} · ${getProjectImages(project).length} фото · ${statusLabel(project.status)}`;
           star.style.setProperty("--x", `${coordToPercent(project.x)}%`);
           star.style.setProperty("--y", `${coordToPercent(project.y)}%`);
           star.style.setProperty("--star-color", project.color);
           star.style.setProperty("--depth", `${project.z}px`);
           star.style.setProperty("--z-scale", `${1 + project.z / 700}`);
           star.style.setProperty("--progress", `${project.progress * 3.6}deg`);
+          star.style.zIndex = project.favorite ? "999" : String(2 + Math.round(project.z + 220));
           star.setAttribute("aria-label", project.starType === "button" && project.url
             ? `Відкрити посилання ${project.title}`
             : `Відкрити проєкт ${project.title}`);
@@ -2323,10 +2687,20 @@
           label.className = "star-label";
           label.textContent = project.title;
 
+          const markers = document.createElement("span");
+          markers.className = "star-markers";
+          mapTagsForProject(project).forEach((tag) => {
+            const marker = document.createElement("span");
+            marker.className = "star-marker";
+            marker.style.setProperty("--tag-color", tagColor(tag));
+            marker.textContent = tag;
+            markers.append(marker);
+          });
+
           star.addEventListener("pointerdown", handleStarPointerDown);
           star.addEventListener("click", handleStarClick);
 
-          star.append(orb, label);
+          star.append(orb, label, markers);
           fragment.append(star);
         });
 
@@ -2501,10 +2875,28 @@
           .map((image, index) => {
             const src = getImageSrc(image, renderDetails);
             return src
-              ? `<img src="${escapeHTML(src)}" alt="Фото ${index + 1} проєкту ${escapeHTML(selectedProject.title)}">`
+              ? `<button type="button" data-action="open-photo" data-photo-index="${index}"><img src="${escapeHTML(src)}" alt="Фото ${index + 1} проєкту ${escapeHTML(selectedProject.title)}"></button>`
               : `<div class="image-loading">Фото ${index + 1}</div>`;
           })
           .join("");
+        const wallButtonHTML = selectedProject.starType === "storage" && images.length
+          ? `<button class="btn ghost" type="button" data-action="open-photo-wall">Стіна фото (${images.length})</button>`
+          : "";
+        const files = normalizeFiles(selectedProject.files);
+        const filesHTML = files.length
+          ? `<div class="task-list">
+              <h3>Файли</h3>
+              ${files.map((file, index) => `
+                <div class="detail-file-item">
+                  <div>
+                    <strong>${escapeHTML(file.name)}</strong>
+                    <small>${escapeHTML(file.type)} · ${formatBytes(file.size)}</small>
+                  </div>
+                  <button class="btn ghost" type="button" data-action="download-file" data-file-index="${index}">Відкрити</button>
+                </div>
+              `).join("")}
+            </div>`
+          : "";
         const tagsHTML = selectedProject.tags
           .map((tag) => `<span class="chip">#${escapeHTML(tag)}</span>`)
           .join("");
@@ -2546,6 +2938,7 @@
         const buttonLinkHTML = selectedProject.starType === "button" && selectedProject.url
           ? `<a class="btn primary" href="${escapeHTML(selectedProject.url)}" target="_blank" rel="noopener">Відкрити посилання</a>`
           : "";
+        const favoriteText = selectedProject.favorite ? "Прибрати з обраного" : "В обране";
 
         els.detailsPanel.classList.remove("hidden");
         els.detailsPanel.innerHTML = `
@@ -2573,11 +2966,14 @@
 
             ${detailsFieldsHTML}
             ${buttonLinkHTML}
+            ${wallButtonHTML}
+            ${filesHTML}
 
             <div class="inline-actions">
               <button class="btn primary" type="button" data-action="connect-project">З’єднати</button>
               <button class="btn ghost" type="button" data-action="edit-project">Редагувати</button>
             </div>
+            <button class="btn ghost" type="button" data-action="toggle-favorite">${favoriteText}</button>
             <button class="btn ghost" type="button" data-action="clear-selection">Закрити картку</button>
             <button class="btn danger" type="button" data-action="delete-project">В архів</button>
           </div>
@@ -2596,6 +2992,8 @@
         const project = state.projects.find((item) => item.id === projectId);
         ui.editingProjectId = project?.id || null;
         ui.draftImages = getProjectImages(project);
+        ui.draftImageNotes = normalizeImageNotes(project?.imageNotes).slice(0, ui.draftImages.length);
+        ui.draftFiles = normalizeFiles(project?.files);
 
         els.modalTitle.textContent = project ? "Редагувати проєкт" : "Новий проєкт";
         els.projectTitle.value = project?.title || "";
@@ -2603,6 +3001,7 @@
         els.projectDate.value = project?.createdAt || todayISO();
         els.projectStatus.value = project?.status || "planned";
         els.projectType.value = project?.starType || "standard";
+        els.projectFavorite.checked = Boolean(project?.favorite);
         els.projectUrl.value = project?.url || "";
         els.projectCategory.value = project?.category === "Без категорії" ? "" : (project?.category || "");
         els.projectColor.value = project?.color || randomColor();
@@ -2616,9 +3015,11 @@
         els.projectY.value = project ? Math.round(project.y) : (ui.newProjectPosition?.y ?? Math.round(WORLD_MAX / 2));
         els.projectZ.value = project ? Math.round(project.z) : (ui.newProjectPosition?.z ?? 0);
         els.projectImage.value = "";
+        els.projectFiles.value = "";
         els.deleteProjectBtn.hidden = !project;
         updateStarTypeUI({ silent: true });
         updateImagePreview();
+        updateFilePreview();
 
         els.projectModal.classList.remove("hidden");
         window.setTimeout(() => els.projectTitle.focus(), 0);
@@ -2626,10 +3027,12 @@
 
       function closeProjectModal() {
         els.projectModal.classList.add("hidden");
-        cleanupDraftFileUrls();
+        cleanupDraftFileUrls([...ui.draftImages, ...ui.draftFiles]);
         ui.editingProjectId = null;
         ui.newProjectPosition = null;
         ui.draftImages = [];
+        ui.draftImageNotes = [];
+        ui.draftFiles = [];
         els.projectForm.reset();
       }
 
@@ -2667,10 +3070,55 @@
           removeButton.textContent = "×";
 
           thumb.append(removeButton);
+
+          const noteInput = document.createElement("input");
+          noteInput.className = "image-note-input";
+          noteInput.type = "text";
+          noteInput.maxLength = 600;
+          noteInput.placeholder = "Нотатка...";
+          noteInput.value = ui.draftImageNotes[index] || "";
+          noteInput.dataset.imageNote = String(index);
+          thumb.append(noteInput);
           fragment.append(thumb);
         });
 
         els.imagePreview.replaceChildren(fragment);
+      }
+
+      function formatBytes(size) {
+        const bytes = Number(size) || 0;
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1048576) return `${Math.round(bytes / 1024)} KB`;
+        return `${(bytes / 1048576).toFixed(1)} MB`;
+      }
+
+      function updateFilePreview() {
+        if (!ui.draftFiles.length) {
+          els.filePreview.innerHTML = "<span>Файлів ще немає</span>";
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        ui.draftFiles.forEach((file, index) => {
+          const item = document.createElement("div");
+          item.className = "file-item";
+          const text = document.createElement("div");
+          const name = document.createElement("strong");
+          name.textContent = file.name || `Файл ${index + 1}`;
+          const meta = document.createElement("small");
+          meta.textContent = formatBytes(file.size);
+          text.append(name, meta);
+
+          const removeButton = document.createElement("button");
+          removeButton.className = "btn ghost";
+          removeButton.type = "button";
+          removeButton.dataset.removeFile = String(index);
+          removeButton.textContent = "×";
+          item.append(text, removeButton);
+          fragment.append(item);
+        });
+
+        els.filePreview.replaceChildren(fragment);
       }
 
       async function readImageAsDataURL(file) {
@@ -2804,6 +3252,27 @@
         };
       }
 
+      async function saveProjectFileToDB(file) {
+        const id = uid("file");
+        const record = {
+          id,
+          blob: file,
+          name: file.name || "file",
+          type: file.type || "application/octet-stream",
+          size: file.size || 0,
+          createdAt: Date.now()
+        };
+
+        await withImageStore("readwrite", (store) => store.put(record));
+        return {
+          kind: "file-db",
+          id,
+          name: record.name,
+          type: record.type,
+          size: record.size
+        };
+      }
+
       async function getImageBlob(id) {
         const record = await withImageStore("readonly", (store) => store.get(id));
         return record?.blob || null;
@@ -2875,11 +3344,31 @@
         return prepared.slice(0, limit);
       }
 
+      async function prepareDraftFilesForSave(starType) {
+        const limit = fileLimitForType(starType);
+        const prepared = [];
+
+        for (const file of ui.draftFiles.slice(0, limit)) {
+          const entry = normalizeFileEntry(file);
+          if (!entry) continue;
+          if (entry.kind === "file") prepared.push(await saveProjectFileToDB(entry.file));
+          else prepared.push(entry);
+        }
+
+        return prepared.slice(0, limit);
+      }
+
       function getDBImageIds(images) {
         return images
           .map(normalizeImageEntry)
           .filter((image) => image?.kind === "db")
           .map((image) => image.id);
+      }
+
+      function getDBFileIds(files) {
+        return normalizeFiles(files)
+          .filter((file) => file.kind === "file-db")
+          .map((file) => file.id);
       }
 
       function deleteDBImagesByIds(ids) {
@@ -2918,13 +3407,32 @@
         return null;
       }
 
+      async function exportFileEntry(file) {
+        const entry = normalizeFileEntry(file);
+        if (!entry) return null;
+        if (entry.kind === "file-db") {
+          const blob = await getImageBlob(entry.id);
+          if (!blob) return entry;
+          return {
+            kind: "file-data",
+            name: entry.name || "file",
+            type: blob.type || entry.type || "application/octet-stream",
+            size: blob.size || entry.size || 0,
+            dataURL: await blobToDataURL(blob)
+          };
+        }
+        return null;
+      }
+
       async function buildExportPayload() {
         const projects = await Promise.all(state.projects.map(async (project) => {
           const images = (await Promise.all(getProjectImages(project).map(exportImageEntry))).filter(Boolean);
+          const files = (await Promise.all(normalizeFiles(project.files).map(exportFileEntry))).filter(Boolean);
           return {
             ...project,
             images,
-            image: images[0] || ""
+            image: images[0] || "",
+            files
           };
         }));
 
@@ -2979,18 +3487,34 @@
         return normalizeImageEntry(image);
       }
 
+      async function importFileEntry(file, importedDBIds) {
+        if (!file) return null;
+        if (file.kind === "file-data" && file.dataURL) {
+          const blob = await dataURLToBlob(file.dataURL);
+          const saved = await saveProjectFileToDB(new File([blob], file.name || "file", { type: blob.type || file.type || "application/octet-stream" }));
+          importedDBIds.push(saved.id);
+          return saved;
+        }
+        return normalizeFileEntry(file);
+      }
+
       async function normalizeImportedProject(project, importedDBIds) {
         const starType = normalizeStarType(project.starType || project.type);
         const rawImages = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
         const images = (await Promise.all(rawImages.map((image) => importImageEntry(image, starType, importedDBIds))))
           .filter(Boolean)
           .slice(0, imageLimitForType(starType));
+        const files = (await Promise.all((Array.isArray(project.files) ? project.files : []).map((file) => importFileEntry(file, importedDBIds))))
+          .filter(Boolean)
+          .slice(0, fileLimitForType(starType));
 
         return normalizeProject({
           ...project,
           starType,
           images,
-          image: images[0] || ""
+          image: images[0] || "",
+          files,
+          imageNotes: normalizeImageNotes(project.imageNotes).slice(0, images.length)
         });
       }
 
@@ -3008,7 +3532,10 @@
         const confirmed = window.confirm("Імпорт замінить поточну карту даними з JSON. Продовжити?");
         if (!confirmed) return;
 
-        const oldDBIds = getDBImageIds(state.projects.flatMap((project) => getProjectImages(project)));
+        const oldDBIds = [
+          ...getDBImageIds(state.projects.flatMap((project) => getProjectImages(project))),
+          ...getDBFileIds(state.projects.flatMap((project) => project.files || []))
+        ];
         const importedDBIds = [];
 
         try {
@@ -3041,7 +3568,10 @@
           closeArchive();
           render();
 
-          const nextDBIds = new Set(getDBImageIds(state.projects.flatMap((project) => getProjectImages(project))));
+          const nextDBIds = new Set([
+            ...getDBImageIds(state.projects.flatMap((project) => getProjectImages(project))),
+            ...getDBFileIds(state.projects.flatMap((project) => project.files || []))
+          ]);
           deleteDBImagesByIds(oldDBIds.filter((id) => !nextDBIds.has(id)));
           showToast(`Імпортовано зірок: ${projects.length}.`);
         } catch (error) {
@@ -3071,10 +3601,12 @@
         }
 
         let images = [];
+        let files = [];
         try {
           images = await prepareDraftImagesForSave(starType);
+          files = await prepareDraftFilesForSave(starType);
         } catch (error) {
-          showToast("Не вдалося зберегти фото без втрати якості. Перевірте доступ до IndexedDB.");
+          showToast("Не вдалося зберегти вкладення. Перевірте доступ до IndexedDB.");
           return;
         }
 
@@ -3089,6 +3621,8 @@
           description: starType === "blank" ? "" : els.projectDescription.value.trim(),
           images,
           image: images[0] || "",
+          imageNotes: ui.draftImageNotes.slice(0, images.length),
+          files,
           createdAt: els.projectDate.value || todayISO(),
           status: starType === "blank" ? "planned" : els.projectStatus.value,
           category: starType === "blank" ? "Пустишка" : (normalizeText(els.projectCategory.value) || "Без категорії"),
@@ -3100,6 +3634,7 @@
           level: starType === "blank" ? "task" : (els.projectLevel.value || "main"),
           tasks: starType === "blank" ? [] : normalizeTasks(els.projectTasks.value),
           url,
+          favorite: els.projectFavorite.checked,
           coordVersion: 2,
           x,
           y,
@@ -3108,13 +3643,16 @@
 
         if (existing) {
           const oldDBIds = getDBImageIds(getProjectImages(existing));
+          const oldFileIds = getDBFileIds(existing.files);
           const nextDBIds = new Set(getDBImageIds(payload.images));
+          const nextFileIds = new Set(getDBFileIds(payload.files));
           const removedDBIds = oldDBIds.filter((id) => !nextDBIds.has(id));
+          const removedFileIds = oldFileIds.filter((id) => !nextFileIds.has(id));
           Object.assign(existing, payload);
           ui.selectedProjectId = existing.id;
           ui.selectedLinkId = null;
           closeProjectModal();
-          if (persistAndRender("Проєкт оновлено.")) deleteDBImagesByIds(removedDBIds);
+          if (persistAndRender("Проєкт оновлено.")) deleteDBImagesByIds([...removedDBIds, ...removedFileIds]);
           return;
         }
 
@@ -3805,7 +4343,7 @@
         const confirmed = window.confirm(`Назавжди видалити проєкт "${project.title}"? Цю дію не можна скасувати.`);
         if (!confirmed) return;
 
-        const removedDBIds = getDBImageIds(getProjectImages(project));
+        const removedDBIds = [...getDBImageIds(getProjectImages(project)), ...getDBFileIds(project.files)];
         state.projects = state.projects.filter((item) => item.id !== projectId);
         state.links = state.links.filter((link) => link.from !== projectId && link.to !== projectId);
 
@@ -3826,6 +4364,129 @@
         }
       }
 
+      function getViewerProject() {
+        return state.projects.find((project) => project.id === ui.viewerProjectId);
+      }
+
+      function saveCurrentPhotoNote() {
+        const project = getViewerProject();
+        if (!project) return;
+        project.imageNotes ||= [];
+        project.imageNotes[ui.viewerIndex] = els.photoNoteInput.value;
+        saveState();
+        renderDetails();
+      }
+
+      function renderPhotoViewer() {
+        const project = getViewerProject();
+        const images = getProjectImages(project);
+        if (!project || !images.length) {
+          closePhotoViewer();
+          return;
+        }
+
+        ui.viewerIndex = clamp(ui.viewerIndex, 0, images.length - 1);
+        const src = getImageSrc(images[ui.viewerIndex], renderPhotoViewer);
+        els.photoViewerTitle.textContent = project.title;
+        els.photoCounter.textContent = `${ui.viewerIndex + 1} / ${images.length}`;
+        els.photoNoteInput.value = normalizeImageNotes(project.imageNotes)[ui.viewerIndex] || "";
+        els.photoViewerImage.src = src || "";
+        els.photoViewerImage.alt = `Фото ${ui.viewerIndex + 1} проєкту ${project.title}`;
+        els.prevPhotoBtn.disabled = images.length <= 1;
+        els.nextPhotoBtn.disabled = images.length <= 1;
+      }
+
+      function openPhotoViewer(projectId, index = 0) {
+        ui.viewerProjectId = projectId;
+        ui.viewerIndex = Number(index) || 0;
+        els.photoViewerModal.classList.remove("hidden");
+        renderPhotoViewer();
+      }
+
+      function closePhotoViewer() {
+        if (!els.photoViewerModal.classList.contains("hidden")) saveCurrentPhotoNote();
+        els.photoViewerModal.classList.add("hidden");
+        els.photoViewerImage.removeAttribute("src");
+        ui.viewerProjectId = null;
+        ui.viewerIndex = 0;
+      }
+
+      function stepPhoto(direction) {
+        const project = getViewerProject();
+        const length = getProjectImages(project).length;
+        if (!length) return;
+        saveCurrentPhotoNote();
+        ui.viewerIndex = (ui.viewerIndex + direction + length) % length;
+        renderPhotoViewer();
+      }
+
+      function openPhotoWall(projectId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        const images = getProjectImages(project);
+        if (!project || !images.length) return;
+        ui.wallProjectId = projectId;
+        els.photoWallTitle.textContent = `Стіна фото: ${project.title}`;
+        renderPhotoWall();
+        els.photoWallModal.classList.remove("hidden");
+      }
+
+      function renderPhotoWall() {
+        const project = state.projects.find((item) => item.id === ui.wallProjectId);
+        const images = getProjectImages(project);
+        const fragment = document.createDocumentFragment();
+        images.forEach((image, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.dataset.wallPhotoIndex = String(index);
+          const src = getImageSrc(image, renderPhotoWall);
+          if (src) {
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = `Фото ${index + 1}`;
+            button.append(img);
+          } else {
+            const loading = document.createElement("span");
+            loading.className = "image-loading";
+            loading.textContent = `Фото ${index + 1}`;
+            button.append(loading);
+          }
+          fragment.append(button);
+        });
+        els.photoWallGrid.replaceChildren(fragment);
+      }
+
+      function closePhotoWall() {
+        els.photoWallModal.classList.add("hidden");
+        els.photoWallGrid.innerHTML = "";
+        ui.wallProjectId = null;
+      }
+
+      async function downloadProjectFile(projectId, index) {
+        const project = state.projects.find((item) => item.id === projectId);
+        const file = normalizeFiles(project?.files)[Number(index)];
+        if (!file) return;
+        const blob = await getImageBlob(file.id);
+        if (!blob) {
+          showToast("Файл не знайдено.");
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name || "file";
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function toggleFavorite(projectId) {
+        const project = state.projects.find((item) => item.id === projectId);
+        if (!project) return;
+        project.favorite = !project.favorite;
+        persistAndRender(project.favorite ? "Зірку додано в обране." : "Зірку прибрано з обраного.");
+      }
+
       function handleDetailsAction(event) {
         const action = event.target.closest("[data-action]")?.dataset.action;
         if (!action) return;
@@ -3841,6 +4502,10 @@
         if (action === "add-task" && projectId) addTaskFromDetails(projectId);
         if (action === "toggle-task" && projectId) toggleTask(projectId, event.target.dataset.taskId, event.target.checked);
         if (action === "delete-task" && projectId) deleteTask(projectId, event.target.closest("[data-task-id]")?.dataset.taskId);
+        if (action === "toggle-favorite" && projectId) toggleFavorite(projectId);
+        if (action === "open-photo" && projectId) openPhotoViewer(projectId, event.target.closest("[data-photo-index]")?.dataset.photoIndex);
+        if (action === "open-photo-wall" && projectId) openPhotoWall(projectId);
+        if (action === "download-file" && projectId) downloadProjectFile(projectId, event.target.closest("[data-file-index]")?.dataset.fileIndex);
       }
 
       function handleDetailsChange(event) {
@@ -3899,6 +4564,8 @@
 
         if (event.key === "Escape") {
           stopPresentation(false);
+          if (!els.photoViewerModal.classList.contains("hidden")) closePhotoViewer();
+          if (!els.photoWallModal.classList.contains("hidden")) closePhotoWall();
           if (!els.projectModal.classList.contains("hidden")) closeProjectModal();
           if (!els.archiveModal.classList.contains("hidden")) closeArchive();
           ui.connectingFrom = null;
@@ -3918,6 +4585,11 @@
         if ((event.key === "Delete" || event.key === "Backspace") && !isTyping && ui.selectedLinkId) {
           event.preventDefault();
           deleteLink(ui.selectedLinkId);
+        }
+
+        if (!els.photoViewerModal.classList.contains("hidden") && !isTyping) {
+          if (event.key === "ArrowLeft") stepPhoto(-1);
+          if (event.key === "ArrowRight") stepPhoto(1);
         }
       }
 
@@ -3956,24 +4628,67 @@
             ? selectedFiles.map(createDraftFileImage)
             : await Promise.all(selectedFiles.map(readImageAsDataURL));
           ui.draftImages = [...ui.draftImages, ...newImages].slice(0, imageLimit);
+          ui.draftImageNotes = [...ui.draftImageNotes, ...newImages.map(() => "")].slice(0, imageLimit);
           els.projectImage.value = "";
           updateImagePreview();
           showToast(`Додано фото: ${newImages.length}.`);
         });
 
+        els.projectFiles.addEventListener("change", () => {
+          const files = Array.from(els.projectFiles.files || []);
+          if (!files.length) return;
+          const fileLimit = fileLimitForType(currentStarType());
+          const freeSlots = Math.max(0, fileLimit - ui.draftFiles.length);
+          const selectedFiles = files.slice(0, freeSlots);
+
+          if (!selectedFiles.length) {
+            showToast(`У цьому типі зірки максимум ${fileLimit} файлів.`);
+            els.projectFiles.value = "";
+            return;
+          }
+
+          ui.draftFiles = [...ui.draftFiles, ...selectedFiles.map(createDraftFileImage)].slice(0, fileLimit);
+          els.projectFiles.value = "";
+          updateFilePreview();
+          showToast(`Додано файлів: ${selectedFiles.length}.`);
+        });
+
         els.removeImageBtn.addEventListener("click", () => {
           cleanupDraftFileUrls();
           ui.draftImages = [];
+          ui.draftImageNotes = [];
           els.projectImage.value = "";
           updateImagePreview();
+        });
+
+        els.removeFilesBtn.addEventListener("click", () => {
+          cleanupDraftFileUrls(ui.draftFiles);
+          ui.draftFiles = [];
+          els.projectFiles.value = "";
+          updateFilePreview();
         });
 
         els.imagePreview.addEventListener("click", (event) => {
           const index = event.target.closest("[data-remove-image]")?.dataset.removeImage;
           if (index === undefined) return;
           const [removed] = ui.draftImages.splice(Number(index), 1);
+          ui.draftImageNotes.splice(Number(index), 1);
           cleanupDraftFileUrls([removed]);
           updateImagePreview();
+        });
+
+        els.imagePreview.addEventListener("input", (event) => {
+          const index = event.target.dataset.imageNote;
+          if (index === undefined) return;
+          ui.draftImageNotes[Number(index)] = event.target.value;
+        });
+
+        els.filePreview.addEventListener("click", (event) => {
+          const index = event.target.closest("[data-remove-file]")?.dataset.removeFile;
+          if (index === undefined) return;
+          const [removed] = ui.draftFiles.splice(Number(index), 1);
+          cleanupDraftFileUrls([removed]);
+          updateFilePreview();
         });
 
         els.searchInput.addEventListener("input", handleSearchInput);
@@ -4023,6 +4738,17 @@
           await importJSONFile(file);
         });
         els.clearFocusBtn.addEventListener("click", clearSelection);
+
+        els.closePhotoViewerBtn.addEventListener("click", closePhotoViewer);
+        els.prevPhotoBtn.addEventListener("click", () => stepPhoto(-1));
+        els.nextPhotoBtn.addEventListener("click", () => stepPhoto(1));
+        els.photoNoteInput.addEventListener("change", saveCurrentPhotoNote);
+        els.closePhotoWallBtn.addEventListener("click", closePhotoWall);
+        els.photoWallGrid.addEventListener("click", (event) => {
+          const index = event.target.closest("[data-wall-photo-index]")?.dataset.wallPhotoIndex;
+          if (index === undefined || !ui.wallProjectId) return;
+          openPhotoViewer(ui.wallProjectId, index);
+        });
 
         els.minimap.addEventListener("click", (event) => {
           const rect = els.minimap.getBoundingClientRect();
