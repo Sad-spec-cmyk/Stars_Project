@@ -484,7 +484,7 @@
       right: 16px;
       top: 16px;
       bottom: auto;
-      z-index: 10;
+      z-index: 45;
       width: min(420px, calc(100% - 32px));
       max-height: calc(100dvh - 190px);
       overflow-y: auto;
@@ -1202,6 +1202,121 @@
       box-shadow: 0 0 18px rgba(121, 204, 255, 0.22);
     }
 
+    .galaxy-tools {
+      position: absolute;
+      top: 16px;
+      left: 392px;
+      z-index: 36;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: min(390px, calc(100% - 424px));
+      pointer-events: auto;
+    }
+
+    .galaxy-tools select {
+      min-width: 0;
+      flex: 1 1 auto;
+      min-height: 36px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(0, 0, 0, 0.82);
+      color: #fff;
+      padding: 7px 10px;
+    }
+
+    .galaxy-tools .btn {
+      width: 36px;
+      min-width: 36px;
+      height: 36px;
+      min-height: 36px;
+      padding: 0;
+      border-radius: 0;
+      background: rgba(0, 0, 0, 0.82);
+    }
+
+    .map-stats-panel {
+      position: absolute;
+      right: 16px;
+      bottom: 156px;
+      z-index: 34;
+      display: grid;
+      gap: 7px;
+      width: min(230px, calc(100% - 32px));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.78);
+      padding: 10px;
+      color: #fff;
+      backdrop-filter: blur(16px);
+    }
+
+    .details:not(.hidden) ~ .map-stats-panel {
+      display: none;
+    }
+
+    .map-stats-panel h3 {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .map-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .map-stat {
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 7px;
+    }
+
+    .map-stat strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .map-stat span {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .context-menu {
+      position: fixed;
+      z-index: 160;
+      display: grid;
+      min-width: 180px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(0, 0, 0, 0.92);
+      box-shadow: var(--shadow);
+      padding: 6px;
+    }
+
+    .context-menu.hidden {
+      display: none;
+    }
+
+    .context-menu button {
+      min-height: 34px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      text-align: left;
+      padding: 7px 9px;
+    }
+
+    .context-menu button:hover,
+    .context-menu button:focus-visible {
+      background: rgba(255, 255, 255, 0.1);
+      outline: none;
+    }
+
+    .context-menu button:disabled {
+      color: rgba(255, 255, 255, 0.34);
+      cursor: not-allowed;
+    }
+
     .minimap {
       position: absolute;
       right: 16px;
@@ -1291,6 +1406,15 @@
 
     .star-node.type-file .star-core {
       border-radius: 50% 50% 8px 8px;
+    }
+
+    .star-node.type-day .star-core {
+      border-radius: 50% 50% 50% 8px;
+    }
+
+    .star-node.type-collection .star-core {
+      border-radius: 3px;
+      box-shadow: 0 0 16px #fff, 0 0 46px color-mix(in srgb, var(--star-color) 66%, transparent);
     }
 
     .star-node.type-storage .star-progress-ring {
@@ -1512,6 +1636,18 @@
         bottom: 10px;
         width: 148px;
         height: 104px;
+      }
+
+      .galaxy-tools {
+        top: 62px;
+        left: 10px;
+        width: min(360px, calc(100% - 20px));
+      }
+
+      .map-stats-panel {
+        right: 10px;
+        bottom: 122px;
+        width: min(220px, calc(100% - 20px));
       }
 
       .space-map {
@@ -1743,6 +1879,374 @@
       color: #9e9e9e;
       font-size: 0.86rem;
     }
+
+    @media (max-width: 760px) {
+      html,
+      body,
+      .app {
+        width: 100%;
+        height: 100dvh;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .space-map {
+        min-height: 100dvh;
+        height: 100dvh;
+        padding-top: 0;
+      }
+
+      .control-panel {
+        position: fixed;
+        top: max(10px, env(safe-area-inset-top));
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: none;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 0;
+      }
+
+      .control-panel .primary-actions {
+        display: block;
+      }
+
+      #addProjectBtn {
+        width: 46px;
+        min-width: 46px;
+        height: 46px;
+        min-height: 46px;
+      }
+
+      .control-panel .field input {
+        min-height: 46px;
+        padding: 10px 12px;
+        font-size: 16px;
+      }
+
+      .galaxy-tools {
+        position: fixed;
+        top: calc(max(10px, env(safe-area-inset-top)) + 64px);
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: none;
+        z-index: 39;
+        gap: 6px;
+      }
+
+      .galaxy-tools select,
+      .galaxy-tools .btn {
+        min-height: 42px;
+        height: 42px;
+      }
+
+      .galaxy-tools .btn {
+        width: 42px;
+        min-width: 42px;
+      }
+
+      .map-stats-panel {
+        position: fixed;
+        top: calc(max(10px, env(safe-area-inset-top)) + 114px);
+        right: 10px;
+        bottom: auto;
+        left: 10px;
+        width: auto;
+        padding: 8px;
+      }
+
+      .map-stats-panel h3 {
+        font-size: 0.68rem;
+      }
+
+      .map-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+      }
+
+      .map-stat {
+        min-width: 0;
+        padding: 6px;
+      }
+
+      .map-stat strong {
+        font-size: 0.9rem;
+      }
+
+      .map-stat span {
+        font-size: 0.66rem;
+      }
+
+      .map-tools {
+        position: fixed;
+        right: 10px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        left: 10px;
+        width: auto;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 7px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        pointer-events: auto;
+        scrollbar-width: none;
+      }
+
+      .map-tools::-webkit-scrollbar {
+        display: none;
+      }
+
+      .map-tools .btn {
+        flex: 0 0 auto;
+        min-height: 40px;
+        padding: 8px 10px;
+        white-space: nowrap;
+      }
+
+      .minimap {
+        display: none;
+      }
+
+      .details {
+        position: fixed;
+        top: calc(max(10px, env(safe-area-inset-top)) + 120px);
+        right: 10px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        left: 10px;
+        width: auto;
+        max-height: none;
+        border-radius: 0;
+      }
+
+      .details:not(.hidden) ~ .galaxy-tools,
+      .details:not(.hidden) ~ .map-tools,
+      .details:not(.hidden) ~ .minimap {
+        display: none;
+      }
+
+      body:has(.details:not(.hidden)) .control-panel {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-120%);
+      }
+
+      body:has(.details:not(.hidden)) .details {
+        top: max(10px, env(safe-area-inset-top));
+      }
+
+      .details-media {
+        height: 72px;
+      }
+
+      .details-media.gallery {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        min-height: 74px;
+      }
+
+      .details-media.gallery img:first-child {
+        grid-row: auto;
+        min-height: 64px;
+      }
+
+      .details-body {
+        padding: 10px;
+        gap: 9px;
+      }
+
+      .details h2 {
+        font-size: 1rem;
+        overflow-wrap: anywhere;
+      }
+
+      .chips {
+        gap: 6px;
+      }
+
+      .chip {
+        max-width: 100%;
+        min-height: 26px;
+        padding: 4px 8px;
+        font-size: 0.72rem;
+        overflow-wrap: anywhere;
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .details-field input,
+      .details-field select {
+        min-height: 38px;
+        font-size: 16px;
+      }
+
+      .task-add {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .task-add .btn,
+      .details .btn {
+        min-height: 42px;
+      }
+
+      .details .inline-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .task-item {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+      }
+
+      .task-item span,
+      .project-description,
+      .detail-file-item strong {
+        overflow-wrap: anywhere;
+      }
+
+      .modal {
+        align-items: stretch;
+        justify-items: stretch;
+        padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+      }
+
+      .modal-card,
+      .viewer-card,
+      .wall-card {
+        width: 100%;
+        max-height: calc(100dvh - 16px);
+        border-radius: 0;
+      }
+
+      .modal-head,
+      .modal-actions,
+      .project-form {
+        padding: 12px;
+      }
+
+      .modal-head {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.94);
+      }
+
+      .modal-actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr;
+        background: rgba(0, 0, 0, 0.94);
+      }
+
+      .project-form {
+        gap: 12px;
+      }
+
+      .form-grid.two,
+      .form-grid.three,
+      .image-row,
+      .file-row {
+        grid-template-columns: 1fr;
+      }
+
+      .field input,
+      .field textarea,
+      .field select {
+        font-size: 16px;
+      }
+
+      .image-preview,
+      .file-preview {
+        min-height: 126px;
+      }
+
+      .viewer-stage {
+        grid-template-columns: 42px minmax(0, 1fr) 42px;
+        gap: 6px;
+        min-height: 46dvh;
+        padding: 8px;
+      }
+
+      .viewer-nav {
+        width: 42px;
+        min-width: 42px;
+        height: 52px;
+        font-size: 1.65rem;
+      }
+
+      .viewer-stage img {
+        max-height: 58dvh;
+      }
+
+      .viewer-info {
+        padding: 10px;
+      }
+
+      .photo-wall {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px;
+      }
+
+      .context-menu {
+        max-width: calc(100vw - 16px);
+      }
+    }
+
+    @media (max-width: 420px) {
+      .map-stats-panel {
+        padding: 6px;
+      }
+
+      .map-stats-panel h3 {
+        display: none;
+      }
+
+      .map-stats-grid {
+        grid-template-columns: repeat(6, minmax(48px, 1fr));
+        gap: 4px;
+      }
+
+      .map-stat {
+        padding: 5px;
+      }
+
+      .map-stat strong {
+        font-size: 0.78rem;
+      }
+
+      .map-stat span {
+        font-size: 0.58rem;
+      }
+
+      .details {
+        top: calc(max(10px, env(safe-area-inset-top)) + 72px);
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .star-markers {
+        display: none;
+      }
+
+      .empty-state {
+        width: calc(100% - 20px);
+        padding: 18px;
+      }
+
+      .photo-wall {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1822,6 +2326,13 @@
       </section>
 
       <article class="details hidden" id="detailsPanel" aria-live="polite"></article>
+      <div class="galaxy-tools" aria-label="Галактики">
+        <select id="galaxySelect" title="Галактика"></select>
+        <button class="btn ghost" id="newGalaxyBtn" type="button" title="Нова галактика">+</button>
+        <button class="btn ghost" id="renameGalaxyBtn" type="button" title="Перейменувати галактику">✎</button>
+        <button class="btn ghost" id="deleteGalaxyBtn" type="button" title="Видалити галактику">×</button>
+      </div>
+      <div class="map-stats-panel" id="mapStatsPanel" aria-label="Статистика карти"></div>
       <div class="map-tools" aria-label="Режими карти">
         <button class="btn ghost" id="orbitModeBtn" type="button">Орбіти</button>
         <button class="btn ghost" id="pathModeBtn" type="button">Шлях</button>
@@ -1833,6 +2344,13 @@
         <button class="btn ghost" id="clearFocusBtn" type="button">Фокус off</button>
       </div>
       <input id="importJsonInput" type="file" accept="application/json,.json" hidden />
+      <div class="context-menu hidden" id="starContextMenu" role="menu" aria-label="Меню зірки">
+        <button type="button" data-context-action="edit">Редагувати</button>
+        <button type="button" data-context-action="favorite">Обране</button>
+        <button type="button" data-context-action="connect">З’єднати</button>
+        <button type="button" data-context-action="open">Відкрити</button>
+        <button type="button" data-context-action="archive">В архів</button>
+      </div>
       <div class="minimap" id="minimap" title="Клік — перейти в точку карти">
         <svg id="minimapSvg" viewBox="0 0 100 100" aria-hidden="true"></svg>
       </div>
@@ -1857,6 +2375,7 @@
           <div class="field" data-star-field="full">
             <label for="projectDescription">Опис</label>
             <textarea id="projectDescription" name="description" maxlength="1200" placeholder="Ціль, ідея, нотатки, наступні кроки..."></textarea>
+            <button class="btn ghost" id="generateDescriptionBtn" type="button">AI-опис зірки</button>
           </div>
 
           <div class="form-grid two" data-star-field="full">
@@ -2064,10 +2583,13 @@
         { value: "button", label: "Кнопка", hint: "Зірка відкриває посилання при натисканні." },
         { value: "blank", label: "Пустишка", hint: "Тільки назва і фото. Інші поля приховані." },
         { value: "list", label: "Список", hint: "Чекліст без фото, зручний для задач." },
-        { value: "file", label: "Файл", hint: "Прикріплення PDF, ZIP, TXT, DOCX та інших файлів." }
+        { value: "file", label: "Файл", hint: "Прикріплення PDF, ZIP, TXT, DOCX та інших файлів." },
+        { value: "day", label: "День", hint: "Щоденникова зірка з датою, текстом і фото." },
+        { value: "collection", label: "Колекція", hint: "Список речей: книги, фільми, ідеї, покупки." }
       ];
 
       const DEFAULT_COLORS = ["#f7fbff", "#9edcff", "#a696ff", "#77f0ff", "#d7e6ff", "#b8c4ff"];
+      const DEFAULT_GALAXY_ID = "galaxy-main";
       const IMAGE_DB_NAME = "space-project-map-images";
       const IMAGE_DB_STORE = "images";
 
@@ -2079,6 +2601,11 @@
         searchInput: document.querySelector("#searchInput"),
         statusFilter: document.querySelector("#statusFilter"),
         categoryFilter: document.querySelector("#categoryFilter"),
+        galaxySelect: document.querySelector("#galaxySelect"),
+        newGalaxyBtn: document.querySelector("#newGalaxyBtn"),
+        renameGalaxyBtn: document.querySelector("#renameGalaxyBtn"),
+        deleteGalaxyBtn: document.querySelector("#deleteGalaxyBtn"),
+        mapStatsPanel: document.querySelector("#mapStatsPanel"),
         projectCount: document.querySelector("#projectCount"),
         visibleCount: document.querySelector("#visibleCount"),
         linkCount: document.querySelector("#linkCount"),
@@ -2104,6 +2631,7 @@
         detailsPanel: document.querySelector("#detailsPanel"),
         toast: document.querySelector("#toast"),
         projectModal: document.querySelector("#projectModal"),
+        starContextMenu: document.querySelector("#starContextMenu"),
         archiveModal: document.querySelector("#archiveModal"),
         archiveList: document.querySelector("#archiveList"),
         closeArchiveBtn: document.querySelector("#closeArchiveBtn"),
@@ -2113,6 +2641,7 @@
         projectForm: document.querySelector("#projectForm"),
         projectTitle: document.querySelector("#projectTitle"),
         projectDescription: document.querySelector("#projectDescription"),
+        generateDescriptionBtn: document.querySelector("#generateDescriptionBtn"),
         projectDate: document.querySelector("#projectDate"),
         projectStatus: document.querySelector("#projectStatus"),
         projectType: document.querySelector("#projectType"),
@@ -2168,6 +2697,7 @@
         viewerProjectId: null,
         viewerIndex: 0,
         wallProjectId: null,
+        contextProjectId: null,
         dragging: null,
         panning: null,
         pinch: null,
@@ -2217,7 +2747,7 @@
         const starType = normalizeStarType(value);
         if (starType === "storage") return 100;
         if (starType === "blank") return 1;
-        if (starType === "list" || starType === "file") return 0;
+        if (starType === "list" || starType === "file" || starType === "collection") return 0;
         return 8;
       }
 
@@ -2276,21 +2806,68 @@
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return { projects: [], links: [], view: normalizeView(), settings: normalizeSettings() };
+          if (!raw) return createEmptyState();
           const parsed = JSON.parse(raw);
+          const galaxies = normalizeGalaxies(parsed.galaxies);
+          const activeGalaxyId = galaxies.some((galaxy) => galaxy.id === parsed.activeGalaxyId) ? parsed.activeGalaxyId : galaxies[0].id;
+          const projects = Array.isArray(parsed.projects) ? parsed.projects.map((project) => normalizeProject(project, activeGalaxyId)) : [];
           return {
-            projects: Array.isArray(parsed.projects) ? parsed.projects.map(normalizeProject) : [],
+            galaxies,
+            activeGalaxyId,
+            projects,
             links: Array.isArray(parsed.links) ? parsed.links.map(normalizeLink).filter(Boolean) : [],
             view: normalizeView(parsed.view),
             settings: normalizeSettings(parsed.settings)
           };
         } catch (error) {
           console.warn("Не вдалося прочитати localStorage:", error);
-          return { projects: [], links: [], view: normalizeView(), settings: normalizeSettings() };
+          return createEmptyState();
         }
       }
 
-      function normalizeProject(project) {
+      function createEmptyState() {
+        return {
+          galaxies: [{ id: DEFAULT_GALAXY_ID, name: "Основна" }],
+          activeGalaxyId: DEFAULT_GALAXY_ID,
+          projects: [],
+          links: [],
+          view: normalizeView(),
+          settings: normalizeSettings()
+        };
+      }
+
+      function normalizeGalaxy(galaxy) {
+        return {
+          id: normalizeText(galaxy?.id) || uid("galaxy"),
+          name: normalizeText(galaxy?.name) || "Галактика"
+        };
+      }
+
+      function normalizeGalaxies(galaxies) {
+        const list = Array.isArray(galaxies) ? galaxies.map(normalizeGalaxy) : [];
+        const unique = [];
+        const seen = new Set();
+        [{ id: DEFAULT_GALAXY_ID, name: "Основна" }, ...list].forEach((galaxy) => {
+          if (seen.has(galaxy.id)) return;
+          seen.add(galaxy.id);
+          unique.push(galaxy);
+        });
+        return unique;
+      }
+
+      function currentGalaxyId() {
+        const galaxies = normalizeGalaxies(state.galaxies);
+        state.galaxies = galaxies;
+        if (!galaxies.some((galaxy) => galaxy.id === state.activeGalaxyId)) state.activeGalaxyId = galaxies[0].id;
+        return state.activeGalaxyId;
+      }
+
+      function currentGalaxyName() {
+        const id = currentGalaxyId();
+        return state.galaxies.find((galaxy) => galaxy.id === id)?.name || "Основна";
+      }
+
+      function normalizeProject(project, fallbackGalaxyId = DEFAULT_GALAXY_ID) {
         const starType = normalizeStarType(project.starType || project.type);
         const images = getProjectImages(project).slice(0, imageLimitForType(starType));
         const files = normalizeFiles(project.files).slice(0, fileLimitForType(starType));
@@ -2308,6 +2885,7 @@
         return {
           id: project.id || uid("project"),
           coordVersion: 2,
+          galaxyId: normalizeText(project.galaxyId) || fallbackGalaxyId,
           starType,
           title: normalizeText(project.title) || "Без назви",
           description: starType === "blank" ? "" : String(project.description || ""),
@@ -2512,6 +3090,7 @@
         const isButton = starType === "button";
         const isList = starType === "list";
         const isFile = starType === "file";
+        const isCollection = starType === "collection";
         const limit = imageLimitForType(starType);
         const fileLimit = fileLimitForType(starType);
         const typeInfo = STAR_TYPES.find((item) => item.value === starType);
@@ -2521,7 +3100,7 @@
           field.classList.toggle("type-hidden",
             (mode === "full" && isBlank) ||
             (mode === "button" && !isButton) ||
-            (mode === "media" && (isList || isFile)) ||
+            (mode === "media" && (isList || isFile || isCollection)) ||
             (mode === "files" && !isFile)
           );
         });
@@ -2534,6 +3113,14 @@
         els.projectFiles.disabled = fileLimit === 0;
         els.imageHint.textContent = `${typeInfo?.hint || ""} Ліміт фото: ${limit}.`;
         els.fileHint.textContent = `${typeInfo?.hint || ""} Ліміт файлів: ${fileLimit}.`;
+        els.projectDescription.placeholder = starType === "day"
+          ? "Що сталося цього дня..."
+          : "Що це за зірка і чому вона важлива...";
+        els.projectTasks.placeholder = isCollection
+          ? "Одна річ у рядок: книга, фільм, ідея, покупка..."
+          : isList
+            ? "Одна задача в рядок, [x] для виконаних..."
+            : "Одна задача в рядок...";
 
         if (ui.draftImages.length > limit) {
           const removed = ui.draftImages.splice(limit);
@@ -2550,14 +3137,66 @@
         }
       }
 
+      function buildGeneratedDescription() {
+        const title = normalizeText(els.projectTitle.value) || "Без назви";
+        const starType = currentStarType();
+        const typeLabel = starTypeLabel(starType).toLowerCase();
+        const tags = parseTags(els.projectTags.value);
+        const tasks = normalizeTasks(els.projectTasks.value);
+        const doneTasks = tasks.filter((task) => task.done).length;
+        const photoCount = ui.draftImages.length;
+        const fileCount = ui.draftFiles.length;
+        const photoNames = ui.draftImages.map((image) => normalizeText(image?.name)).filter(Boolean).slice(0, 4);
+        const fileNames = ui.draftFiles.map((file) => normalizeText(file?.name)).filter(Boolean).slice(0, 4);
+        const dateText = formatDate(els.projectDate.value || todayISO()).replace(/\.$/, "");
+        const category = normalizeText(els.projectCategory.value);
+        const parts = [];
+
+        if (starType === "day") {
+          parts.push(`${title} — запис за ${dateText}. Тут можна зберегти думки дня, важливі події та фото, які варто не загубити.`);
+        } else if (starType === "collection") {
+          parts.push(`${title} — колекція для речей, які хочеться тримати разом: книги, фільми, ідеї, покупки або добірки.`);
+        } else if (starType === "storage") {
+          parts.push(`${title} — склад фото без втрати якості. Зручно тримати серію кадрів, матеріали або візуальні референси в одному місці.`);
+        } else if (starType === "file") {
+          parts.push(`${title} — файлова зірка для документів, архівів і вкладень, які мають бути поруч із картою.`);
+        } else if (starType === "button") {
+          parts.push(`${title} — зірка-кнопка для швидкого переходу за посиланням.`);
+        } else if (starType === "list") {
+          parts.push(`${title} — список задач без фото, щоб швидко бачити, що вже зроблено і що лишилось.`);
+        } else {
+          parts.push(`${title} — ${typeLabel} зірка на карті для ідеї, задачі або важливого фрагмента проєкту.`);
+        }
+
+        if (category) parts.push(`Тема: ${category}.`);
+        if (tags.length) parts.push(`Мітки: ${tags.map((tag) => `#${tag}`).join(" ")}.`);
+        if (tasks.length) parts.push(`У списку ${tasks.length} пунктів, виконано ${doneTasks}.`);
+        if (photoCount) parts.push(`Додано фото: ${photoCount}.`);
+        if (photoNames.length) parts.push(`Фото: ${photoNames.join(", ")}.`);
+        if (fileCount) parts.push(`Додано файлів: ${fileCount}.`);
+        if (fileNames.length) parts.push(`Файли: ${fileNames.join(", ")}.`);
+        if (els.projectDueDate.value) parts.push(`Дедлайн: ${formatDate(els.projectDueDate.value)}.`);
+
+        return parts.join("\n");
+      }
+
+      function generateDescriptionFromDraft() {
+        els.projectDescription.value = buildGeneratedDescription();
+        showToast("AI-опис створено.");
+      }
+
       function getFilteredProjects() {
         const query = els.searchInput.value.trim().toLowerCase();
         const status = els.statusFilter.value;
         const category = els.categoryFilter.value;
+        const galaxyId = currentGalaxyId();
 
         return state.projects.filter((project) => {
           if (project.archived) return false;
-          const text = `${project.title} ${project.description} ${project.tags.join(" ")}`.toLowerCase();
+          if (project.galaxyId !== galaxyId) return false;
+          const taskText = project.tasks.map((task) => task.text).join(" ");
+          const fileText = normalizeFiles(project.files).map((file) => file.name).join(" ");
+          const text = `${project.title} ${project.description} ${project.tags.join(" ")} ${taskText} ${fileText}`.toLowerCase();
           const matchesQuery = !query || text.includes(query);
           const matchesStatus = !status || project.status === status;
           const matchesCategory = !category || project.category === category;
@@ -2569,20 +3208,32 @@
         const visibleProjects = getFilteredProjects();
         const visibleIds = new Set(visibleProjects.map((project) => project.id));
         applyViewport();
+        renderGalaxySelect();
         renderCategoryFilter();
         renderStats(visibleProjects.length);
+        renderMapStats(visibleProjects);
         renderStars(visibleIds);
         renderLinks(visibleIds);
         renderMode();
         renderDetails();
         renderMinimap(visibleIds);
         renderToolButtons();
-        els.emptyState.classList.toggle("hidden", state.projects.some((project) => !project.archived));
+        els.emptyState.classList.toggle("hidden", state.projects.some((project) => !project.archived && project.galaxyId === currentGalaxyId()));
+      }
+
+      function renderGalaxySelect() {
+        const current = currentGalaxyId();
+        els.galaxySelect.innerHTML = state.galaxies
+          .map((galaxy) => `<option value="${escapeHTML(galaxy.id)}">${escapeHTML(galaxy.name)}</option>`)
+          .join("");
+        els.galaxySelect.value = current;
+        els.deleteGalaxyBtn.disabled = state.galaxies.length <= 1 || current === DEFAULT_GALAXY_ID;
       }
 
       function renderCategoryFilter() {
         const current = els.categoryFilter.value;
-        const categories = [...new Set(state.projects.filter((project) => !project.archived).map((project) => project.category).filter(Boolean))]
+        const galaxyId = currentGalaxyId();
+        const categories = [...new Set(state.projects.filter((project) => !project.archived && project.galaxyId === galaxyId).map((project) => project.category).filter(Boolean))]
           .sort((a, b) => a.localeCompare(b, "uk"));
 
         els.categoryFilter.innerHTML = `<option value="">Усі категорії</option>${categories
@@ -2595,18 +3246,107 @@
       }
 
       function renderStats(visibleCount) {
-        els.projectCount.textContent = state.projects.filter((project) => !project.archived).length;
+        const galaxyId = currentGalaxyId();
+        els.projectCount.textContent = state.projects.filter((project) => !project.archived && project.galaxyId === galaxyId).length;
         els.visibleCount.textContent = visibleCount;
         els.linkCount.textContent = state.links.filter((link) => {
-          const from = state.projects.find((project) => project.id === link.from && !project.archived);
-          const to = state.projects.find((project) => project.id === link.to && !project.archived);
+          const from = state.projects.find((project) => project.id === link.from && !project.archived && project.galaxyId === galaxyId);
+          const to = state.projects.find((project) => project.id === link.to && !project.archived && project.galaxyId === galaxyId);
           return from && to;
         }).length;
       }
 
+      function renderMapStats(visibleProjects) {
+        const galaxyId = currentGalaxyId();
+        const archived = state.projects.filter((project) => project.archived && project.galaxyId === galaxyId).length;
+        const allActive = state.projects.filter((project) => !project.archived && project.galaxyId === galaxyId);
+        const photos = allActive.reduce((sum, project) => sum + getProjectImages(project).length, 0);
+        const files = allActive.reduce((sum, project) => sum + normalizeFiles(project.files).length, 0);
+        const tasks = allActive.reduce((sum, project) => sum + project.tasks.length, 0);
+        const doneTasks = allActive.reduce((sum, project) => sum + project.tasks.filter((task) => task.done).length, 0);
+        const favorites = allActive.filter((project) => project.favorite).length;
+
+        els.mapStatsPanel.innerHTML = `
+          <h3>${escapeHTML(currentGalaxyName())}</h3>
+          <div class="map-stats-grid">
+            <div class="map-stat"><strong>${visibleProjects.length}</strong><span>видимі</span></div>
+            <div class="map-stat"><strong>${favorites}</strong><span>обрані</span></div>
+            <div class="map-stat"><strong>${photos}</strong><span>фото</span></div>
+            <div class="map-stat"><strong>${files}</strong><span>файли</span></div>
+            <div class="map-stat"><strong>${doneTasks}/${tasks}</strong><span>задачі</span></div>
+            <div class="map-stat"><strong>${archived}</strong><span>архів</span></div>
+          </div>
+        `;
+      }
+
+      function switchGalaxy(galaxyId) {
+        if (!state.galaxies.some((galaxy) => galaxy.id === galaxyId)) return;
+        state.activeGalaxyId = galaxyId;
+        ui.selectedProjectId = null;
+        ui.selectedLinkId = null;
+        ui.connectingFrom = null;
+        ui.pathMode = false;
+        ui.pathStartId = null;
+        ui.pathProjectIds = new Set();
+        ui.pathLinkIds = new Set();
+        saveState();
+        render();
+        showToast(`Галактика: ${currentGalaxyName()}.`);
+      }
+
+      function createGalaxy() {
+        const name = normalizeText(window.prompt("Назва нової галактики:", "Нова галактика"));
+        if (!name) return;
+        const galaxy = { id: uid("galaxy"), name };
+        state.galaxies.push(galaxy);
+        state.activeGalaxyId = galaxy.id;
+        saveState();
+        render();
+        showToast("Галактику створено.");
+      }
+
+      function renameGalaxy() {
+        const current = state.galaxies.find((galaxy) => galaxy.id === currentGalaxyId());
+        if (!current) return;
+        const name = normalizeText(window.prompt("Нова назва галактики:", current.name));
+        if (!name) return;
+        current.name = name;
+        saveState();
+        render();
+        showToast("Галактику перейменовано.");
+      }
+
+      function deleteGalaxy() {
+        if (state.galaxies.length <= 1) {
+          showToast("Основну галактику не можна видалити.");
+          return;
+        }
+        const galaxyId = currentGalaxyId();
+        if (galaxyId === DEFAULT_GALAXY_ID) {
+          showToast("Основну галактику не можна видалити.");
+          return;
+        }
+        const galaxy = state.galaxies.find((item) => item.id === galaxyId);
+        if (!galaxy) return;
+        const confirmed = window.confirm(`Видалити галактику "${galaxy.name}"? Її зірки буде перенесено в "Основна".`);
+        if (!confirmed) return;
+        state.projects.forEach((project) => {
+          if (project.galaxyId === galaxyId) project.galaxyId = DEFAULT_GALAXY_ID;
+        });
+        state.galaxies = state.galaxies.filter((item) => item.id !== galaxyId);
+        state.activeGalaxyId = DEFAULT_GALAXY_ID;
+        saveState();
+        render();
+        showToast("Галактику видалено, зірки перенесено в Основну.");
+      }
+
       function getNeighborIds(projectId) {
         const ids = new Set([projectId]);
+        const galaxyId = currentGalaxyId();
         state.links.forEach((link) => {
+          const from = state.projects.find((project) => project.id === link.from && !project.archived && project.galaxyId === galaxyId);
+          const to = state.projects.find((project) => project.id === link.to && !project.archived && project.galaxyId === galaxyId);
+          if (!from || !to) return;
           if (link.from === projectId) ids.add(link.to);
           if (link.to === projectId) ids.add(link.from);
         });
@@ -2654,7 +3394,7 @@
           star.classList.add(`type-${project.starType}`);
           if (project.favorite) star.classList.add("favorite");
           star.dataset.projectId = project.id;
-          star.dataset.profile = `${project.title}\n${starTypeLabel(project.starType)} · ${getProjectImages(project).length} фото · ${statusLabel(project.status)}`;
+          star.dataset.profile = `${project.title}\n${starTypeLabel(project.starType)} · ${getProjectImages(project).length} фото · ${normalizeFiles(project.files).length} файлів · ${statusLabel(project.status)}`;
           star.style.setProperty("--x", `${coordToPercent(project.x)}%`);
           star.style.setProperty("--y", `${coordToPercent(project.y)}%`);
           star.style.setProperty("--star-color", project.color);
@@ -2793,7 +3533,8 @@
         els.presentationBtn.classList.toggle("active", Boolean(ui.presentationTimer));
         els.soundToggleBtn.classList.toggle("active", state.settings.soundEnabled);
         els.soundToggleBtn.textContent = state.settings.soundEnabled ? "Звук on" : "Звук";
-        const archivedCount = state.projects.filter((project) => project.archived).length;
+        const galaxyId = currentGalaxyId();
+        const archivedCount = state.projects.filter((project) => project.archived && project.galaxyId === galaxyId).length;
         els.archiveBtn.textContent = archivedCount ? `Архів ${archivedCount}` : "Архів";
         els.clearFocusBtn.hidden = !ui.selectedProjectId;
       }
@@ -3442,6 +4183,8 @@
           exportedAt: new Date().toISOString(),
           projects,
           links: state.links,
+          galaxies: state.galaxies,
+          activeGalaxyId: state.activeGalaxyId,
           view: state.view,
           settings: state.settings
         };
@@ -3498,7 +4241,7 @@
         return normalizeFileEntry(file);
       }
 
-      async function normalizeImportedProject(project, importedDBIds) {
+      async function normalizeImportedProject(project, importedDBIds, fallbackGalaxyId = DEFAULT_GALAXY_ID) {
         const starType = normalizeStarType(project.starType || project.type);
         const rawImages = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
         const images = (await Promise.all(rawImages.map((image) => importImageEntry(image, starType, importedDBIds))))
@@ -3515,7 +4258,7 @@
           image: images[0] || "",
           files,
           imageNotes: normalizeImageNotes(project.imageNotes).slice(0, images.length)
-        });
+        }, fallbackGalaxyId);
       }
 
       function readFileAsText(file) {
@@ -3542,7 +4285,9 @@
           const text = await readFileAsText(file);
           const payload = JSON.parse(text);
           const rawProjects = Array.isArray(payload) ? payload : (Array.isArray(payload.projects) ? payload.projects : []);
-          const projects = await Promise.all(rawProjects.map((project) => normalizeImportedProject(project, importedDBIds)));
+          const galaxies = normalizeGalaxies(payload.galaxies);
+          const activeGalaxyId = galaxies.some((galaxy) => galaxy.id === payload.activeGalaxyId) ? payload.activeGalaxyId : galaxies[0].id;
+          const projects = await Promise.all(rawProjects.map((project) => normalizeImportedProject(project, importedDBIds, activeGalaxyId)));
           const projectIds = new Set(projects.map((project) => project.id));
           const links = (Array.isArray(payload.links) ? payload.links : [])
             .map(normalizeLink)
@@ -3550,6 +4295,8 @@
           const nextState = {
             projects,
             links,
+            galaxies,
+            activeGalaxyId,
             view: normalizeView(payload.view),
             settings: normalizeSettings(payload.settings)
           };
@@ -3616,6 +4363,7 @@
         const payload = normalizeProject({
           id: existing?.id || uid("project"),
           archived: existing?.archived,
+          galaxyId: existing?.galaxyId || currentGalaxyId(),
           starType,
           title,
           description: starType === "blank" ? "" : els.projectDescription.value.trim(),
@@ -3811,6 +4559,7 @@
       }
 
       function findProjectPath(startId, endId) {
+        const galaxyId = currentGalaxyId();
         const queue = [{ id: startId, projectIds: [startId], linkIds: [] }];
         const visited = new Set([startId]);
 
@@ -3820,7 +4569,7 @@
 
           state.links.forEach((link) => {
             const next = link.from === current.id ? link.to : link.to === current.id ? link.from : null;
-            const nextProject = state.projects.find((project) => project.id === next && !project.archived);
+            const nextProject = state.projects.find((project) => project.id === next && !project.archived && project.galaxyId === galaxyId);
             if (!next || !nextProject || visited.has(next)) return;
             visited.add(next);
             queue.push({
@@ -3860,7 +4609,7 @@
 
       function handleMapPointerDown(event) {
         if (event.pointerType === "mouse" && event.button !== 0) return;
-        if (event.target.closest(".star-node, .details, .minimap, .map-tools, button, input, textarea, select, [data-link-id]")) return;
+        if (event.target.closest(".star-node, .details, .minimap, .map-tools, .galaxy-tools, .context-menu, .map-stats-panel, button, input, textarea, select, [data-link-id]")) return;
 
         ui.activePointers.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
         els.spaceMap.setPointerCapture?.(event.pointerId);
@@ -4234,7 +4983,8 @@
       }
 
       function applyOrbitLayout() {
-        const projects = state.projects.filter((project) => !project.archived);
+        const galaxyId = currentGalaxyId();
+        const projects = state.projects.filter((project) => !project.archived && project.galaxyId === galaxyId);
         const categories = [...new Set(projects.map((project) => project.category || "Без категорії"))];
         const centerX = WORLD_MAX / 2;
         const centerY = WORLD_MAX / 2;
@@ -4301,7 +5051,8 @@
       }
 
       function openArchiveRestore() {
-        const archived = state.projects.filter((project) => project.archived);
+        const galaxyId = currentGalaxyId();
+        const archived = state.projects.filter((project) => project.archived && project.galaxyId === galaxyId);
         if (!archived.length) {
           showToast("Архів порожній.");
           return;
@@ -4356,7 +5107,7 @@
         if (saveState()) {
           deleteDBImagesByIds(removedDBIds);
           render();
-          if (state.projects.some((item) => item.archived)) openArchiveRestore();
+          if (state.projects.some((item) => item.archived && item.galaxyId === currentGalaxyId())) openArchiveRestore();
           else closeArchive();
           showToast("Проєкт видалено назавжди.");
         } else {
@@ -4487,6 +5238,57 @@
         persistAndRender(project.favorite ? "Зірку додано в обране." : "Зірку прибрано з обраного.");
       }
 
+      function closeStarContextMenu() {
+        els.starContextMenu.classList.add("hidden");
+        ui.contextProjectId = null;
+      }
+
+      function openStarContextMenu(projectId, clientX, clientY) {
+        const project = state.projects.find((item) => item.id === projectId && !item.archived);
+        if (!project) return;
+
+        ui.contextProjectId = project.id;
+        const favoriteButton = els.starContextMenu.querySelector('[data-context-action="favorite"]');
+        const openButton = els.starContextMenu.querySelector('[data-context-action="open"]');
+        const hasPhotos = getProjectImages(project).length > 0;
+        const hasFiles = normalizeFiles(project.files).length > 0;
+
+        favoriteButton.textContent = project.favorite ? "Прибрати з обраного" : "В обране";
+        openButton.textContent = project.starType === "button"
+          ? "Відкрити посилання"
+          : hasPhotos
+            ? "Відкрити фото"
+            : hasFiles
+              ? "Відкрити файл"
+              : "Відкрити картку";
+
+        els.starContextMenu.classList.remove("hidden");
+        const rect = els.starContextMenu.getBoundingClientRect();
+        const left = clamp(clientX, 8, window.innerWidth - rect.width - 8);
+        const top = clamp(clientY, 8, window.innerHeight - rect.height - 8);
+        els.starContextMenu.style.left = `${left}px`;
+        els.starContextMenu.style.top = `${top}px`;
+      }
+
+      function handleContextMenuAction(action) {
+        const project = state.projects.find((item) => item.id === ui.contextProjectId && !item.archived);
+        closeStarContextMenu();
+        if (!project) return;
+
+        if (action === "edit") openProjectModal(project.id);
+        if (action === "favorite") toggleFavorite(project.id);
+        if (action === "archive") deleteProject(project.id);
+        if (action === "connect") startConnection(project.id);
+        if (action === "open") {
+          const images = getProjectImages(project);
+          const files = normalizeFiles(project.files);
+          if (project.starType === "button" && project.url) openProjectUrl(project);
+          else if (images.length) openPhotoViewer(project.id, 0);
+          else if (files.length) downloadProjectFile(project.id, 0);
+          else selectProject(project.id);
+        }
+      }
+
       function handleDetailsAction(event) {
         const action = event.target.closest("[data-action]")?.dataset.action;
         if (!action) return;
@@ -4564,6 +5366,7 @@
 
         if (event.key === "Escape") {
           stopPresentation(false);
+          closeStarContextMenu();
           if (!els.photoViewerModal.classList.contains("hidden")) closePhotoViewer();
           if (!els.photoWallModal.classList.contains("hidden")) closePhotoWall();
           if (!els.projectModal.classList.contains("hidden")) closeProjectModal();
@@ -4602,6 +5405,7 @@
           if (ui.editingProjectId) deleteProject(ui.editingProjectId);
         });
         els.projectType.addEventListener("change", () => updateStarTypeUI());
+        els.generateDescriptionBtn.addEventListener("click", generateDescriptionFromDraft);
 
         els.projectImage.addEventListener("change", async () => {
           const files = Array.from(els.projectImage.files || []);
@@ -4695,6 +5499,10 @@
         els.statusFilter.addEventListener("change", render);
         els.categoryFilter.addEventListener("change", render);
         els.resetFiltersBtn.addEventListener("click", resetFilters);
+        els.galaxySelect.addEventListener("change", () => switchGalaxy(els.galaxySelect.value));
+        els.newGalaxyBtn.addEventListener("click", createGalaxy);
+        els.renameGalaxyBtn.addEventListener("click", renameGalaxy);
+        els.deleteGalaxyBtn.addEventListener("click", deleteGalaxy);
 
         els.orbitModeBtn.addEventListener("click", () => {
           state.settings.orbitMode = !state.settings.orbitMode;
@@ -4768,6 +5576,21 @@
         els.spaceMap.addEventListener("pointerdown", handleMapPointerDown);
         els.spaceMap.addEventListener("wheel", handleMapWheel, { passive: false });
         els.spaceMap.addEventListener("dblclick", handleMapDoubleClick);
+        els.starsLayer.addEventListener("contextmenu", (event) => {
+          const star = event.target.closest(".star-node");
+          if (!star) return;
+          event.preventDefault();
+          event.stopPropagation();
+          openStarContextMenu(star.dataset.projectId, event.clientX, event.clientY);
+        });
+        els.starContextMenu.addEventListener("click", (event) => {
+          const action = event.target.closest("[data-context-action]")?.dataset.contextAction;
+          if (action) handleContextMenuAction(action);
+        });
+        document.addEventListener("click", (event) => {
+          if (!els.starContextMenu.contains(event.target)) closeStarContextMenu();
+        });
+        window.addEventListener("blur", closeStarContextMenu);
         window.addEventListener("pointermove", handlePointerMove);
         window.addEventListener("pointerup", handlePointerUp);
         window.addEventListener("pointercancel", handlePointerUp);
