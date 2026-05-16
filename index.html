@@ -1510,6 +1510,10 @@
       pointer-events: none;
     }
 
+    .star-progress-badge {
+      display: none;
+    }
+
     .link-group.type-depends .link-visible {
       stroke: rgba(158, 220, 255, 0.58);
     }
@@ -1602,6 +1606,45 @@
       color: var(--text);
       padding: 8px 12px;
       outline: none;
+    }
+
+    .progress-summary {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(180, 212, 255, 0.16);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 10px;
+    }
+
+    .progress-summary-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .progress-summary strong {
+      font-size: 1.1rem;
+    }
+
+    .progress-summary span,
+    .progress-summary p {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .progress-track {
+      height: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .progress-track i {
+      display: block;
+      width: var(--progress-percent, 0%);
+      height: 100%;
+      background: #fff;
     }
 
     .details .inline-actions {
@@ -1879,6 +1922,781 @@
     .archive-item p {
       color: #9e9e9e;
       font-size: 0.86rem;
+    }
+
+    body[data-map-style="detective"] {
+      --panel: rgba(28, 20, 12, 0.84);
+      --panel-strong: rgba(38, 26, 15, 0.96);
+      --muted: #d7b98f;
+      --border: rgba(92, 54, 24, 0.46);
+      color: #fff3df;
+    }
+
+    body[data-map-style="detective"] .space-map {
+      background:
+        radial-gradient(circle at 22% 18%, rgba(255, 238, 190, 0.12), transparent 24%),
+        linear-gradient(90deg, rgba(78, 45, 20, 0.24) 1px, transparent 1px),
+        linear-gradient(rgba(78, 45, 20, 0.22) 1px, transparent 1px),
+        #6d4728;
+      background-size: auto, 84px 84px, 84px 84px, auto;
+    }
+
+    body[data-map-style="detective"] .space-map::before {
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 12% 16%, rgba(40, 22, 10, 0.2) 0 1px, transparent 2px),
+        radial-gradient(circle at 72% 36%, rgba(255, 231, 171, 0.12) 0 1px, transparent 2px),
+        linear-gradient(25deg, transparent 48%, rgba(65, 37, 17, 0.14) 49%, transparent 52%);
+      background-size: 22px 22px, 34px 34px, 180px 180px;
+      opacity: 1;
+      animation: none;
+    }
+
+    body[data-map-style="detective"] .space-map::after {
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 244, 210, 0.18), transparent 20%),
+        radial-gradient(circle at 78% 72%, rgba(52, 22, 9, 0.22), transparent 24%);
+      opacity: 1;
+    }
+
+    body[data-map-style="detective"] .map-world::before {
+      background-image:
+        linear-gradient(rgba(48, 25, 10, 0.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(48, 25, 10, 0.18) 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity: 0.32;
+      mask-image: radial-gradient(circle at center, #000 0 56%, transparent 78%);
+    }
+
+    body[data-map-style="detective"] .control-panel,
+    body[data-map-style="detective"] .details,
+    body[data-map-style="detective"] .modal-card,
+    body[data-map-style="detective"] .map-stats-panel,
+    body[data-map-style="detective"] .galaxy-tools select,
+    body[data-map-style="detective"] .galaxy-tools .btn,
+    body[data-map-style="detective"] .map-tools .btn,
+    body[data-map-style="detective"] .context-menu,
+    body[data-map-style="detective"] .toast {
+      border-color: rgba(69, 38, 16, 0.62);
+      background: rgba(28, 20, 12, 0.88);
+      color: #fff3df;
+      box-shadow: 0 18px 48px rgba(35, 18, 7, 0.58);
+    }
+
+    body[data-map-style="detective"] .btn,
+    body[data-map-style="detective"] .field input,
+    body[data-map-style="detective"] .field textarea,
+    body[data-map-style="detective"] .field select,
+    body[data-map-style="detective"] .details-field input,
+    body[data-map-style="detective"] .details-field select,
+    body[data-map-style="detective"] .task-add input,
+    body[data-map-style="detective"] .task-item,
+    body[data-map-style="detective"] .chip,
+    body[data-map-style="detective"] .image-preview,
+    body[data-map-style="detective"] .file-preview,
+    body[data-map-style="detective"] .image-thumb {
+      border-color: rgba(98, 56, 22, 0.58);
+      background: rgba(45, 28, 14, 0.48);
+      color: #fff3df;
+    }
+
+    body[data-map-style="detective"] .star-orb {
+      filter: drop-shadow(0 7px 8px rgba(36, 14, 5, 0.46));
+    }
+
+    body[data-map-style="detective"] .star-progress-ring {
+      background: conic-gradient(#9f1d1d var(--progress, 0deg), rgba(63, 35, 15, 0.24) 0);
+    }
+
+    body[data-map-style="detective"] .star-core {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border-color: rgba(255, 226, 177, 0.95);
+      background: #b91c1c;
+      box-shadow:
+        0 0 0 4px rgba(117, 33, 23, 0.28),
+        0 8px 12px rgba(42, 16, 5, 0.55),
+        0 0 24px rgba(185, 28, 28, 0.32);
+    }
+
+    body[data-map-style="detective"] .star-node.favorite .star-core,
+    body[data-map-style="detective"] .star-node.selected .star-core {
+      background: #facc15;
+      box-shadow:
+        0 0 0 5px rgba(250, 204, 21, 0.24),
+        0 8px 14px rgba(42, 16, 5, 0.58),
+        0 0 34px rgba(250, 204, 21, 0.38);
+    }
+
+    body[data-map-style="detective"] .star-node.type-button .star-core,
+    body[data-map-style="detective"] .star-node.type-list .star-core,
+    body[data-map-style="detective"] .star-node.type-file .star-core,
+    body[data-map-style="detective"] .star-node.type-day .star-core,
+    body[data-map-style="detective"] .star-node.type-collection .star-core {
+      border-radius: 50%;
+    }
+
+    body[data-map-style="detective"] .link-visible,
+    body[data-map-style="detective"] .link-group.type-depends .link-visible,
+    body[data-map-style="detective"] .link-group.type-part .link-visible,
+    body[data-map-style="detective"] .link-group.type-idea .link-visible,
+    body[data-map-style="detective"] .link-group.type-blocker .link-visible,
+    body[data-map-style="detective"] .link-group.type-priority .link-visible {
+      stroke: rgba(185, 28, 28, 0.78);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 1px 1px rgba(41, 15, 5, 0.6));
+    }
+
+    body[data-map-style="detective"] .link-group.type-part .link-visible {
+      stroke: rgba(88, 38, 15, 0.76);
+    }
+
+    body[data-map-style="detective"] .link-group.type-blocker .link-visible {
+      stroke: rgba(127, 29, 29, 0.9);
+      stroke-dasharray: 4 5;
+    }
+
+    body[data-map-style="detective"] .link-group.selected .link-visible,
+    body[data-map-style="detective"] .link-group.path-link .link-visible {
+      stroke: #facc15;
+      stroke-width: 3;
+      filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.42));
+    }
+
+    body[data-map-style="detective"] .star-label {
+      border-color: rgba(84, 48, 20, 0.64);
+      background: rgba(255, 242, 205, 0.92);
+      color: #2b1709;
+      box-shadow: 0 8px 16px rgba(39, 18, 7, 0.28);
+    }
+
+    body[data-map-style="detective"] .star-marker {
+      background: rgba(255, 237, 169, 0.84);
+      color: #2b1709;
+      border-color: rgba(84, 48, 20, 0.58);
+    }
+
+    body[data-map-style="detective"] .minimap {
+      background: rgba(68, 42, 20, 0.82);
+      border-color: rgba(255, 230, 172, 0.32);
+    }
+
+    body[data-map-style="detective"] .minimap-link {
+      stroke: rgba(185, 28, 28, 0.58);
+    }
+
+    body[data-map-style="detective"] .minimap-star {
+      fill: #facc15;
+    }
+
+    body[data-map-style="detective"] .space-map {
+      border: 14px solid #5b341d;
+      box-shadow:
+        inset 0 0 0 4px rgba(255, 229, 178, 0.18),
+        inset 0 0 90px rgba(33, 16, 6, 0.34);
+    }
+
+    body[data-map-style="detective"] .space-map::before {
+      background-image:
+        radial-gradient(circle at 18px 24px, rgba(60, 31, 12, 0.28) 0 1px, transparent 2px),
+        radial-gradient(circle at 42px 54px, rgba(255, 230, 180, 0.11) 0 1px, transparent 2px),
+        linear-gradient(90deg, rgba(68, 36, 15, 0.14) 1px, transparent 1px),
+        linear-gradient(rgba(68, 36, 15, 0.14) 1px, transparent 1px);
+      background-size: 64px 64px, 86px 86px, 110px 110px, 110px 110px;
+    }
+
+    body[data-map-style="detective"] .star-node {
+      --evidence-tilt: -2deg;
+      width: 140px;
+      min-height: 118px;
+      padding: 28px 12px 18px;
+      color: #251408;
+      transform: translate3d(-50%, -50%, var(--depth, 0px)) rotate(var(--evidence-tilt)) scale(calc(var(--z-scale, 1) * var(--priority-scale, 1)));
+      filter: drop-shadow(0 12px 10px rgba(38, 17, 7, 0.34));
+    }
+
+    body[data-map-style="detective"] .star-node:nth-child(4n+1) {
+      --evidence-tilt: -4deg;
+    }
+
+    body[data-map-style="detective"] .star-node:nth-child(4n+2) {
+      --evidence-tilt: 3deg;
+    }
+
+    body[data-map-style="detective"] .star-node:nth-child(4n+3) {
+      --evidence-tilt: 1.5deg;
+    }
+
+    body[data-map-style="detective"] .star-node:nth-child(5n) {
+      --evidence-tilt: -1deg;
+    }
+
+    body[data-map-style="detective"] .star-node::before {
+      content: "";
+      position: absolute;
+      inset: 10px 6px 4px;
+      z-index: 0;
+      border: 1px solid rgba(72, 47, 28, 0.24);
+      background:
+        linear-gradient(0deg, rgba(45, 26, 10, 0.08), transparent 34%),
+        repeating-linear-gradient(0deg, transparent 0 13px, rgba(76, 52, 30, 0.09) 14px),
+        #f4ecd8;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, 0.58) inset,
+        0 10px 18px rgba(42, 18, 7, 0.34);
+      pointer-events: none;
+    }
+
+    body[data-map-style="detective"] .star-node.type-storage::before,
+    body[data-map-style="detective"] .star-node.type-file::before {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 38%),
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 8px, rgba(0, 0, 0, 0.12) 9px 18px),
+        #1d1d1d;
+      border: 6px solid #e8dfc8;
+    }
+
+    body[data-map-style="detective"] .star-node.type-day::before,
+    body[data-map-style="detective"] .star-node.type-list::before,
+    body[data-map-style="detective"] .star-node.type-collection::before {
+      background:
+        linear-gradient(0deg, rgba(67, 47, 12, 0.08), transparent 45%),
+        repeating-linear-gradient(0deg, transparent 0 12px, rgba(91, 72, 20, 0.16) 13px),
+        #fff2a8;
+    }
+
+    body[data-map-style="detective"] .star-node.type-button::before {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.58), transparent 36%),
+        #dce9f5;
+    }
+
+    body[data-map-style="detective"] .star-orb {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      z-index: 3;
+      width: 28px;
+      height: 28px;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 4px 3px rgba(33, 12, 4, 0.42));
+    }
+
+    body[data-map-style="detective"] .star-progress-ring {
+      inset: 3px;
+      background: conic-gradient(#7f1d1d var(--progress, 0deg), rgba(78, 45, 20, 0.24) 0);
+      opacity: 0.55;
+    }
+
+    body[data-map-style="detective"] .star-core {
+      width: 17px;
+      height: 17px;
+      border: 1px solid rgba(255, 224, 196, 0.9);
+      background:
+        radial-gradient(circle at 36% 32%, rgba(255, 255, 255, 0.72) 0 2px, transparent 3px),
+        #b91c1c;
+      box-shadow:
+        0 0 0 3px rgba(127, 29, 29, 0.22),
+        0 6px 8px rgba(43, 16, 5, 0.42);
+    }
+
+    body[data-map-style="detective"] .star-core::before,
+    body[data-map-style="detective"] .star-core::after {
+      display: none;
+    }
+
+    body[data-map-style="detective"] .star-label {
+      position: absolute;
+      top: 48px;
+      right: 12px;
+      left: 12px;
+      z-index: 2;
+      display: -webkit-box;
+      width: auto;
+      max-width: none;
+      min-height: 34px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #251408;
+      font-weight: 700;
+      font-size: 0.78rem;
+      line-height: 1.15;
+      text-align: center;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-overflow: clip;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      opacity: 1;
+      transform: none !important;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    body[data-map-style="detective"] .star-node:hover .star-label,
+    body[data-map-style="detective"] .star-node:focus-visible .star-label,
+    body[data-map-style="detective"] .star-node.selected .star-label,
+    body[data-map-style="detective"] .star-node.connect-source .star-label {
+      opacity: 1;
+      transform: none !important;
+      color: #251408;
+    }
+
+    body[data-map-style="detective"] .star-node.type-storage .star-label,
+    body[data-map-style="detective"] .star-node.type-file .star-label {
+      color: #f4ecd8;
+      text-shadow: 0 1px 1px #000;
+    }
+
+    body[data-map-style="detective"] .star-node.type-storage:hover .star-label,
+    body[data-map-style="detective"] .star-node.type-storage:focus-visible .star-label,
+    body[data-map-style="detective"] .star-node.type-storage.selected .star-label,
+    body[data-map-style="detective"] .star-node.type-file:hover .star-label,
+    body[data-map-style="detective"] .star-node.type-file:focus-visible .star-label,
+    body[data-map-style="detective"] .star-node.type-file.selected .star-label {
+      color: #f4ecd8;
+    }
+
+    body[data-map-style="detective"] .star-progress-badge {
+      position: absolute;
+      right: 14px;
+      bottom: 11px;
+      left: 14px;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 6px;
+      color: #2b1709;
+      font-weight: 800;
+      font-size: 0.62rem;
+      line-height: 1;
+      text-shadow: none;
+    }
+
+    body[data-map-style="detective"] .star-progress-badge::after {
+      content: "";
+      height: 5px;
+      border: 1px solid rgba(91, 52, 22, 0.36);
+      background:
+        linear-gradient(90deg, #8f1515 var(--progress-percent, 0%), rgba(91, 52, 22, 0.16) 0);
+    }
+
+    body[data-map-style="detective"] .star-node.type-storage .star-progress-badge,
+    body[data-map-style="detective"] .star-node.type-file .star-progress-badge {
+      color: #f4ecd8;
+      text-shadow: 0 1px 1px #000;
+    }
+
+    body[data-map-style="detective"] .star-node.type-storage .star-progress-badge::after,
+    body[data-map-style="detective"] .star-node.type-file .star-progress-badge::after {
+      border-color: rgba(244, 236, 216, 0.35);
+      background:
+        linear-gradient(90deg, #facc15 var(--progress-percent, 0%), rgba(244, 236, 216, 0.18) 0);
+    }
+
+    body[data-map-style="detective"] .star-node:hover,
+    body[data-map-style="detective"] .star-node:focus-visible,
+    body[data-map-style="detective"] .star-node.selected {
+      z-index: 1000 !important;
+    }
+
+    body[data-map-style="detective"] .star-node:hover .star-core,
+    body[data-map-style="detective"] .star-node:focus-visible .star-core,
+    body[data-map-style="detective"] .star-node.selected .star-core {
+      transform: scale(1.08);
+      box-shadow:
+        0 0 0 4px rgba(185, 28, 28, 0.24),
+        0 7px 9px rgba(43, 16, 5, 0.48),
+        0 0 20px rgba(185, 28, 28, 0.28);
+    }
+
+    body[data-map-style="detective"] .star-node.selected::before,
+    body[data-map-style="detective"] .star-node:hover::before,
+    body[data-map-style="detective"] .star-node:focus-visible::before {
+      outline: 2px solid rgba(250, 204, 21, 0.56);
+      outline-offset: 3px;
+    }
+
+    body[data-map-style="detective"] .star-node.favorite .star-core {
+      background:
+        radial-gradient(circle at 36% 32%, rgba(255, 255, 255, 0.78) 0 2px, transparent 3px),
+        #facc15;
+    }
+
+    body[data-map-style="detective"] .star-node.favorite .star-orb::after {
+      display: none;
+    }
+
+    body[data-map-style="detective"] .star-markers {
+      top: auto;
+      bottom: -12px;
+      z-index: 2;
+      max-width: 118px;
+      gap: 3px;
+    }
+
+    body[data-map-style="detective"] .star-marker {
+      max-width: 48px;
+      padding: 2px 4px;
+      border: 1px solid rgba(84, 48, 20, 0.4);
+      background: #fff2a8;
+      color: #251408;
+      font-size: 0.56rem;
+      transform: rotate(-2deg);
+    }
+
+    body[data-map-style="detective"] .star-node::after {
+      display: none;
+    }
+
+    body[data-map-style="detective"] .link-visible,
+    body[data-map-style="detective"] .link-group.type-depends .link-visible,
+    body[data-map-style="detective"] .link-group.type-part .link-visible,
+    body[data-map-style="detective"] .link-group.type-idea .link-visible,
+    body[data-map-style="detective"] .link-group.type-blocker .link-visible,
+    body[data-map-style="detective"] .link-group.type-priority .link-visible {
+      stroke: #8f1515;
+      stroke-width: 2.4;
+      filter: drop-shadow(0 1px 0 rgba(255, 228, 176, 0.24)) drop-shadow(0 2px 2px rgba(42, 14, 5, 0.48));
+    }
+
+    body[data-map-style="detective"] .link-group.type-idea .link-visible {
+      stroke: #5f2413;
+      stroke-dasharray: 8 7;
+    }
+
+    body[data-map-style="detective"] .star-node.focus-dim {
+      opacity: 0.46;
+      filter: grayscale(0.18) sepia(0.14) drop-shadow(0 8px 8px rgba(38, 17, 7, 0.22));
+    }
+
+    body[data-map-style="detective"] .link-group.focus-dim {
+      opacity: 0.24;
+      filter: none;
+    }
+
+    body[data-map-style="detective"] .details {
+      border: 8px solid #3a2112;
+      background:
+        linear-gradient(0deg, rgba(87, 52, 22, 0.09), transparent 42%),
+        repeating-linear-gradient(0deg, transparent 0 21px, rgba(91, 62, 34, 0.1) 22px),
+        #f4ecd8;
+      color: #231408;
+      box-shadow:
+        0 22px 48px rgba(34, 14, 5, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+      backdrop-filter: none;
+    }
+
+    body[data-map-style="detective"] .details-media {
+      height: auto;
+      min-height: 120px;
+      border-bottom: 1px solid rgba(81, 49, 21, 0.34);
+      background:
+        linear-gradient(0deg, rgba(45, 25, 9, 0.08), transparent),
+        #e6dcc5;
+      padding: 10px;
+    }
+
+    body[data-map-style="detective"] .details-media.gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      min-height: 0;
+    }
+
+    body[data-map-style="detective"] .details-media img {
+      min-height: 124px;
+      border: 6px solid #f4ecd8;
+      background: #18120d;
+      box-shadow: 0 7px 12px rgba(50, 23, 8, 0.3);
+      filter: saturate(0.86) contrast(1.04);
+    }
+
+    body[data-map-style="detective"] .details-media.gallery img:first-child {
+      min-height: 124px;
+      grid-row: auto;
+    }
+
+    body[data-map-style="detective"] .details-body {
+      padding: 14px;
+    }
+
+    body[data-map-style="detective"] .details h2 {
+      color: #231408;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.14rem;
+      letter-spacing: 0;
+    }
+
+    body[data-map-style="detective"] .meta,
+    body[data-map-style="detective"] .hint {
+      color: #6d4a27;
+    }
+
+    body[data-map-style="detective"] .project-description {
+      border-left: 4px solid rgba(143, 21, 21, 0.58);
+      background: rgba(255, 242, 168, 0.42);
+      color: #2b1709;
+      padding: 9px 10px;
+      line-height: 1.45;
+    }
+
+    body[data-map-style="detective"] .chip {
+      border-color: rgba(78, 42, 16, 0.32);
+      background: #fff2a8;
+      color: #2b1709;
+      border-radius: 0;
+      box-shadow: 0 3px 6px rgba(45, 22, 9, 0.13);
+      transform: rotate(-1deg);
+    }
+
+    body[data-map-style="detective"] .chip:nth-child(2n) {
+      transform: rotate(1deg);
+    }
+
+    body[data-map-style="detective"] .details-field label,
+    body[data-map-style="detective"] .task-list h3 {
+      color: #5b341d;
+      letter-spacing: 0.05em;
+    }
+
+    body[data-map-style="detective"] .details-field input,
+    body[data-map-style="detective"] .details-field select,
+    body[data-map-style="detective"] .task-add input {
+      border-color: rgba(91, 52, 22, 0.42);
+      background: rgba(255, 250, 231, 0.64);
+      color: #2b1709;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .task-item,
+    body[data-map-style="detective"] .detail-file-item {
+      border-color: rgba(91, 52, 22, 0.28);
+      background:
+        linear-gradient(0deg, rgba(67, 47, 12, 0.08), transparent 45%),
+        #fff7c6;
+      color: #2b1709;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .task-item.done span {
+      color: #80623f;
+    }
+
+    body[data-map-style="detective"] .progress-summary {
+      border-color: rgba(91, 52, 22, 0.32);
+      background:
+        linear-gradient(0deg, rgba(67, 47, 12, 0.08), transparent 45%),
+        #fff2a8;
+      color: #2b1709;
+      box-shadow: 0 5px 10px rgba(45, 22, 9, 0.13);
+    }
+
+    body[data-map-style="detective"] .progress-summary span,
+    body[data-map-style="detective"] .progress-summary p {
+      color: #6d4a27;
+    }
+
+    body[data-map-style="detective"] .progress-track {
+      border-color: rgba(91, 52, 22, 0.42);
+      background: rgba(91, 52, 22, 0.12);
+    }
+
+    body[data-map-style="detective"] .progress-track i {
+      background: #8f1515;
+    }
+
+    body[data-map-style="detective"] .details .btn {
+      border-color: rgba(69, 38, 16, 0.4);
+      background: rgba(59, 34, 16, 0.92);
+      color: #fff3df;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .details .btn.primary {
+      background: #8f1515;
+      border-color: rgba(255, 219, 142, 0.46);
+    }
+
+    body[data-map-style="detective"] .modal {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(40, 20, 8, 0.08), transparent 36%),
+        rgba(20, 11, 5, 0.68);
+      backdrop-filter: blur(6px) sepia(0.2);
+    }
+
+    body[data-map-style="detective"] .modal-card,
+    body[data-map-style="detective"] .viewer-card,
+    body[data-map-style="detective"] .wall-card {
+      border: 8px solid #3a2112;
+      border-radius: 0;
+      background:
+        linear-gradient(0deg, rgba(87, 52, 22, 0.08), transparent 44%),
+        repeating-linear-gradient(0deg, transparent 0 22px, rgba(91, 62, 34, 0.09) 23px),
+        #f4ecd8;
+      color: #231408;
+      box-shadow:
+        0 24px 70px rgba(22, 9, 3, 0.62),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+    }
+
+    body[data-map-style="detective"] .modal-head,
+    body[data-map-style="detective"] .modal-actions,
+    body[data-map-style="detective"] .viewer-info {
+      border-color: rgba(91, 52, 22, 0.32);
+      background:
+        linear-gradient(0deg, rgba(74, 44, 18, 0.08), transparent),
+        rgba(245, 235, 210, 0.76);
+      color: #231408;
+    }
+
+    body[data-map-style="detective"] .modal-head h2 {
+      color: #231408;
+      font-family: Georgia, "Times New Roman", serif;
+      letter-spacing: 0;
+    }
+
+    body[data-map-style="detective"] .project-form {
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.2), transparent 18%),
+        transparent;
+    }
+
+    body[data-map-style="detective"] .field label,
+    body[data-map-style="detective"] .check-field {
+      color: #5b341d;
+    }
+
+    body[data-map-style="detective"] .field input,
+    body[data-map-style="detective"] .field textarea,
+    body[data-map-style="detective"] .field select,
+    body[data-map-style="detective"] .image-note-input,
+    body[data-map-style="detective"] .viewer-info textarea {
+      border-color: rgba(91, 52, 22, 0.42);
+      background: rgba(255, 250, 231, 0.66);
+      color: #2b1709;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .field input::placeholder,
+    body[data-map-style="detective"] .field textarea::placeholder,
+    body[data-map-style="detective"] .task-add input::placeholder,
+    body[data-map-style="detective"] .viewer-info textarea::placeholder {
+      color: rgba(79, 49, 24, 0.58);
+    }
+
+    body[data-map-style="detective"] input[type="color"] {
+      padding: 5px;
+      background: #2d1c0e;
+    }
+
+    body[data-map-style="detective"] .modal-actions .btn,
+    body[data-map-style="detective"] .modal-head .btn,
+    body[data-map-style="detective"] .viewer-nav {
+      border-color: rgba(69, 38, 16, 0.42);
+      background: rgba(59, 34, 16, 0.92);
+      color: #fff3df;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .modal-actions .btn.primary {
+      background: #8f1515;
+      border-color: rgba(255, 219, 142, 0.46);
+    }
+
+    body[data-map-style="detective"] .archive-list {
+      background: transparent;
+    }
+
+    body[data-map-style="detective"] .archive-item {
+      border-color: rgba(91, 52, 22, 0.32);
+      background:
+        linear-gradient(0deg, rgba(67, 47, 12, 0.08), transparent 45%),
+        #fff7c6;
+      color: #2b1709;
+      box-shadow: 0 8px 16px rgba(45, 22, 9, 0.14);
+      transform: rotate(-0.4deg);
+    }
+
+    body[data-map-style="detective"] .archive-item:nth-child(2n) {
+      transform: rotate(0.5deg);
+    }
+
+    body[data-map-style="detective"] .archive-item p,
+    body[data-map-style="detective"] .viewer-info span,
+    body[data-map-style="detective"] .file-item small,
+    body[data-map-style="detective"] .detail-file-item small {
+      color: #6d4a27;
+    }
+
+    body[data-map-style="detective"] .image-preview,
+    body[data-map-style="detective"] .file-preview {
+      border-color: rgba(91, 52, 22, 0.36);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 40%),
+        #e7dcc4;
+      color: #6d4a27;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .image-thumb,
+    body[data-map-style="detective"] .photo-wall button {
+      border: 7px solid #f4ecd8;
+      background: #18120d;
+      box-shadow: 0 8px 13px rgba(42, 18, 7, 0.26);
+      transform: rotate(-1deg);
+    }
+
+    body[data-map-style="detective"] .image-thumb:nth-child(2n),
+    body[data-map-style="detective"] .photo-wall button:nth-child(2n) {
+      transform: rotate(1deg);
+    }
+
+    body[data-map-style="detective"] .image-thumb button {
+      border-radius: 50%;
+      background: #8f1515;
+      color: #fff3df;
+    }
+
+    body[data-map-style="detective"] .file-item {
+      border-color: rgba(91, 52, 22, 0.28);
+      background: #fff7c6;
+      color: #2b1709;
+      border-radius: 0;
+    }
+
+    body[data-map-style="detective"] .viewer-modal {
+      background: rgba(14, 8, 4, 0.86);
+    }
+
+    body[data-map-style="detective"] .viewer-stage {
+      background:
+        radial-gradient(circle at 50% 44%, rgba(255, 245, 215, 0.12), transparent 30%),
+        #1a120c;
+    }
+
+    body[data-map-style="detective"] .viewer-stage img {
+      border: 12px solid #f4ecd8;
+      background: #050505;
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.4);
+      filter: saturate(0.86) contrast(1.05);
+    }
+
+    body[data-map-style="detective"] .photo-wall {
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 255, 255, 0.18), transparent 16%),
+        transparent;
+    }
+
+    body[data-map-style="detective"] .photo-wall img {
+      border: 0;
+      filter: saturate(0.9) contrast(1.04);
     }
 
     @media (max-width: 760px) {
@@ -2329,6 +3147,7 @@
       <article class="details hidden" id="detailsPanel" aria-live="polite"></article>
       <div class="galaxy-tools" aria-label="Галактики">
         <select id="galaxySelect" title="Галактика"></select>
+        <select id="mapStyleSelect" title="Стиль карти"></select>
         <button class="btn ghost" id="newGalaxyBtn" type="button" title="Нова галактика">+</button>
         <button class="btn ghost" id="renameGalaxyBtn" type="button" title="Перейменувати галактику">✎</button>
         <button class="btn ghost" id="deleteGalaxyBtn" type="button" title="Видалити галактику">×</button>
@@ -2578,6 +3397,10 @@
         { value: "blocker", label: "Блокер" },
         { value: "priority", label: "Пріоритет" }
       ];
+      const MAP_STYLES = [
+        { value: "space", label: "Space" },
+        { value: "detective", label: "Detective board" }
+      ];
       const STAR_TYPES = [
         { value: "standard", label: "Стандарт", hint: "Звичайна зірка з описом, задачами, координатами і фото." },
         { value: "storage", label: "Склад", hint: "До 100 фото без стиснення. Оригінали зберігаються в IndexedDB." },
@@ -2603,6 +3426,7 @@
         statusFilter: document.querySelector("#statusFilter"),
         categoryFilter: document.querySelector("#categoryFilter"),
         galaxySelect: document.querySelector("#galaxySelect"),
+        mapStyleSelect: document.querySelector("#mapStyleSelect"),
         newGalaxyBtn: document.querySelector("#newGalaxyBtn"),
         renameGalaxyBtn: document.querySelector("#renameGalaxyBtn"),
         deleteGalaxyBtn: document.querySelector("#deleteGalaxyBtn"),
@@ -2784,6 +3608,14 @@
         return LINK_TYPES.find((item) => item.value === value)?.label || "Залежить від";
       }
 
+      function normalizeMapStyle(value) {
+        return MAP_STYLES.some((item) => item.value === value) ? value : "space";
+      }
+
+      function mapStyleLabel(value) {
+        return MAP_STYLES.find((item) => item.value === value)?.label || "Space";
+      }
+
       function formatDate(value) {
         if (!value) return "Без дати";
         const date = new Date(`${value}T00:00:00`);
@@ -2828,7 +3660,7 @@
 
       function createEmptyState() {
         return {
-          galaxies: [{ id: DEFAULT_GALAXY_ID, name: "Основна" }],
+          galaxies: [{ id: DEFAULT_GALAXY_ID, name: "Основна", style: "space" }],
           activeGalaxyId: DEFAULT_GALAXY_ID,
           projects: [],
           links: [],
@@ -2840,15 +3672,18 @@
       function normalizeGalaxy(galaxy) {
         return {
           id: normalizeText(galaxy?.id) || uid("galaxy"),
-          name: normalizeText(galaxy?.name) || "Галактика"
+          name: normalizeText(galaxy?.name) || "Галактика",
+          style: normalizeMapStyle(galaxy?.style || galaxy?.mapStyle)
         };
       }
 
       function normalizeGalaxies(galaxies) {
         const list = Array.isArray(galaxies) ? galaxies.map(normalizeGalaxy) : [];
+        const defaultGalaxy = list.find((galaxy) => galaxy.id === DEFAULT_GALAXY_ID) || { id: DEFAULT_GALAXY_ID, name: "Основна", style: "space" };
+        const candidates = [defaultGalaxy, ...list.filter((galaxy) => galaxy.id !== DEFAULT_GALAXY_ID)];
         const unique = [];
         const seen = new Set();
-        [{ id: DEFAULT_GALAXY_ID, name: "Основна" }, ...list].forEach((galaxy) => {
+        candidates.forEach((galaxy) => {
           if (seen.has(galaxy.id)) return;
           seen.add(galaxy.id);
           unique.push(galaxy);
@@ -2868,6 +3703,15 @@
         return state.galaxies.find((galaxy) => galaxy.id === id)?.name || "Основна";
       }
 
+      function currentGalaxy() {
+        const id = currentGalaxyId();
+        return state.galaxies.find((galaxy) => galaxy.id === id) || state.galaxies[0];
+      }
+
+      function currentGalaxyStyle() {
+        return normalizeMapStyle(currentGalaxy()?.style);
+      }
+
       function normalizeProject(project, fallbackGalaxyId = DEFAULT_GALAXY_ID) {
         const starType = normalizeStarType(project.starType || project.type);
         const images = getProjectImages(project).slice(0, imageLimitForType(starType));
@@ -2881,7 +3725,9 @@
         const z = Number.isFinite(Number(project.z)) ? Number(project.z) : randomBetween(-60, 140);
         const priority = PRIORITY_OPTIONS.some((item) => item.value === project.priority) ? project.priority : "medium";
         const level = LEVEL_OPTIONS.some((item) => item.value === project.level) ? project.level : "main";
-        const progress = clamp(Number(project.progress) || 0, 0, 100);
+        const tasks = starType === "blank" ? [] : normalizeTasks(project.tasks);
+        const manualProgress = clamp(Number(project.progress) || 0, 0, 100);
+        const progress = tasks.length ? taskProgress(tasks) : manualProgress;
 
         return {
           id: project.id || uid("project"),
@@ -2906,7 +3752,7 @@
           level,
           dueDate: starType === "blank" ? "" : (project.dueDate || ""),
           progress: starType === "blank" ? 0 : progress,
-          tasks: starType === "blank" ? [] : normalizeTasks(project.tasks),
+          tasks,
           url: starType === "button" ? normalizeURL(project.url) : "",
           favorite: Boolean(project.favorite),
           archived: Boolean(project.archived)
@@ -2994,6 +3840,18 @@
           .slice(0, 40);
       }
 
+      function taskProgress(tasks) {
+        const normalized = normalizeTasks(tasks);
+        if (!normalized.length) return 0;
+        return Math.round((normalized.filter((task) => task.done).length / normalized.length) * 100);
+      }
+
+      function syncProgressFromTasks(project) {
+        if (!project) return;
+        project.tasks = normalizeTasks(project.tasks);
+        project.progress = project.tasks.length ? taskProgress(project.tasks) : 0;
+      }
+
       function tasksToText(tasks) {
         return normalizeTasks(tasks)
           .map((task) => `${task.done ? "[x] " : ""}${task.text}`)
@@ -3046,6 +3904,12 @@
         state.view = normalizeView(state.view);
         els.mapWorld.style.transform = `translate3d(${state.view.panX}px, ${state.view.panY}px, 0) scale(${state.view.zoom})`;
         els.spaceMap.style.setProperty("--zoom", state.view.zoom.toFixed(2));
+      }
+
+      function applyGalaxyStyle() {
+        const style = currentGalaxyStyle();
+        document.body.dataset.mapStyle = style;
+        els.spaceMap.dataset.mapStyle = style;
       }
 
       function randomBetween(min, max) {
@@ -3209,6 +4073,7 @@
         const visibleProjects = getFilteredProjects();
         const visibleIds = new Set(visibleProjects.map((project) => project.id));
         applyViewport();
+        applyGalaxyStyle();
         renderGalaxySelect();
         renderCategoryFilter();
         renderStats(visibleProjects.length);
@@ -3228,7 +4093,22 @@
           .map((galaxy) => `<option value="${escapeHTML(galaxy.id)}">${escapeHTML(galaxy.name)}</option>`)
           .join("");
         els.galaxySelect.value = current;
+        els.mapStyleSelect.innerHTML = MAP_STYLES
+          .map((style) => `<option value="${escapeHTML(style.value)}">${escapeHTML(style.label)}</option>`)
+          .join("");
+        els.mapStyleSelect.value = currentGalaxyStyle();
         els.deleteGalaxyBtn.disabled = state.galaxies.length <= 1 || current === DEFAULT_GALAXY_ID;
+      }
+
+      function setCurrentGalaxyStyle(style) {
+        const galaxy = currentGalaxy();
+        if (!galaxy) return;
+        galaxy.style = normalizeMapStyle(style);
+        stopAmbientSound();
+        saveState();
+        render();
+        playTone(260, 0.12, "style");
+        showToast(`Стиль "${mapStyleLabel(galaxy.style)}" збережено для "${galaxy.name}".`);
       }
 
       function renderCategoryFilter() {
@@ -3298,7 +4178,7 @@
       function createGalaxy() {
         const name = normalizeText(window.prompt("Назва нової галактики:", "Нова галактика"));
         if (!name) return;
-        const galaxy = { id: uid("galaxy"), name };
+        const galaxy = { id: uid("galaxy"), name, style: currentGalaxyStyle() };
         state.galaxies.push(galaxy);
         state.activeGalaxyId = galaxy.id;
         saveState();
@@ -3402,6 +4282,7 @@
           star.style.setProperty("--depth", `${project.z}px`);
           star.style.setProperty("--z-scale", `${1 + project.z / 700}`);
           star.style.setProperty("--progress", `${project.progress * 3.6}deg`);
+          star.style.setProperty("--progress-percent", `${project.progress}%`);
           star.style.zIndex = project.favorite ? "999" : String(2 + Math.round(project.z + 220));
           star.setAttribute("aria-label", project.starType === "button" && project.url
             ? `Відкрити посилання ${project.title}`
@@ -3428,6 +4309,13 @@
           label.className = "star-label";
           label.textContent = project.title;
 
+          const taskCount = project.tasks.length;
+          const doneTasks = project.tasks.filter((task) => task.done).length;
+          const progressBadge = document.createElement("span");
+          progressBadge.className = "star-progress-badge";
+          progressBadge.textContent = taskCount ? `${doneTasks}/${taskCount}` : `${project.progress}%`;
+          progressBadge.title = `Прогрес: ${project.progress}%`;
+
           const markers = document.createElement("span");
           markers.className = "star-markers";
           mapTagsForProject(project).forEach((tag) => {
@@ -3441,7 +4329,7 @@
           star.addEventListener("pointerdown", handleStarPointerDown);
           star.addEventListener("click", handleStarClick);
 
-          star.append(orb, label, markers);
+          star.append(orb, label, progressBadge, markers);
           fragment.append(star);
         });
 
@@ -3651,6 +4539,17 @@
               </label>
             `).join("")
           : `<p class="meta">Задач ще немає.</p>`;
+        const taskTotal = selectedProject.tasks.length;
+        const taskDone = selectedProject.tasks.filter((task) => task.done).length;
+        const progressSummaryText = taskTotal ? `${taskDone}/${taskTotal} задач виконано` : "Ручний прогрес";
+        const progressSummaryHTML = isBlank ? "" : `
+            <div class="progress-summary" style="--progress-percent: ${selectedProject.progress}%">
+              <div class="progress-summary-head">
+                <strong>${selectedProject.progress}%</strong>
+                <span>${escapeHTML(progressSummaryText)}</span>
+              </div>
+              <div class="progress-track" aria-hidden="true"><i></i></div>
+            </div>`;
         const detailsFieldsHTML = isBlank ? "" : `
             <p class="project-description">${escapeHTML(selectedProject.description || "Опис ще не додано.")}</p>
 
@@ -3706,6 +4605,7 @@
               `}
             </div>
 
+            ${progressSummaryHTML}
             ${detailsFieldsHTML}
             ${buttonLinkHTML}
             ${wallButtonHTML}
@@ -4431,6 +5331,7 @@
         ui.selectedProjectId = projectId;
         ui.selectedLinkId = null;
         render();
+        playTone(220, 0.08, "thread-start");
         showToast("Оберіть другу зірку для створення зв’язку.");
       }
 
@@ -4462,6 +5363,7 @@
         ui.selectedProjectId = null;
         ui.selectedLinkId = link.id;
         persistAndRender("Зв’язок створено.");
+        playTone(180, 0.12, "thread");
       }
 
       function deleteLink(linkId) {
@@ -4487,7 +5389,7 @@
           return;
         }
         window.open(url, "_blank", "noopener");
-        playTone(720, 0.05);
+        playTone(720, 0.05, "paper");
       }
 
       function activateProject(projectId, shouldFly = true) {
@@ -4507,7 +5409,7 @@
         ui.selectedProjectId = projectId;
         ui.selectedLinkId = null;
         if (shouldFly) flyToProject(projectId);
-        playTone(560, 0.04);
+        playTone(560, 0.04, "pin");
         render();
       }
 
@@ -4919,8 +5821,12 @@
         requestAnimationFrame(step);
       }
 
-      function playTone(frequency = 440, duration = 0.05) {
+      function playTone(frequency = 440, duration = 0.05, kind = "tone") {
         if (!state.settings.soundEnabled) return;
+        if (currentGalaxyStyle() === "detective") {
+          playDetectiveTone(frequency, duration, kind);
+          return;
+        }
         try {
           ensureAudioContext();
           if (!ui.ambientNodes) startAmbientSound();
@@ -4939,6 +5845,60 @@
         }
       }
 
+      function playDetectiveTone(frequency = 220, duration = 0.07, kind = "pin") {
+        try {
+          const ctx = ensureAudioContext();
+          if (!ui.ambientNodes) startAmbientSound();
+          const now = ctx.currentTime;
+          const output = ctx.createGain();
+          output.gain.setValueAtTime(0.0001, now);
+          output.gain.exponentialRampToValueAtTime(kind === "thread" ? 0.075 : 0.052, now + 0.012);
+          output.gain.exponentialRampToValueAtTime(0.0001, now + duration + 0.08);
+          output.connect(ctx.destination);
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = kind === "thread" ? "bandpass" : "lowpass";
+          filter.frequency.value = kind === "paper" ? 850 : kind === "style" ? 520 : 420;
+          filter.Q.value = kind === "thread" ? 5.5 : 1.8;
+          filter.connect(output);
+
+          if (kind === "thread" || kind === "thread-start") {
+            const stringOsc = ctx.createOscillator();
+            stringOsc.type = "sawtooth";
+            stringOsc.frequency.setValueAtTime(kind === "thread" ? 132 : 168, now);
+            stringOsc.frequency.exponentialRampToValueAtTime(kind === "thread" ? 92 : 118, now + duration + 0.06);
+            stringOsc.connect(filter);
+            stringOsc.start(now);
+            stringOsc.stop(now + duration + 0.1);
+          } else {
+            const clickOsc = ctx.createOscillator();
+            clickOsc.type = kind === "paper" ? "triangle" : "square";
+            clickOsc.frequency.setValueAtTime(kind === "style" ? 260 : frequency, now);
+            clickOsc.frequency.exponentialRampToValueAtTime(kind === "style" ? 190 : Math.max(90, frequency * 0.42), now + duration);
+            clickOsc.connect(filter);
+            clickOsc.start(now);
+            clickOsc.stop(now + duration + 0.05);
+          }
+
+          const noiseLength = Math.max(1, Math.floor(ctx.sampleRate * (kind === "paper" ? 0.075 : 0.035)));
+          const noiseBuffer = ctx.createBuffer(1, noiseLength, ctx.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          for (let index = 0; index < noiseLength; index += 1) {
+            const fade = 1 - index / noiseLength;
+            data[index] = (Math.random() * 2 - 1) * fade;
+          }
+          const noise = ctx.createBufferSource();
+          const noiseGain = ctx.createGain();
+          noiseGain.gain.value = kind === "paper" ? 0.024 : kind === "thread" ? 0.012 : 0.018;
+          noise.buffer = noiseBuffer;
+          noise.connect(noiseGain).connect(filter);
+          noise.start(now);
+          noise.stop(now + noiseLength / ctx.sampleRate);
+        } catch (error) {
+          state.settings.soundEnabled = false;
+        }
+      }
+
       function ensureAudioContext() {
         ui.audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
         if (ui.audioContext.state === "suspended") ui.audioContext.resume();
@@ -4952,17 +5912,29 @@
           const gain = ctx.createGain();
           const oscA = ctx.createOscillator();
           const oscB = ctx.createOscillator();
-          oscA.frequency.value = 72;
-          oscB.frequency.value = 108;
-          oscA.type = "sine";
-          oscB.type = "triangle";
-          gain.gain.value = 0.012;
-          oscA.connect(gain);
-          oscB.connect(gain);
+          const isDetective = currentGalaxyStyle() === "detective";
+          oscA.frequency.value = isDetective ? 46 : 72;
+          oscB.frequency.value = isDetective ? 61 : 108;
+          oscA.type = isDetective ? "sawtooth" : "sine";
+          oscB.type = isDetective ? "sine" : "triangle";
+          gain.gain.value = isDetective ? 0.005 : 0.012;
+          if (isDetective) {
+            const filter = ctx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.value = 180;
+            filter.Q.value = 0.7;
+            oscA.connect(filter);
+            oscB.connect(filter);
+            filter.connect(gain);
+            ui.ambientNodes = { gain, oscA, oscB, filter };
+          } else {
+            oscA.connect(gain);
+            oscB.connect(gain);
+            ui.ambientNodes = { gain, oscA, oscB };
+          }
           gain.connect(ctx.destination);
           oscA.start();
           oscB.start();
-          ui.ambientNodes = { gain, oscA, oscB };
         } catch (error) {
           state.settings.soundEnabled = false;
         }
@@ -5237,6 +6209,7 @@
         if (!project) return;
         project.favorite = !project.favorite;
         persistAndRender(project.favorite ? "Зірку додано в обране." : "Зірку прибрано з обраного.");
+        playTone(project.favorite ? 340 : 210, 0.08, "pin");
       }
 
       function closeStarContextMenu() {
@@ -5340,6 +6313,7 @@
         if (!project || !text) return;
 
         project.tasks.push({ id: uid("task"), text, done: false });
+        syncProgressFromTasks(project);
         persistAndRender("Задачу додано.");
       }
 
@@ -5348,9 +6322,7 @@
         const task = project?.tasks.find((item) => item.id === taskId);
         if (!task) return;
         task.done = done;
-        project.progress = project.tasks.length
-          ? Math.round((project.tasks.filter((item) => item.done).length / project.tasks.length) * 100)
-          : project.progress;
+        syncProgressFromTasks(project);
         persistAndRender("Задачу оновлено.");
       }
 
@@ -5358,6 +6330,7 @@
         const project = state.projects.find((item) => item.id === projectId);
         if (!project) return;
         project.tasks = project.tasks.filter((task) => task.id !== taskId);
+        syncProgressFromTasks(project);
         persistAndRender("Задачу видалено.");
       }
 
@@ -5501,6 +6474,7 @@
         els.categoryFilter.addEventListener("change", render);
         els.resetFiltersBtn.addEventListener("click", resetFilters);
         els.galaxySelect.addEventListener("change", () => switchGalaxy(els.galaxySelect.value));
+        els.mapStyleSelect.addEventListener("change", () => setCurrentGalaxyStyle(els.mapStyleSelect.value));
         els.newGalaxyBtn.addEventListener("click", createGalaxy);
         els.renameGalaxyBtn.addEventListener("click", renameGalaxy);
         els.deleteGalaxyBtn.addEventListener("click", deleteGalaxy);
@@ -5524,7 +6498,7 @@
           else stopAmbientSound();
           saveState();
           renderToolButtons();
-          playTone(660, 0.06);
+          playTone(660, 0.06, "style");
         });
 
         els.archiveBtn.addEventListener("click", openArchiveRestore);
